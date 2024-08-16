@@ -1,0 +1,7 @@
+{
+  "name": "devMovil",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
