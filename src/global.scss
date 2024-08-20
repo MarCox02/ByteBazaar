@@ -37,6 +37,13 @@
 @import "@ionic/angular/css/palettes/dark.system.css";
 
 
-.ion-content{
-  background-color: rgb(37, 37, 126);
+body {
+  background: linear-gradient(to bottom, #50B7C9, #0D2050); /* Cambia estos colores por los que prefieras */ 
+  background-size: cover; /* Asegura que la imagen cubra toda la pantalla */
+  background-position: center; /* Centra la imagen */
+  background-repeat: no-repeat; /* Evita que la imagen se repita */
+}
+
+ion-content {
+  --background: transparent; /* Esto hace que el fondo sea transparente y deje ver el fondo del body */
 }
