@@ -1,52 +1,36 @@
-#container {
-  text-align: center;
+.button::part(native){
+  background-color: rgb(0, 217, 255);
+  border-radius: 20px;
 
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
-}
-
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
-}
-
-#container a {
-  text-decoration: none;
 }
 
 ion-content {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  height: 100%;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
   height: 100%;
 }
 
 .section {
+  flex: 1; /* Ocupa el espacio restante de manera equitativa */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 20px ;
   color: white;
 }
 
 .divider {
-  margin: 10rem 0 8rem 0;
   height: 1px;
   background-color: white;
   width: 100%;
 }
+
+
 
