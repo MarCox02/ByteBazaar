@@ -12,25 +12,14 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'login',
-    loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
+    path: 'loginv',
+    loadChildren: () => import('./pages/vendedor/loginv/loginv.module').then( m => m.LoginvPageModule)
+  },  {
+    path: 'loginc',
+    loadChildren: () => import('./pages/comprador/loginc/loginc.module').then( m => m.LogincPageModule)
   },
-  {
-    path: 'register',
-    loadChildren: () => import('./pages/register/register.module').then( m => m.RegisterPageModule)
-  },
-  {
-    path: 'catalogo',
-    loadChildren: () => import('./pages/catalogo/catalogo.module').then( m => m.CatalogoPageModule)
-  },
-  {
-    path: 'busqueda',
-    loadChildren: () => import('./pages/busqueda/busqueda.module').then( m => m.BusquedaPageModule)
-  },
-  {
-    path: 'inicio',
-    loadChildren: () => import('./pages/inicio/inicio.module').then( m => m.InicioPageModule)
-  },
+
+
 
 ];
 

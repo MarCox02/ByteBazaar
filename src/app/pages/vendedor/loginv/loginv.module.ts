@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { CatalogoPageRoutingModule } from './catalogo-routing.module';
+import { LoginvPageRoutingModule } from './loginv-routing.module';
 
-import { CatalogoPage } from './catalogo.page';
+import { LoginvPage } from './loginv.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    CatalogoPageRoutingModule
+    LoginvPageRoutingModule
   ],
-  declarations: [CatalogoPage]
+  declarations: [LoginvPage]
 })
-export class CatalogoPageModule {}
+export class LoginvPageModule {}
