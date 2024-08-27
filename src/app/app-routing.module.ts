@@ -28,9 +28,14 @@ const routes: Routes = [
     loadChildren: () => import('./pages/vendedor/registrarv/registrarv.module').then( m => m.RegistrarvPageModule)
   },
   {
+    path: 'catalogoc',
+    loadChildren: () => import('./pages/comprador/catalogoc/catalogoc.module').then( m => m.CatalogocPageModule)
+  },
+  {
     path: '**',
     loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
   },
+
 
 
 ];

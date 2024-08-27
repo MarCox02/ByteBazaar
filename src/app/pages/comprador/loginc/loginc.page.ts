@@ -1,4 +1,5 @@
 import { Component,OnInit } from '@angular/core';
+import { MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-loginc',
@@ -7,11 +8,11 @@ import { Component,OnInit } from '@angular/core';
 })
 export class LogincPage implements OnInit{
 
-  constructor() {
+  constructor(private menuCtrl: MenuController) {}
 
-  }
+  ngOnInit() {
+    this.menuCtrl.enable(false,'vendedor')
+    this.menuCtrl.enable(false,'comprador')
 
-  ngOnInit(){
-    
   }
 }
