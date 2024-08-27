@@ -5,8 +5,11 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './loginv.page.html',
   styleUrls: ['./loginv.page.scss'],
 })
-export class LoginvPage {
+export class LoginvPage implements OnInit {
 
   constructor() { }
 
+  ngOnInit(){
+
+  }
 }
