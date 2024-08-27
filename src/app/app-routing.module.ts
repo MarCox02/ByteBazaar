@@ -18,9 +18,14 @@ const routes: Routes = [
   {
     path: 'loginc',
     loadChildren: () => import('./pages/comprador/loginc/loginc.module').then( m => m.LogincPageModule)
-  },  {
+  },
+  {
     path: 'registrarc',
     loadChildren: () => import('./pages/comprador/registrarc/registrarc.module').then( m => m.RegistrarcPageModule)
+  },
+  {
+    path: '**',
+    loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
   },
 
 
