@@ -9,7 +9,7 @@ export class LoginvPage implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-  }
+  ngOnInit(){
 
+  }
 }

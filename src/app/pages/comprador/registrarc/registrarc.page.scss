@@ -16,6 +16,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: start;
+  margin-top: 20%;
 }
 
 .formulario {
@@ -23,7 +24,7 @@
   max-width: 300px;
   padding: 20px;
   border-radius: 20px;
-  margin-top: 5%;
+  margin-top: 2%;
 }
 
 ion-input{
@@ -41,11 +42,4 @@ ion-input{
 .titulo{
 text-align: center;
 color: rgb(5, 197, 255);
-}
-
-.logo-img {
-  height: auto; /* Mantiene la proporción de la imagen */
-  display: flex;
-  align-items: center;
-  margin-bottom: 10%;
 }

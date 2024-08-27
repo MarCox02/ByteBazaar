@@ -1,0 +1,47 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>registrarc</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+  </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="contenedor">
+  <ion-header collapse="condense">
+
+  </ion-header>
+  <ion-input class="formulario " helperText="con guión y sin puntos" color="dark" label="Rut" label-placement="floating" fill="outline"
+  placeholder="XXXXXXXX-X">
+  </ion-input>
+  <br>
+  <ion-input class="formulario " color="dark" label="Usuario" label-placement="floating" fill="outline"
+  placeholder="Ingrese el nombre de su Usuario">
+  </ion-input>
+  <br>
+  <ion-input class="formulario " color="dark" label="Nombres" label-placement="floating" fill="outline"
+  placeholder="Ingrese sus nombres">
+  </ion-input>
+  <br>
+  <ion-input class="formulario " color="dark" label="Apellidos" label-placement="floating" fill="outline"
+  placeholder="Ingrese sus apellidos">
+  </ion-input>
+  <br>
+  <ion-input class="formulario " helperText="Ingrese un Email Valido" errorText="Email invalido" type="email" color="dark" label="E-Mail" label-placement="floating" fill="outline"
+  placeholder="email@dominio.com">
+  </ion-input>
+  <br>
+  <ion-input class="formulario " helperText="" errorText="Contraseña invalida" type="password" color="dark" label="Contraseña" label-placement="floating" fill="outline"
+  placeholder="Ingrese su contraseña">
+  </ion-input>
+  <ion-input class="formulario " helperText="Las contraseñas deben coincidir" errorText="Contraseña no coincide" type="password" color="dark" label="Confirmar Contraseña" label-placement="floating" fill="outline"
+  placeholder="Confirme su contraseña">
+  </ion-input>
+  <br>
+  <ion-button class="boton">
+    crear cuenta
+  </ion-button>
+
+</div>
+</ion-content>
