@@ -24,11 +24,13 @@ const routes: Routes = [
     loadChildren: () => import('./pages/comprador/registrarc/registrarc.module').then( m => m.RegistrarcPageModule)
   },
   {
+    path: 'registrarv',
+    loadChildren: () => import('./pages/vendedor/registrarv/registrarv.module').then( m => m.RegistrarvPageModule)
+  },
+  {
     path: '**',
     loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
   },
-
-
 
 
 ];
