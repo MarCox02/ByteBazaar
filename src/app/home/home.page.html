@@ -1,19 +1,12 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
-  </ion-buttons>
-    <ion-title>
-      Home
-    </ion-title>
-  </ion-toolbar>
 </ion-header>
 
 <ion-content cla [fullscreen]="true">
 
+  <div class="container">
   <div class="section vendedor">
     <h2 >VENDEDOR</h2>
-    <ion-button>Iniciar sesion</ion-button>
+    <ion-button class="boton" [routerLink]="['/loginv']">Iniciar sesion</ion-button>
   </div>
 
   <div class="divider"></div>
@@ -21,6 +14,7 @@
 
   <div class="section comprador">
     <h2>COMPRADOR</h2>
-    <ion-button>Iniciar sesion</ion-button>
+    <ion-button class="boton" [routerLink]="['/loginc']">Iniciar sesion</ion-button>
   </div>
+</div>
 </ion-content>
