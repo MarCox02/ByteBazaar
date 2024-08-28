@@ -35,11 +35,15 @@ const routes: Routes = [
     path: 'catalogov',
     loadChildren: () => import('./pages/vendedor/catalogov/catalogov.module').then( m => m.CatalogovPageModule)
   },
-  
+  {
+    path: 'historial-productos',
+    loadChildren: () => import('./pages/vendedor/historial-productos/historial-productos.module').then( m => m.HistorialProductosPageModule)
+  },
   {
     path: '**',
     loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
   },
+
   
 
 
