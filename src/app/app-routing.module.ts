@@ -44,9 +44,14 @@ const routes: Routes = [
     loadChildren: () => import('./pages/vendedor/publicarv/publicarv.module').then( m => m.PublicarvPageModule)},
 
   {
+    path: 'perfilv',
+    loadChildren: () => import('./pages/vendedor/perfilv/perfilv.module').then( m => m.PerfilvPageModule)
+  },
+  {
     path: '**',
     loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
   },
+
 ];
 
 @NgModule({
