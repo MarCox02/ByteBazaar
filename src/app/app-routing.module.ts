@@ -39,16 +39,14 @@ const routes: Routes = [
     path: 'historial-productos',
     loadChildren: () => import('./pages/vendedor/historial-productos/historial-productos.module').then( m => m.HistorialProductosPageModule)
   },
+  
+  {path: 'publicarv',
+    loadChildren: () => import('./pages/vendedor/publicarv/publicarv.module').then( m => m.PublicarvPageModule)},
+
   {
     path: '**',
     loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
   },
-
-  
-
-
-
-
 ];
 
 @NgModule({

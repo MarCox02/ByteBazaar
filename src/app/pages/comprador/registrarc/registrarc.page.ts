@@ -6,7 +6,7 @@ import { MenuController } from '@ionic/angular';
   templateUrl: './registrarc.page.html',
   styleUrls: ['./registrarc.page.scss'],
 })
-export class RegistrarcPage {
+export class RegistrarcPage implements OnInit{
 
   constructor(private menuCtrl: MenuController) {}
 
