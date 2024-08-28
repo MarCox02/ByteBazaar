@@ -32,9 +32,16 @@ const routes: Routes = [
     loadChildren: () => import('./pages/comprador/catalogoc/catalogoc.module').then( m => m.CatalogocPageModule)
   },
   {
+    path: 'catalogov',
+    loadChildren: () => import('./pages/vendedor/catalogov/catalogov.module').then( m => m.CatalogovPageModule)
+  },
+  
+  {
     path: '**',
     loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
   },
+  
+
 
 
 
