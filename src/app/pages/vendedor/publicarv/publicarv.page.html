@@ -1,0 +1,30 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>publicarv</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="contenedor">
+
+    <ion-img *ngIf="imageSrc" [src]="imageSrc"></ion-img>
+    <ion-item>
+      <input type="file" (change)="onFileSelected($event)" accept="image/*">
+    </ion-item>
+    <ion-input class="formulario" helperText="con guión y sin puntos" color="dark" label="Nombre del Producto" label-placement="floating" fill="outline"
+      placeholder="Ingrese el Nombre del Producto">
+      </ion-input>
+      <br>
+      <ion-input class="formulario" color="dark" label="Descripción" label-placement="floating" fill="outline"
+      placeholder="Ingrese la descripcion del Producto">
+      </ion-input>
+      <br>
+      <ion-input class="formulario" color="dark" type="number" label="Cantidad" label-placement="floating" fill="outline"
+      placeholder="Ingrese la Cantidad">
+      </ion-input>
+      <br>
+      <ion-input class="formulario" color="dark" type="number" label="Precio" label-placement="floating" fill="outline"
+      placeholder="Ingrese el Precio Unitario">
+    </ion-input>
+  </div>
+</ion-content>

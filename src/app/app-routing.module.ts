@@ -35,12 +35,16 @@ const routes: Routes = [
     path: 'catalogov',
     loadChildren: () => import('./pages/vendedor/catalogov/catalogov.module').then( m => m.CatalogovPageModule)
   },
-  
+  {
+    path: 'publicarv',
+    loadChildren: () => import('./pages/vendedor/publicarv/publicarv.module').then( m => m.PublicarvPageModule)
+  },
   {
     path: '**',
     loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
   },
-  
+
+
 
 
 
