@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-catalogov',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CatalogovPage implements OnInit {
 
-  constructor() { }
+  constructor(private menuCtrl: MenuController) {}
+
 
   ngOnInit() {
+    this.menuCtrl.enable(false,'comprador')
+    this.menuCtrl.enable(true,'vendedor')
   }
-
 }
+
+
