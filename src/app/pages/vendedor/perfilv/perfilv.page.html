@@ -6,24 +6,37 @@
 
 <ion-content [fullscreen]="true">
   <div class="perfil-container">
-  <ion-avatar class="perfil-avatar">
-    <img src="/assets/foto perfil.jpg" alt="Foto de perfil">
-  </ion-avatar>
+    <ion-avatar class="perfil">
+      <img src="/assets/foto perfil.jpg" alt="Foto de perfil">
+    </ion-avatar>
+    <div class="detalle-perfil">
 
-  <!-- Nombre de usuario -->
-  <ion-text class="perfil-usuario">
-    <h2>Nombre de Usuario</h2>
-  </ion-text>
+      <!-- Nombre de Completo -->
+      <ion-text class="perfil-Nombre">
+        <p>Nombre de Usuario</p>
+      </ion-text>
 
-  <!-- Correo electrónico -->
-  <ion-item class="perfil-email">
-    <ion-label >Correo Electrónico</ion-label>
-  </ion-item>
+      <ion-text class="perfil-usuario">
+        <h2>Nombre de Usuario</h2>
+      </ion-text>
 
-  <!-- Contraseña -->
-  <ion-item  class="perfil-contraseña">
-    <ion-label >Contraseña</ion-label>
+      <!-- Correo electrónico -->
+      <ion-text class="perfil-email">
+        <p>exampleduocuc.cl</p>
+      </ion-text>
+    </div>
+  </div>
 
-  </ion-item>
-</div>
+
+  <div class="botones-opciones">
+    <ion-button expand="block" color="primary" class="boton">
+      Editar método de cambio
+    </ion-button>
+    <ion-button expand="block" color="primary" class="boton">
+      Editar Perfil
+    </ion-button>
+    <ion-button expand="block" color="primary" class="boton">
+      Cambiar idioma
+    </ion-button>
+  </div>
 </ion-content>
