@@ -48,9 +48,14 @@ const routes: Routes = [
     loadChildren: () => import('./pages/vendedor/perfilv/perfilv.module').then( m => m.PerfilvPageModule)
   },
   {
+    path: 'notificacionv',
+    loadChildren: () => import('./pages/vendedor/notificacionv/notificacionv.module').then( m => m.NotificacionvPageModule)
+  },
+  {
     path: '**',
     loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
   },
+
 
 ];
 
