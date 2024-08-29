@@ -52,6 +52,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/vendedor/notificacionv/notificacionv.module').then( m => m.NotificacionvPageModule)
   },
   {
+    path: 'perfilc',
+    loadChildren: () => import('./pages/comprador/perfilc/perfilc.module').then( m => m.PerfilcPageModule)
+  },
+  {
     path: '**',
     loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
   },
