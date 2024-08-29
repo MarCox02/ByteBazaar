@@ -36,17 +36,25 @@ const routes: Routes = [
     loadChildren: () => import('./pages/vendedor/catalogov/catalogov.module').then( m => m.CatalogovPageModule)
   },
   {
-    path: 'publicarv',
-    loadChildren: () => import('./pages/vendedor/publicarv/publicarv.module').then( m => m.PublicarvPageModule)
+    path: 'historial-productos',
+    loadChildren: () => import('./pages/vendedor/historial-productos/historial-productos.module').then( m => m.HistorialProductosPageModule)
+  },
+  
+  {path: 'publicarv',
+    loadChildren: () => import('./pages/vendedor/publicarv/publicarv.module').then( m => m.PublicarvPageModule)},
+
+  {
+    path: 'perfilv',
+    loadChildren: () => import('./pages/vendedor/perfilv/perfilv.module').then( m => m.PerfilvPageModule)
+  },
+  {
+    path: 'notificacionv',
+    loadChildren: () => import('./pages/vendedor/notificacionv/notificacionv.module').then( m => m.NotificacionvPageModule)
   },
   {
     path: '**',
     loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
   },
-
-
-
-
 
 
 ];
