@@ -58,7 +58,15 @@ const routes: Routes = [
   {
     path: '**',
     loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
+  },  {
+    path: 'historial-compras',
+    loadChildren: () => import('./pages/comprador/historial-compras/historial-compras.module').then( m => m.HistorialComprasPageModule)
   },
+  {
+    path: 'carrito',
+    loadChildren: () => import('./pages/comprador/carrito/carrito.module').then( m => m.CarritoPageModule)
+  },
+
 
 
 ];
