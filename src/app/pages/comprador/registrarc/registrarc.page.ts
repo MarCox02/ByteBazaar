@@ -39,6 +39,7 @@ Comprador: any ={
 
   formulario(){
     const patronEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    const patronContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,20}$/;
 
     if(this.rut == undefined
       || this.nombre == undefined
@@ -81,6 +82,29 @@ Comprador: any ={
       this.alerta(Titulo, Mensaje);
       return;
     }
+
+    if (!patronContrasena.test(this.contrasena)) {
+      const Titulo = "Contraseña inválida";
+      const Mensaje = "La contraseña debe tener entre 6 y 20 caracteres, incluyendo al menos una mayúscula, una minúscula y un dígito.";
+      this.alerta(Titulo, Mensaje);
+      return;
+    }
+
+
+
+    if(this.contrasena!= this.confirmarContrasena){
+      const Titulo = "Contraseñas no coinciden"
+      const Mensaje = "Las contraseñas no coinciden"
+      this.alerta(Titulo, Mensaje)
+      return;
+    }
+
+    this.Comprador.rut = this.rut;
+    this.Comprador.nombre = this.nombre;
+    this.Comprador.apellido = this.apellido;
+    this.Comprador.usuario = this.usuario;
+    this.Comprador.correo = this.correo;
+    this.Comprador.contrasena = this.contrasena;
 
 
 
