@@ -1,0 +1,25 @@
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Espacio entre cartas */
+  padding: 16px; /* Espacio interno del contenedor */
+}
+
+.carta{
+  flex: 1 1 calc(50% - 30px); /* Toma aproximadamente el 50% del ancho del contenedor menos el espacio entre cartas */
+  box-sizing: border-box;
+  max-width: calc(50% - 30px); /* Ancho de cada carta */
+  height: 100%; /* Alto de cada carta */
+  border-radius: 5px; /* Radio de redondeo */
+}
+
+.img{
+  width: 100%; /* Ancho de la imagen */
+  height: auto; /* Alto de la imagen */
+  object-fit: cover; /* Ajustar la imagen al tamaño del contenedor */
+}
+
+.titulo{
+  text-align: center;
+  margin-bottom: 10px; /* Espacio entre el título y la imagen */
+}
