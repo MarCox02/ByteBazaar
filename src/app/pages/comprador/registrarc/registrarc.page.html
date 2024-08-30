@@ -1,6 +1,5 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>registrarc</ion-title>
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
@@ -9,9 +8,9 @@
 
 <ion-content [fullscreen]="true">
   <div class="contenedor">
-  <ion-header collapse="condense">
-
-  </ion-header>
+    <h1>Registro de Comprador</h1>
+  </div>
+  <div class="contenedor">
   <ion-input class="formulario " helperText="con guión y sin puntos" color="dark" label="Rut" label-placement="floating" fill="outline"
   placeholder="XXXXXXXX-X">
   </ion-input>
@@ -39,9 +38,12 @@
   placeholder="Confirme su contraseña">
   </ion-input>
   <br>
-  <ion-button class="boton">
+  <ion-button class="boton" [routerLink]="'/loginc'">
     crear cuenta
   </ion-button>
 
 </div>
 </ion-content>
+<ion-footer>
+  <p class="olvido_contra" [routerLink]="['/']">Retornar a Pantalla de inicio</p>
+</ion-footer>
