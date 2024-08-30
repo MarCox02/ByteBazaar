@@ -4,32 +4,47 @@
       <ion-back-button></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
-
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <div class="contenedor">
     <img src="assets/icon/LOGO.png" alt="logo" class="logo-img">
-    <div >
-      <ion-input class="formulario " color="dark" label="Usuario o rut" label-placement="floating" fill="outline"
-        placeholder="Ingresa texto aqui"></ion-input>
+    <div>
+      <ion-input 
+        class="formulario" 
+        label="Usuario o rut" 
+        label-placement="floating" 
+        fill="outline"
+        placeholder="Ingresa texto aquí" 
+        [(ngModel)]="usuario">
+      </ion-input>
     </div>
     <br>
     <div>
-      <ion-input class="formulario "  color="dark" label="Contraseña" label-placement="floating"  fill="outline"
-        placeholder="Ingrese texto aqui"></ion-input>
+      <ion-input 
+        class="formulario" 
+        label="Contraseña" 
+        label-placement="floating"  
+        fill="outline"
+        placeholder="Ingrese texto aquí" 
+        [(ngModel)]="contrasena" 
+        type="password">
+      </ion-input>
     </div>
     <p class="olvido_contra">¿Has olvidado tu contraseña?</p>
   </div>
-    <div class="div-boton">
-      <ion-button class="boton" [routerLink]="['/catalogoc']">
-        iniciar sesion
-      </ion-button>
-      <ion-button class="boton" [routerLink]="['/registrarc']">
-        crear cuenta
-      </ion-button>
-    </div>
-
+  <div class="div-boton">
+    <ion-button 
+      class="boton" 
+      (click)="login()">
+      Iniciar sesión
+    </ion-button>
+    <ion-button 
+      class="boton" 
+      [routerLink]="['/registrarc']">
+      Crear cuenta
+    </ion-button>
+  </div>
 </ion-content>
 <ion-footer>
   <p class="olvido_contra" [routerLink]="['/']">Retornar a Pantalla de inicio</p>

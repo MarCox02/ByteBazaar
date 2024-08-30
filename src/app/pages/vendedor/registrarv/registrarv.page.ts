@@ -19,7 +19,7 @@ export class RegistrarvPage implements OnInit{
 
 
 
-Comprador: any ={
+ Vendedor: any ={
   rut: '',
   nombre: '',
   apellido: '',
@@ -39,7 +39,7 @@ Comprador: any ={
 
   formulario(){
     const patronEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-
+    const patronContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,20}$/;
     if(this.rut == undefined
       || this.nombre == undefined
       || this.apellido == undefined
@@ -61,12 +61,6 @@ Comprador: any ={
       this.alerta(Titulo, Mensaje)
       return;
     }
-    if(this.contrasena!= this.confirmarContrasena){
-      const Titulo = "Contraseñas no coinciden"
-      const Mensaje = "Las contraseñas no coinciden"
-      this.alerta(Titulo, Mensaje)
-      return;
-    }
 
     if (!this.validarRUT(this.rut)) {
       const Titulo = "RUT inválido";
@@ -74,7 +68,6 @@ Comprador: any ={
       this.alerta(Titulo, Mensaje);
       return;
     }
-
     if (!patronEmail.test(this.correo)) {
       const Titulo = "Correo inválido";
       const Mensaje = "Por favor, ingrese un correo electrónico válido.";
@@ -82,12 +75,35 @@ Comprador: any ={
       return;
     }
 
+    if (!patronContrasena.test(this.contrasena)) {
+      const Titulo = "Contraseña inválida";
+      const Mensaje = "La contraseña debe tener entre 6 y 20 caracteres, incluyendo al menos una mayúscula, una minúscula y un dígito.";
+      this.alerta(Titulo, Mensaje);
+      return;
+    }
+
+
+
+    if(this.contrasena!= this.confirmarContrasena){
+      const Titulo = "Contraseñas no coinciden"
+      const Mensaje = "Las contraseñas no coinciden"
+      this.alerta(Titulo, Mensaje)
+      return;
+    }
+
+    
+    this.Vendedor.rut = this.rut;
+    this.Vendedor.nombre = this.nombre;
+    this.Vendedor.apellido = this.apellido;
+    this.Vendedor.usuario = this.usuario;
+    this.Vendedor.correo = this.correo;
+    this.Vendedor.contrasena = this.contrasena;
 
 
     const Titulo = "Registro exitoso"
     const Mensaje = "Te has registrado correctamente, ahora puedes iniciar sesión"
-    this.presentToast(Titulo, Mensaje)
-    this.router.navigate(['/loginc']);
+    this.alerta_t(Titulo, Mensaje)
+    this.router.navigate(['/loginv']);
     return
   }
 
@@ -120,12 +136,6 @@ Comprador: any ={
     return dvCalculado === dv;
   }
 
-
-
-
-
-
-
 /*alertas */
   async alerta(titulo: string, mensaje: string) {
     const alert = await this.alertController.create({
@@ -137,7 +147,7 @@ Comprador: any ={
     await alert.present();
   }
 
-  async presentToast(titulo: string, mensaje: string ) {
+  async alerta_t(titulo: string, mensaje: string ) {
     const alert_t = await this.toastController.create({
       message: mensaje,
       duration: 2000,
