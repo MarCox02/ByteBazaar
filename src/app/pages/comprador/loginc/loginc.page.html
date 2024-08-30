@@ -1,6 +1,5 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Inicio sesion</ion-title>
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
@@ -26,9 +25,12 @@
       <ion-button class="boton" [routerLink]="['/catalogoc']">
         iniciar sesion
       </ion-button>
-      <ion-button class="boton" [routerLink]="['/']">
+      <ion-button class="boton" [routerLink]="['/registrarc']">
         crear cuenta
       </ion-button>
     </div>
 
 </ion-content>
+<ion-footer>
+  <p class="olvido_contra" [routerLink]="['/']">Retornar a Pantalla de inicio</p>
+</ion-footer>
