@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { MenuController } from '@ionic/angular';
 
 @Component({
-  selector: 'app-carrito',
-  templateUrl: './carrito.page.html',
-  styleUrls: ['./carrito.page.scss'],
+  selector: 'app-cambio-contra-c',
+  templateUrl: './cambio-contra-c.page.html',
+  styleUrls: ['./cambio-contra-c.page.scss'],
 })
-export class CarritoPage implements OnInit {
+export class CambioContraCPage implements OnInit {
 
   constructor(private menuCtrl: MenuController) { }
 

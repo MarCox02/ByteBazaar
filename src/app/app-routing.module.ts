@@ -66,7 +66,15 @@ const routes: Routes = [
   {
     path: '**',
     loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
+  },  {
+    path: 'cambio-contra-c',
+    loadChildren: () => import('./pages/comprador/cambio-contra-c/cambio-contra-c.module').then( m => m.CambioContraCPageModule)
   },
+  {
+    path: 'cambio-contra-v',
+    loadChildren: () => import('./pages/vendedor/cambio-contra-v/cambio-contra-v.module').then( m => m.CambioContraVPageModule)
+  },
+
 
 ];
 
