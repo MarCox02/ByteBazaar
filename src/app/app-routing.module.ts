@@ -39,7 +39,7 @@ const routes: Routes = [
     path: 'historial-productos',
     loadChildren: () => import('./pages/vendedor/historial-productos/historial-productos.module').then( m => m.HistorialProductosPageModule)
   },
-  
+
   {path: 'publicarv',
     loadChildren: () => import('./pages/vendedor/publicarv/publicarv.module').then( m => m.PublicarvPageModule)},
 
@@ -56,10 +56,17 @@ const routes: Routes = [
     loadChildren: () => import('./pages/comprador/perfilc/perfilc.module').then( m => m.PerfilcPageModule)
   },
   {
+    path: 'historial-compras',
+    loadChildren: () => import('./pages/comprador/historial-compras/historial-compras.module').then( m => m.HistorialComprasPageModule)
+  },
+  {
+    path: 'carrito',
+    loadChildren: () => import('./pages/comprador/carrito/carrito.module').then( m => m.CarritoPageModule)
+  },
+  {
     path: '**',
     loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
   },
-
 
 ];
 

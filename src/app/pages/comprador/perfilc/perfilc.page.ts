@@ -8,6 +8,8 @@ import { MenuController } from '@ionic/angular';
 })
 export class PerfilcPage implements OnInit {
 
+  public email: string = "example@duocuc.cl";
+
   constructor(private menuCtrl: MenuController) { }
 
   ngOnInit() {

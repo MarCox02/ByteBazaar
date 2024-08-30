@@ -1,6 +1,5 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>registrarc</ion-title>
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
@@ -8,6 +7,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+<<<<<<< HEAD
   <div class="contenedor">
     <ion-header collapse="condense">
 
@@ -46,3 +46,87 @@
 
   </div>
 </ion-content>
+=======
+ <div class="contenedor">
+    <div class="">
+      <ion-input
+        class="formulario"
+        helperText="con guión y sin puntos"
+        label="Rut"
+        label-placement="floating"
+        fill="outline"
+        placeholder="XXXXXXXX-X"
+        [(ngModel)]="rut"
+      ></ion-input>
+
+      <ion-input
+        class="formulario"
+        label="Usuario"
+        label-placement="floating"
+        fill="outline"
+        placeholder="Ingrese el nombre de su Usuario"
+        [(ngModel)]="usuario"
+      ></ion-input>
+
+      <ion-input
+        class="formulario"
+        label="Nombre"
+        label-placement="floating"
+        fill="outline"
+        placeholder="Ingrese sus nombres"
+        [(ngModel)]="nombre"
+      ></ion-input>
+
+      <ion-input
+        class="formulario"
+        label="Apellido"
+        label-placement="floating"
+        fill="outline"
+        placeholder="Ingrese sus apellidos"
+        [(ngModel)]="apellido"
+      ></ion-input>
+
+      <ion-input
+        class="formulario"
+        helperText="Ingrese un Email Valido"
+        errorText="Email invalido"
+        type="email"
+        label="E-Mail"
+        label-placement="floating"
+        fill="outline"
+        placeholder="email@dominio.com"
+        [(ngModel)]="correo"
+      ></ion-input>
+
+      <ion-input
+        class="formulario"
+        type="password"
+        label="Contraseña"
+        label-placement="floating"
+        helperText="*la contraseña de tener entre 6 y 20 caracteres  *la contraseña debe tener por lo menos una mayuscula, una minuscula y un digito "
+        fill="outline"
+        placeholder="Ingrese su contraseña"
+        [(ngModel)]="contrasena"
+      ></ion-input>
+
+      <ion-input
+        class="formulario"
+        type="password"
+        label="Confirmar Contraseña"
+        label-placement="floating"
+        helperText="Las contraseñas deben coincidir"
+        fill="outline"
+        placeholder="Confirme su contraseña"
+        [(ngModel)]="confirmarContrasena"
+      ></ion-input>
+    </div>
+
+    <ion-button class="boton" (click)="formulario()">
+      Crear Cuenta
+    </ion-button>
+  </div>
+</ion-content>
+<ion-footer>
+  <p class="olvido_contra" [routerLink]="['/']">Retornar a Pantalla de inicio</p>
+</ion-footer>
+>>>>>>> d8e4ee4272b60d81336f767f0a2cb6b2b2f6cf45

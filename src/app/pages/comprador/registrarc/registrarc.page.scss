@@ -8,7 +8,7 @@
 .boton{
   background-color: rgb(0, 217, 255);
   border-radius: 20px;
-  margin-top: 15%;
+  margin-top: 8%;
 }
 
 .contenedor {
@@ -25,10 +25,11 @@
   padding: 20px;
   border-radius: 20px;
   margin-top: 2%;
+  margin-bottom: 8%;
 }
 
 ion-input{
-  border-color: black;
+  border-color: rgba(0, 0, 0, 0);
 }
 
 .div-boton{
@@ -42,4 +43,7 @@ ion-input{
 .titulo{
 text-align: center;
 color: rgb(5, 197, 255);
+}
+helper-text{
+  white-space: pre-line;
 }
