@@ -64,9 +64,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/comprador/carrito/carrito.module').then( m => m.CarritoPageModule)
   },
   {
-    path: '**',
-    loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
-  },  {
     path: 'cambio-contra-c',
     loadChildren: () => import('./pages/comprador/cambio-contra-c/cambio-contra-c.module').then( m => m.CambioContraCPageModule)
   },
@@ -74,6 +71,22 @@ const routes: Routes = [
     path: 'cambio-contra-v',
     loadChildren: () => import('./pages/vendedor/cambio-contra-v/cambio-contra-v.module').then( m => m.CambioContraVPageModule)
   },
+
+  {
+    path: 'olvide-contrac',
+    loadChildren: () => import('./pages/comprador/olvide-contrac/olvide-contrac.module').then( m => m.OlvideContracPageModule)
+  },
+  {
+    path: 'olvide-contrav',
+    loadChildren: () => import('./pages/vendedor/olvide-contrav/olvide-contrav.module').then( m => m.OlvideContravPageModule)
+  },
+  {
+    path: '**',
+    loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
+  },
+ 
+
+
 
 
 ];
