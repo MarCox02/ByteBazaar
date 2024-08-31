@@ -91,14 +91,6 @@ Comprador: any ={
     }
 
 
-
-    if(this.contrasena!= this.confirmarContrasena){
-      const Titulo = "Contraseñas no coinciden"
-      const Mensaje = "Las contraseñas no coinciden"
-      this.alerta(Titulo, Mensaje)
-      return;
-    }
-
     this.Comprador.rut = this.rut;
     this.Comprador.nombre = this.nombre;
     this.Comprador.apellido = this.apellido;

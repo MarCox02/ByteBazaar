@@ -11,13 +11,13 @@
         <ion-card-title class="titulo">Cambiar Contraseña</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <div>
+        <div class="sin-border">
             <ion-input class="label" type="password" fill="solid" label="Contraseña" labelPlacement="floating"
               helperText="*la contraseña de tener entre 6 y 20 caracteres  *la contraseña debe tener por lo menos una mayuscula, una minuscula y un digito "
               errorText="Invalid email" [(ngModel)]="nuevaContrasena"></ion-input>
             <ion-input type="password" fill="solid" label="Repita la contraseña" labelPlacement="floating"
               errorText="Invalid email" [(ngModel)]="confirmarContrasena"></ion-input>
-          <ion-button expand="full">Guardar Cambios</ion-button>
+          <ion-button expand="full" (click)="cambiarContrasena()">Guardar Cambios</ion-button>
         </div>
       </ion-card-content>
     </ion-card>

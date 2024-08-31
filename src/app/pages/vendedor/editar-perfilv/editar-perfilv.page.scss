@@ -1,0 +1,25 @@
+.contenedor {
+    margin-top: 20px;
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para darle relieve */
+  }
+  
+  .item-personalizado {
+    border-radius: 8px; /* Bordes redondeados en los items */
+    margin: 10%; /* Espacio entre los items */
+    padding: 5%;
+    display: flex; /* Alinear los elementos en una línea */
+    justify-content: space-between; /* Distribuir los elementos en espaciado equitativo */
+    align-items: center; /* Alinear los elementos en el centro vertical */
+  }
+  
+  ion-input {
+    border-color: #00000000;
+  }
+  
+  .boton-guardar {
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  

@@ -28,7 +28,7 @@ export class OlvideContravPage implements OnInit {
       return;
     }
 
-    this.router.navigate(['/cambio-contra-c']);
+    this.router.navigate(['/cambio-contra-v']);
     // Simulación de envío del correo electrónico
     this.presentToast('Correo electrónico enviado', 'Te hemos enviado un correo electrónico con instrucciones para recuperar tu contraseña');
   }

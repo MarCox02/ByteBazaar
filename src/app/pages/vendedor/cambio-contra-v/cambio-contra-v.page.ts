@@ -17,7 +17,7 @@ export class CambioContraVPage implements OnInit {
   nuevaContrasena!:string;
   confirmarContrasena!:string;
 cambiarContrasena(){
-  const patronContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,20}$/;
+  const patronContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d.,@$!%*?&]{6,20}$/;
 
   if (!patronContrasena.test(this.nuevaContrasena)) {
     this.alerta('Error', 'La contraseña debe tener al menos 6 caracteres, una mayúscula, una minúscula y un número.');
@@ -25,7 +25,7 @@ cambiarContrasena(){
   }
   if (this.nuevaContrasena!== this.confirmarContrasena) {
     this.alerta('Error', 'Las contraseñas no coinciden.');
-    return;
+    return; 
   }
   this.router.navigate(['/loginv'])
   this.presentToast('Éxito', 'Contraseña cambiada correctamente.');
