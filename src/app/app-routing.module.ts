@@ -91,9 +91,21 @@ const routes: Routes = [
     loadChildren: () => import('./pages/vendedor/editar-perfilv/editar-perfilv.module').then( m => m.EditarPerfilvPageModule)
   },
   {
+    path: 'productoc',
+    loadChildren: () => import('./pages/comprador/productoc/productoc.module').then( m => m.ProductocPageModule)
+  },
+  {
     path: '**',
     loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
+  },  {
+    path: 'editar-perfilc',
+    loadChildren: () => import('./pages/comprador/editar-perfilc/editar-perfilc.module').then( m => m.EditarPerfilcPageModule)
   },
+
+  
+
+ 
+
   
 ];
 

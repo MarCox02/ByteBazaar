@@ -1,0 +1,30 @@
+.contendedor{
+    margin: 16px;
+    padding: 16px;
+    border-radius: 10px;
+}
+
+.imagen{
+    width: 100%;
+    height: au;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+
+.descripcion {
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .dinero {
+    font-size: 24px;
+    font-weight: bold;
+    color: green;
+  }
+  
+  .botones {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 16px;
+  }
