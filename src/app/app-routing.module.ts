@@ -64,9 +64,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/comprador/carrito/carrito.module').then( m => m.CarritoPageModule)
   },
   {
-    path: '**',
-    loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
-  },  {
     path: 'cambio-contra-c',
     loadChildren: () => import('./pages/comprador/cambio-contra-c/cambio-contra-c.module').then( m => m.CambioContraCPageModule)
   },
@@ -75,7 +72,41 @@ const routes: Routes = [
     loadChildren: () => import('./pages/vendedor/cambio-contra-v/cambio-contra-v.module').then( m => m.CambioContraVPageModule)
   },
 
+  {
+    path: 'olvide-contrac',
+    loadChildren: () => import('./pages/comprador/olvide-contrac/olvide-contrac.module').then( m => m.OlvideContracPageModule)
+  },
+  {
+    path: 'olvide-contrav',
+    loadChildren: () => import('./pages/vendedor/olvide-contrav/olvide-contrav.module').then( m => m.OlvideContravPageModule)
+  },
+  
+  {
+    path: 'productov',
+    loadChildren: () => import('./pages/vendedor/productov/productov.module').then( m => m.ProductovPageModule)
+  },
 
+  {
+    path: 'editar-perfilv',
+    loadChildren: () => import('./pages/vendedor/editar-perfilv/editar-perfilv.module').then( m => m.EditarPerfilvPageModule)
+  },
+  {
+    path: 'productoc',
+    loadChildren: () => import('./pages/comprador/productoc/productoc.module').then( m => m.ProductocPageModule)
+  },
+  {
+    path: '**',
+    loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
+  },  {
+    path: 'editar-perfilc',
+    loadChildren: () => import('./pages/comprador/editar-perfilc/editar-perfilc.module').then( m => m.EditarPerfilcPageModule)
+  },
+
+  
+
+ 
+
+  
 ];
 
 @NgModule({

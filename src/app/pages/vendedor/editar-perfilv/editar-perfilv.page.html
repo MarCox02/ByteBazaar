@@ -1,0 +1,26 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-list lines="full" class="contenedor">
+    <ion-item class="item-personalizado">
+      <ion-input type="email"  fill="solid" label="Correo Electronico" labelPlacement="floating"
+      ></ion-input>
+    </ion-item>
+    <ion-item class="item-personalizado">
+      <ion-input type="text"  fill="solid" label="Nombre de Usuario" labelPlacement="floating"></ion-input>
+    </ion-item>
+    <ion-item class="item-personalizado">
+      <ion-input type="password"  fill="solid" label="Contraseña" labelPlacement="floating"></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <ion-button expand="block" color="primary" class="boton-guardar" [routerLink]="['/perfilv']" >
+    Guardar Cambios
+  </ion-button>
+</ion-content>

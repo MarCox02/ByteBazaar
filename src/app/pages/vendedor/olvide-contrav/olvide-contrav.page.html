@@ -1,0 +1,24 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <div class="container">
+    <ion-card>
+      <ion-card-header class="titutlo">
+        <ion-card-title>Recuperar Contraseña</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+            <ion-input type="email" fill="solid" label="Email" labelPlacement="floating"
+              helperText="Enter a valid email" errorText="Invalid email" [(ngModel)]="correo"></ion-input>
+          <ion-button expand="full" (click)="olvideContrasena()">Enviar Solicitud</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+</ion-content>

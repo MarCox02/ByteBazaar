@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-back-button defaultHref="/"></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -16,7 +16,9 @@
         label-placement="floating" 
         fill="outline"
         placeholder="Ingresa texto aquí" 
-        [(ngModel)]="usuario">
+        [(ngModel)]="usuario"
+        required>
+        
       </ion-input>
     </div>
     <br>
@@ -28,10 +30,12 @@
         fill="outline"
         placeholder="Ingrese texto aquí" 
         [(ngModel)]="contrasena" 
-        type="password">
+        type="password"
+        required >
+        
       </ion-input>
     </div>
-    <p class="olvido_contra">¿Has olvidado tu contraseña?</p>
+    <a [routerLink]="['/olvide-contrav']"><p class="olvido_contra" >¿Has olvidado tu contraseña?</p></a>
   </div>
   <div class="div-boton">
     <ion-button 
