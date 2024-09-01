@@ -30,15 +30,52 @@
   </div>
 
 
-  <div class="botones-opciones">
-    <ion-button expand="block" color="primary" class="boton">
-      Editar Metodo de pago
-    </ion-button>
-    <ion-button expand="block" color="primary" class="boton">
-      Editar Perfil
-    </ion-button>
-    <ion-button expand="block" color="primary" class="boton">
-      Cambiar idioma
-    </ion-button>
-  </div>
+  <ion-card>
+
+    <ion-card-header>
+      <ion-card-title>Ajustes</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content> 
+
+      <ion-list>
+        <ion-item [routerLink]="['/editar-perfilc']">
+          <ion-icon name="person-outline"></ion-icon>
+          <ion-label>Editar Datos Personales</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="card-outline"></ion-icon>
+          <ion-label>Medios de Pago</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="chatbubbles-outline"></ion-icon>
+          <ion-label>Lenguaje</ion-label>
+        </ion-item>
+        <ion-item>
+
+        </ion-item>
+        <ion-item>
+
+        </ion-item>
+        <ion-item>
+
+        </ion-item>
+        <ion-item>
+
+        </ion-item>
+        <ion-item>
+
+        </ion-item>
+        <ion-item>
+
+        </ion-item>
+        <ion-item [routerLink]="['/']">
+          <ion-icon name="log-out-outline"></ion-icon>
+          <ion-label>Cerrar Sesión</ion-label>
+        </ion-item>
+      </ion-list>
+
+    </ion-card-content>
+
+  </ion-card>
 </ion-content>

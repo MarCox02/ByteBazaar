@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { MenuController, AlertController, ToastController } from '@ionic/angular';
 
 @Component({
@@ -31,10 +31,14 @@ export class LogincPage implements OnInit{
     const usuarioValido = this.usuariosEstaticos.find(
       u => u.usuario === this.usuario && u.contrasena === this.contrasena
     );
-
+    let navigationextras: NavigationExtras ={
+      state: {
+        user: this.usuario
+      }
+    }
     if (usuarioValido) {
       this.alerta_t("Login exitoso", "Has iniciado sesión correctamente.");
-      this.router.navigate(['/catalogoc']);
+      this.router.navigate(['/catalogoc'],navigationextras);
     } else {
       this.alerta("Error de login", "Usuario o contraseña incorrectos.");
     }

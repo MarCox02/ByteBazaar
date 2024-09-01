@@ -7,5 +7,32 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-card>
 
+    <ion-card-content>
+
+      <ion-item>
+        <ion-card-title>Tu Carrito </ion-card-title>
+      </ion-item>
+
+      <ion-list *ngFor="let c of carrito; let i =index">
+
+        <ion-item [routerLink]="[c.url]">
+          <ion-thumbnail slot="start">
+            <img class="img-carrito" alt="{{c.nombre}}" src="{{c.img}}" />
+          </ion-thumbnail>
+          <ion-label>{{c.nombre}}<p>{{c.id}}  Tags:{{c.tag}},{{c.marca}}</p><b style="color:red;">{{c.precio | currency:'CLP ':true:'4.0-0'}}</b></ion-label>
+        </ion-item>
+
+      </ion-list>
+      <ion-item>
+
+        <ion-note slot="end">
+          <p >Envio: {{ (getTotalPrice()/10) | currency:'CLP ':true:'4.0-0' }}</p>
+          <b style="font-size: x-large;">Total: {{ getTotalPrice()+getTotalPrice()/10 | currency:'CLP ':true:'4.0-0' }}</b>
+        </ion-note>
+
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
