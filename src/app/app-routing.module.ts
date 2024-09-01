@@ -80,7 +80,7 @@ const routes: Routes = [
     path: 'olvide-contrav',
     loadChildren: () => import('./pages/vendedor/olvide-contrav/olvide-contrav.module').then( m => m.OlvideContravPageModule)
   },
-  
+
   {
     path: 'productov',
     loadChildren: () => import('./pages/vendedor/productov/productov.module').then( m => m.ProductovPageModule)
@@ -95,18 +95,19 @@ const routes: Routes = [
     loadChildren: () => import('./pages/comprador/productoc/productoc.module').then( m => m.ProductocPageModule)
   },
   {
-    path: '**',
-    loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
-  },  {
     path: 'editar-perfilc',
     loadChildren: () => import('./pages/comprador/editar-perfilc/editar-perfilc.module').then( m => m.EditarPerfilcPageModule)
   },
+  {
+    path: '**',
+    loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
+  },
 
-  
 
- 
 
-  
+
+
+
 ];
 
 @NgModule({
