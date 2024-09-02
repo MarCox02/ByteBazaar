@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationExtras, Router } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { MenuController, AlertController, ToastController } from '@ionic/angular';
 
 @Component({
@@ -9,18 +9,27 @@ import { MenuController, AlertController, ToastController } from '@ionic/angular
 })
 export class LogincPage implements OnInit{
 
-  constructor(private menuCtrl: MenuController, private alertController: AlertController, private toastController: ToastController, private router: Router) { }
+  constructor(private menuCtrl: MenuController, private alertController: AlertController, private toastController: ToastController,
+     private router: Router, private activerouter: ActivatedRoute ) { this.activerouter.queryParams.subscribe(param =>{
+      if(this.router.getCurrentNavigation()?.extras.state){
+        this.usuario = this.router.getCurrentNavigation()?.extras?.state?.['user'];
+        this.contrasena = this.router.getCurrentNavigation()?.extras?.state?.['contrasena'];
+      }
+    })}
 
   ngOnInit() {
     this.menuCtrl.enable(false,'vendedor')
     this.menuCtrl.enable(false,'comprador')
 
   }
+
   usuario: string = '';
   contrasena: string = '';
 
+
+
   // Usuarios estáticos para el ejemplo
-  usuariosEstaticos = [
+  listaUsuarios = [
     { usuario: 'Angel', contrasena: 'Angel123' },
     { usuario: 'Martin', contrasena: 'Martin123' },
     { usuario: 'Victor', contrasena: 'Victor123'}
@@ -28,14 +37,29 @@ export class LogincPage implements OnInit{
 
 
   login() {
-    const usuarioValido = this.usuariosEstaticos.find(
+
+    const usuarioExistente = this.listaUsuarios.find(
+      u => u.usuario === this.usuario
+    );
+
+    const usuarioValido = this.listaUsuarios.find(
       u => u.usuario === this.usuario && u.contrasena === this.contrasena
     );
-    let navigationextras: NavigationExtras ={
+
+    if (!usuarioExistente) {
+      this.listaUsuarios.push({
+        usuario: this.usuario,
+        contrasena: this.contrasena
+      });
+    }
+
+let navigationextras: NavigationExtras ={
       state: {
-        user: this.usuario
+        user: this.usuario,
+        contrasena: this.contrasena,
       }
     }
+
     if (usuarioValido) {
       this.alerta_t("Login exitoso", "Has iniciado sesión correctamente.");
       this.router.navigate(['/catalogoc'],navigationextras);

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { AlertController, MenuController, ToastController } from '@ionic/angular';
 
 @Component({
@@ -9,7 +9,8 @@ import { AlertController, MenuController, ToastController } from '@ionic/angular
 })
 export class RegistrarcPage implements OnInit{
 
-  constructor(private menuCtrl: MenuController,private alertController: AlertController,  private router: Router, private toastController: ToastController) {}
+  constructor(private menuCtrl: MenuController,private alertController: AlertController,  private router: Router,
+     private toastController: ToastController) {}
 
   ngOnInit() {
     this.menuCtrl.enable(false,'vendedor')
@@ -39,7 +40,19 @@ Comprador: any ={
 
   formulario(){
     const patronEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    const patronContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,20}$/;
+    const patronContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d.,@$!%*?&]{6,20}$/;
+
+    let navigationextras: NavigationExtras ={
+      state: {
+        user: this.usuario,
+        nombre: this.nombre,
+        apellido: this.apellido,
+        correo: this.correo,
+        contrasena: this.contrasena,
+        confirmarContrasena: this.confirmarContrasena
+      }
+    }
+    
 
     if(this.rut == undefined
       || this.nombre == undefined
@@ -103,7 +116,7 @@ Comprador: any ={
     const Titulo = "Registro exitoso"
     const Mensaje = "Te has registrado correctamente, ahora puedes iniciar sesión"
     this.presentToast(Titulo, Mensaje)
-    this.router.navigate(['/loginc']);
+    this.router.navigate(['/loginc'],navigationextras);
     return
   }
 
