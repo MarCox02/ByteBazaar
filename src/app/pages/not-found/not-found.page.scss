@@ -1,0 +1,25 @@
+.contenedor {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    margin-top: 100px;
+  }
+  
+  .tamaño {
+    max-width: 600px;
+    height: auto;
+  }
+  
+  .video {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+  }  
+
+  .rickroll-gif {
+    width: 100%; /* Ajusta al tamaño que prefieras */
+    height: auto;
+  }

@@ -1,13 +1,23 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>notFound</ion-title>
+    <ion-title>Página no encontrada</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">notFound</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="contenedor">
+    <div class="tamaño">
+      <h1>Parece que te perdiste de página</h1>
+      <div class="gif-container">
+        <img src="assets/rickroll.gif" alt="Rickroll GIF" class="rickroll-gif">
+      </div>
+      <audio id="rickrollAudio" autoplay loop>
+        <source src="assets/audio/Voicy_Rickroll.mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+      </audio>
+      <p>Este Rick Roll te ayudará</p>
+    </div>
+  </div>
+
+  <button (click)="playAudio()">Reproducir sonido</button>
 </ion-content>
