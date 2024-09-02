@@ -1,25 +1,37 @@
 .contenedor {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 20px;
-    margin-top: 100px;
-  }
-  
-  .tamaño {
-    max-width: 600px;
-    height: auto;
-  }
-  
-  .video {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    margin-bottom: 20px;
-  }  
+  display: flex;
+  flex-direction: column; /* Cambia a columna para que el contenido se apile verticalmente */
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 20px;
+}
 
-  .rickroll-gif {
-    width: 100%; /* Ajusta al tamaño que prefieras */
-    height: auto;
-  }
+.tamaño {
+  text-align: center;
+  width: 100%;
+  max-width: 600px; /* Limita el ancho máximo */
+}
+
+.gif-container {
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center; /* Centra el GIF horizontalmente */
+  margin-bottom: 20px;
+}
+
+.rickroll-gif {
+  max-width: 100%; /* Asegura que el GIF no se desborde del contenedor */
+  height: auto; /* Mantiene la proporción del GIF */
+  border-radius: 10px; /* Añade un borde redondeado si lo deseas */
+}
+
+audio {
+  display: none; /* Oculta el control del audio si no quieres mostrarlo */
+}
+
+p {
+  font-size: 1.2em;
+  color: #fff; /* Color blanco para el texto */
+}

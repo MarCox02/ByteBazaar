@@ -4,20 +4,20 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <div class="contenedor">
-    <div class="tamaño">
-      <h1>Parece que te perdiste de página</h1>
-      <div class="gif-container">
-        <img src="assets/rickroll.gif" alt="Rickroll GIF" class="rickroll-gif">
-      </div>
-      <audio id="rickrollAudio" autoplay loop>
-        <source src="assets/audio/Voicy_Rickroll.mp3" type="audio/mpeg">
-        Tu navegador no soporta el elemento de audio.
-      </audio>
-      <p>Este Rick Roll te ayudará</p>
+<ion-content [fullscreen]="true" class="contenedor">
+  <div class="tamaño">
+    <h1>Parece que te perdiste de página</h1>
+    <div class="gif-container">
+      <img src="assets/rickroll.gif" alt="Rickroll GIF" class="rickroll-gif">
     </div>
-  </div>
+    <audio id="rickrollAudio" autoplay loop>
+      <source src="assets/audio/Voicy_Rickroll.mp3" type="audio/mp3">
+      Tu navegador no soporta el elemento de audio.
+    </audio>
+    <p>Este Rick Roll te ayudará</p>
 
-  <button (click)="playAudio()">Reproducir sonido</button>
+    <ion-button (click)="toggleMusic()" color="primary" expand="full">
+      {{ isMusicPlaying ? 'Silenciar Música' : 'Reproducir Música' }}
+    </ion-button>
+  </div>
 </ion-content>

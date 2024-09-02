@@ -20,22 +20,22 @@
       </ion-list>
     
     <ion-input class="formulario" helperText="" color="dark" label="Nombre del Producto" label-placement="floating" fill="outline"
-      placeholder="Ingrese el Nombre del Producto">
+      placeholder="Ingrese el Nombre del Producto" [(ngModel)]="nombreProducto">
       </ion-input>
       <br>
       <ion-input class="formulario" color="dark" label="Descripción" label-placement="floating" fill="outline"
-      placeholder="Ingrese la descripcion del Producto">
+      placeholder="Ingrese la descripcion del Producto" [(ngModel)]="descripcionProducto">
       </ion-input>
       <br>
       <ion-input class="formulario" color="dark" type="number" label="Cantidad" label-placement="floating" fill="outline"
-      placeholder="Ingrese la Cantidad">
+      placeholder="Ingrese la Cantidad" [(ngModel)]="cantidad">
       </ion-input>
       <br>
       <ion-input class="formulario" color="dark" type="number" label="Precio" label-placement="floating" fill="outline"
-      placeholder="Ingrese el Precio Unitario">
+      placeholder="Ingrese el Precio Unitario" [(ngModel)]="precio">
     </ion-input>
 
-    <ion-button [routerLink]="['/']" class="boton">
+    <ion-button  class="boton" (click)="formulario()">
       Publicar Producto
     </ion-button>
   </div>
