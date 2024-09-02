@@ -60,7 +60,7 @@ let navigationextras: NavigationExtras ={
 
     if (usuarioValido) {
       this.alerta_t("Login exitoso", "Has iniciado sesión correctamente.");
-      this.router.navigate(['/catalogoc'],navigationextras);
+      this.router.navigate(['/catalogov'],navigationextras);
     } else {
       this.alerta("Error de login", "Usuario o contraseña incorrectos.");
     }

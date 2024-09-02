@@ -16,4 +16,9 @@ export class NotFoundPage implements OnInit {
 
   }
 
+
+  playAudio() {
+    const audio: HTMLAudioElement = document.getElementById('rickrollAudio') as HTMLAudioElement;
+    audio.play();
+  }
 }

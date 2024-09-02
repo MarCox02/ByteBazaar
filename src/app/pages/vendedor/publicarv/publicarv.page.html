@@ -8,7 +8,7 @@
 
 <ion-content [fullscreen]="true">
   <div class="contenedor">
-
+    
       <ion-list  class="formulario" >
         <ion-item *ngIf="imageSrc">
           <ion-img [src]="imageSrc" class="img"></ion-img>
@@ -18,6 +18,7 @@
           <input type="file" (change)="onFileSelected($event)" accept="image/*">
         </ion-item>
       </ion-list>
+    
     <ion-input class="formulario" helperText="" color="dark" label="Nombre del Producto" label-placement="floating" fill="outline"
       placeholder="Ingrese el Nombre del Producto">
       </ion-input>
