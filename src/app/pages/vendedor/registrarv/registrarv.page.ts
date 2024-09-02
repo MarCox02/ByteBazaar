@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { AlertController, MenuController, ToastController } from '@ionic/angular';
 
 @Component({
@@ -9,7 +9,8 @@ import { AlertController, MenuController, ToastController } from '@ionic/angular
 })
 export class RegistrarvPage implements OnInit{
 
-  constructor(private menuCtrl: MenuController,private alertController: AlertController,  private router: Router, private toastController: ToastController) {}
+  constructor(private menuCtrl: MenuController,private alertController: AlertController,  private router: Router, 
+    private toastController: ToastController) {}
 
   ngOnInit() {
     this.menuCtrl.enable(false,'vendedor')
@@ -38,6 +39,19 @@ export class RegistrarvPage implements OnInit{
   confirmarContrasena!:string;
 
   formulario(){
+
+    let navigationextras: NavigationExtras ={
+      state: {
+        user: this.usuario,
+        nombre: this.nombre,
+        apellido: this.apellido,
+        correo: this.correo,
+        contrasena: this.contrasena,
+        confirmarContrasena: this.confirmarContrasena
+      }
+    }
+
+
     const patronEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     const patronContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d.,@$!%*?&]{6,20}$/;
     if(this.rut == undefined
