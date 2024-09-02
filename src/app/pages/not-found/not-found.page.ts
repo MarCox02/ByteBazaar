@@ -15,10 +15,33 @@ export class NotFoundPage implements OnInit {
     this.menuCtrl.enable(false,'comprador')
 
   }
-
+  isMusicPlaying: boolean = false; // Estado inicial de la música
 
   playAudio() {
     const audio: HTMLAudioElement = document.getElementById('rickrollAudio') as HTMLAudioElement;
-    audio.play();
+    if (audio) {
+      audio.play();
+    }
+  }
+
+  pauseAudio() {
+    const audio: HTMLAudioElement = document.getElementById('rickrollAudio') as HTMLAudioElement;
+    if (audio) {
+      audio.pause();
+    }
+  }
+
+  toggleMusic() {
+    const audio: HTMLAudioElement = document.getElementById('rickrollAudio') as HTMLAudioElement;
+
+    if (audio) {
+      if (this.isMusicPlaying) {
+        this.pauseAudio();
+      } else {
+        this.playAudio();
+      }
+
+      this.isMusicPlaying = !this.isMusicPlaying; // Cambia el estado
+    }
   }
 }
