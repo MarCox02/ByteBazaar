@@ -23,31 +23,30 @@ export class PublicarvPage implements OnInit {
 
   formulario() {
     if (this.nombreProducto.trim() === '') {
-      // Agregar mensaje de error para nombre del producto
-      console.error('Nombre del producto es requerido');
+      this.alerta('Error', ' Un Valor ingresado es invalido');
       return;
     }
 
     if (this.descripcionProducto.trim() === '') {
       // Agregar mensaje de error para descripción
-      console.error('Descripción del producto es requerida');
+      this.alerta('Error', ' Un Valor ingresado es invalido');
       return;
     }
 
     if (this.cantidad === null || this.cantidad < 0) {
       // Agregar mensaje de error para cantidad
-      console.error('Cantidad debe ser un número positivo');
+      this.alerta('Error', ' Un Valor ingresado es invalido');
       return;
     }
 
     if (this.precio === null || this.precio < 0) {
       // Agregar mensaje de error para precio
-      console.error('Precio debe ser un número positivo');
+      this.alerta('Error', ' Un Valor ingresado es invalido');
       return;
     }
 
     // Lógica para enviar datos o realizar acción de publicación
-    this.alerta('Éxito', 'Producto publicado correctamente');
+    
     this.router.navigate(['/loginv']);
   }
 

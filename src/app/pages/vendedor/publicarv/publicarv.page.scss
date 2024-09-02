@@ -30,8 +30,12 @@
 text-align: center;
 color: rgb(5, 197, 255);
 }
+
 .img{
   width: auto; /* Ancho de la imagen */
   aspect-ratio: 1/1;
-  object-fit: cover; /* Ajustar la imagen al tamaño del contenedor */
+}
+
+ion-input{
+  border-color: rgba(0, 0, 0, 0);
 }
