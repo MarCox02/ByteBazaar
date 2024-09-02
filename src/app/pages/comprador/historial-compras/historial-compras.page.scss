@@ -5,13 +5,6 @@
   padding: 16px; /* Espacio interno del contenedor */
 }
 
-.carta{
-  flex: 1 1 calc(50% - 30px); /* Toma aproximadamente el 50% del ancho del contenedor menos el espacio entre cartas */
-  box-sizing: border-box;
-  max-width: calc(50% - 30px); /* Ancho de cada carta */
-  height: 100%; /* Alto de cada carta */
-  border-radius: 5px; /* Radio de redondeo */
-}
 
 .img{
   width: 100%; /* Ancho de la imagen */
@@ -23,9 +16,5 @@
   text-align: center;
   margin-bottom: 10px; /* Espacio entre el título y la imagen */
 }
-ion-item {
-  --padding-start: 0;
-}
-ion-card{
-  width: 100% !important;
-}
+
+

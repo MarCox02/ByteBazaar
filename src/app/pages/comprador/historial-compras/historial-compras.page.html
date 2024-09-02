@@ -14,28 +14,15 @@
         <ion-card-subtitle>Historial de Compras </ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
-        <ion-list>
-          <ion-item>
-            <ion-thumbnail slot="start">
-              <img alt="mouse" src="/assets/mouselogitex.jpg" />
-            </ion-thumbnail>
-            <ion-label>Logitech mouse Gamer<p>M432LGTMUSSEGGM</p><b style="color:red;">Cancelado</b></ion-label>
-          </ion-item>
+
+        <ion-list *ngFor="let c of compras; let i =index">
 
           <ion-item>
             <ion-thumbnail slot="start">
-              <img alt="TecladoMecanicoLogitech" src="/assets/teclado.jpg" />
+              <img class="img" alt="{{c.nombre}}" src="{{c.img}}" />
             </ion-thumbnail>
-            <ion-label>Logitech teclado mecanico<p>G413LGTTKLSEMGK</p><b style="color:green;">Entregado</b></ion-label>
+            <ion-label>{{c.nombre}}<p>{{c.id}}</p><b style="{{c.color}}">{{c.estado}}</b></ion-label>
           </ion-item>
-
-          <ion-item lines="none">
-            <ion-thumbnail slot="start">
-              <img alt="LaptopLenovo" src="/assets/computador lenovo.jpg" />
-            </ion-thumbnail>
-            <ion-label>Laptop Lenovo<p>12LNVDSKT320</p><b style="color:rgb(51, 90, 218);">En Ruta</b></ion-label>
-          </ion-item>
-
 
         </ion-list>
       </ion-card-content>
