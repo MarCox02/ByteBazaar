@@ -21,7 +21,7 @@
             <ion-thumbnail slot="start">
               <img class="img" alt="{{c.nombre}}" src="{{c.img}}" />
             </ion-thumbnail>
-            <ion-label>{{c.nombre}}<p>{{c.id}}</p><b style="{{c.color}}">{{c.estado}}</b></ion-label>
+            <ion-label>{{c.nombre}}<p>{{c.id}}</p><b [style]="c.color">{{c.estado}}</b></ion-label>
           </ion-item>
 
         </ion-list>

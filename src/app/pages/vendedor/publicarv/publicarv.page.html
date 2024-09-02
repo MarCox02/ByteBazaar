@@ -9,11 +9,16 @@
 <ion-content [fullscreen]="true">
   <div class="contenedor">
 
-    <ion-img *ngIf="imageSrc" [src]="imageSrc"></ion-img>
-    <ion-item>
-      <input type="file" (change)="onFileSelected($event)" accept="image/*">
-    </ion-item>
-    <ion-input class="formulario" helperText="con guión y sin puntos" color="dark" label="Nombre del Producto" label-placement="floating" fill="outline"
+      <ion-list  class="formulario" >
+        <ion-item *ngIf="imageSrc">
+          <ion-img [src]="imageSrc" class="img"></ion-img>
+        </ion-item>
+
+        <ion-item>
+          <input type="file" (change)="onFileSelected($event)" accept="image/*">
+        </ion-item>
+      </ion-list>
+    <ion-input class="formulario" helperText="" color="dark" label="Nombre del Producto" label-placement="floating" fill="outline"
       placeholder="Ingrese el Nombre del Producto">
       </ion-input>
       <br>
@@ -28,5 +33,9 @@
       <ion-input class="formulario" color="dark" type="number" label="Precio" label-placement="floating" fill="outline"
       placeholder="Ingrese el Precio Unitario">
     </ion-input>
+
+    <ion-button [routerLink]="['/']" class="boton">
+      Publicar Producto
+    </ion-button>
   </div>
 </ion-content>
