@@ -27,9 +27,9 @@ cambiarContrasena(){
   }
   if (this.nuevaContrasena!== this.confirmarContrasena) {
     this.alerta('Error', 'Las contraseñas no coinciden.');
-    return; 
+    return;
   }
-  this.router.navigate(['/loginv'])
+  this.router.navigate(['/loginc'])
   this.presentToast('Éxito', 'Contraseña cambiada correctamente.');
 }
 
