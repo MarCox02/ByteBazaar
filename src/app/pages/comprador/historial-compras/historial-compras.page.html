@@ -8,14 +8,14 @@
 
 <ion-content [fullscreen]="true">
   <div class="card-container">
-    <ion-card>
+    <ion-card style="width: 100%;">
       <ion-card-header>
         <ion-card-title>Mis Compras</ion-card-title>
         <ion-card-subtitle>Historial de Compras </ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
 
-        <ion-list *ngFor="let c of compras; let i =index">
+        <ion-list *ngFor="let c of compras; let i =index" >
 
           <ion-item>
             <ion-thumbnail slot="start">

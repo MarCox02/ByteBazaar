@@ -46,8 +46,8 @@ export class PublicarvPage implements OnInit {
     }
 
     // Lógica para enviar datos o realizar acción de publicación
-    
-    this.router.navigate(['/loginv']);
+
+    this.router.navigate(['/catalogov']);
   }
 
   onFileSelected(event: Event) {

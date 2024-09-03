@@ -1,37 +1,37 @@
 .card-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px; /* Espacio entre cartas */
-    padding: 16px; /* Espacio interno del contenedor */
-  }
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Espacio entre cartas */
+  padding: 16px; /* Espacio interno del contenedor */
+}
 
 .carta{
-    flex: 1 1 calc(50% - 30px); /* Toma aproximadamente el 50% del ancho del contenedor menos el espacio entre cartas */
-    box-sizing: border-box;
-    max-width: calc(50% - 30px); /* Ancho de cada carta */
-    border-radius: 5px; /* Radio de redondeo */  
+  flex: 1 1 calc(50% - 30px); /* Toma aproximadamente el 50% del ancho del contenedor menos el espacio entre cartas */
+  box-sizing: border-box;
+  max-width: calc(50% - 30px); /* Ancho de cada carta */
+  border-radius: 5px; /* Radio de redondeo */
 }
 
 .imagen{
-    width: 100%; /* Ancho de la imagen */
-    aspect-ratio: 1/1;
-    object-fit: cover; /* Ajustar la imagen al tamaño del contenedor */
+  width: 100%; /* Ancho de la imagen */
+  aspect-ratio: 1/1;
+  object-fit: cover; /* Ajustar la imagen al tamaño del contenedor */
 }
 
 .titulo{
-    text-align: center;
-    margin-bottom: 10px; /* Espacio entre el título y la imagen */
+  text-align: center;
+  margin-bottom: 10px; /* Espacio entre el título y la imagen */
 }
 
 .botones{
-    display: flex;
-    justify-content: center;
-    justify-items: center;
+  display: flex;
+  justify-content: center;
+  justify-items: center;
 }
 
 .dinero{
-    display: flex;
-    justify-content: end;
-    color: green;
-    font-size: large;
+  display: flex;
+  justify-content: end;
+  color: green;
+  font-size: large;
 }
