@@ -9,8 +9,8 @@ interface Usuario {
   usuario: string;
   correo: string;
   contrasena: string;
+  rol: string; // Agregar rol a la interfaz
 }
-
 
 @Component({
   selector: 'app-registrar',
@@ -18,40 +18,20 @@ interface Usuario {
   styleUrls: ['./registrar.page.scss'],
 })
 export class RegistrarPage implements OnInit {
-
-  constructor(private menuCtrl: MenuController,private alertController: AlertController,  private router: Router, 
-    private toastController: ToastController) {}
+  constructor(
+    private menuCtrl: MenuController,
+    private alertController: AlertController,
+    private router: Router,
+    private toastController: ToastController
+  ) {}
 
   ngOnInit() {
-    this.menuCtrl.enable(false,'vendedor')
-    this.menuCtrl.enable(false,'comprador')
-
+    this.menuCtrl.enable(false, 'vendedor');
+    this.menuCtrl.enable(false, 'comprador');
   }
 
-
-
-  Vendedor: Usuario = {
-    rut: '',
-    nombre: '',
-    apellido: '',
-    usuario: '',
-    correo: '',
-    contrasena: ''
-  };
-
-  Comprador: Usuario = {
-    rut: '',
-    nombre: '',
-    apellido: '',
-    usuario: '',
-    correo: '',
-    contrasena: ''
-  };
-
-
-  
-
-  rol: string = ''; // Nueva variable para el rol
+  // Variables del formulario
+  rol: string = '';
   rut!: string;
   nombre!: string;
   apellido!: string;
@@ -60,8 +40,11 @@ export class RegistrarPage implements OnInit {
   contrasena!: string;
   confirmarContrasena!: string;
 
-  formulario(){
+  // Lista de usuarios
+  listaUsuarios: Usuario[] = [];
 
+  formulario() {
+    // Validaciones de campos
     if (!this.rol || !this.rut || !this.nombre || !this.apellido || !this.usuario || !this.correo || !this.contrasena || !this.confirmarContrasena) {
       this.alerta("Campos vacíos", "Todos los campos son obligatorios");
       return;
@@ -89,38 +72,25 @@ export class RegistrarPage implements OnInit {
       return;
     }
 
-    // Guardar la información según el rol
-    let datosUsuario: Usuario;   
-    if (this.rol === 'vendedor') {
-      this.Vendedor = {
-        rut: this.rut,
-        nombre: this.nombre,
-        apellido: this.apellido,
-        usuario: this.usuario,
-        correo: this.correo,
-        contrasena: this.contrasena
-      };
-      datosUsuario = this.Vendedor; // Asignar Vendedor
-    } else if (this.rol === 'comprador') {
-      this.Comprador = {
-        rut: this.rut,
-        nombre: this.nombre,
-        apellido: this.apellido,
-        usuario: this.usuario,
-        correo: this.correo,
-        contrasena: this.contrasena
-      };
-      datosUsuario = this.Comprador; // Asignar Comprador
-    } else {
-      this.alerta("Rol inválido", "Por favor, selecciona un rol válido.");
-      return;
-    }
+    // Crear el nuevo usuario
+    const nuevoUsuario: Usuario = {
+      rut: this.rut,
+      nombre: this.nombre,
+      apellido: this.apellido,
+      usuario: this.usuario,
+      correo: this.correo,
+      contrasena: this.contrasena,
+      rol: this.rol // Asignar rol
+    };
+
+    // Agregar el nuevo usuario a la lista
+    this.listaUsuarios.push(nuevoUsuario);
 
     // Preparar los datos para enviarlos al login
     let navigationExtras: NavigationExtras = {
       state: {
         rol: this.rol,
-        datosUsuario: datosUsuario
+        datosUsuario: nuevoUsuario
       }
     };
 

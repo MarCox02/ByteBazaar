@@ -24,13 +24,17 @@ export class HomePage implements OnInit {
     private router: Router,
     private activerouter: ActivatedRoute
   ) {
-    this.activerouter.queryParams.subscribe(param => {
-      if (this.router.getCurrentNavigation()?.extras.state) {
-        this.usuario = this.router.getCurrentNavigation()?.extras?.state?.['user'];
-        this.contrasena = this.router.getCurrentNavigation()?.extras?.state?.['contrasena'];
+    // Recuperar datos del registro si se navega desde el registro
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation && navigation.extras.state) {
+      const usuarioRegistrado = navigation.extras.state['datosUsuario'] as Usuario;
+      if (usuarioRegistrado) {
+        this.registrarUsuario(usuarioRegistrado);
       }
-    });
-  }
+    }
+  };
+
+
   ngOnInit() {
     this.menuCtrl.enable(false, 'comprador');
     this.menuCtrl.enable(false, 'vendedor');
@@ -49,18 +53,12 @@ export class HomePage implements OnInit {
     { rut: '13579246-8', nombre: 'Victor', apellido: 'Gonzalez', usuario: 'Victor', correo: 'victor@example.com', contrasena: 'Victor123', rol: 'comprador' }
   ];
 
+// Agrega usuarios registrados
+registrarUsuario(nuevoUsuario: Usuario) {
+  this.listaUsuarios.push(nuevoUsuario);
+}
 
   login() {
-
-   // Verificar si el usuario ya existe
-   const usuarioExistente = this.listaUsuarios.find(
-    u => u.usuario === this.usuario
-  );
-
-  if (usuarioExistente) {
-    this.alerta("Error de registro", "El nombre de usuario ya está en uso. Por favor, elige otro.");
-    return; // Salir de la función si el usuario ya existe
-  }
 
     const usuarioValido = this.listaUsuarios.find(
       u => u.usuario === this.usuario && u.contrasena === this.contrasena
@@ -79,17 +77,16 @@ export class HomePage implements OnInit {
       this.alerta_t("Login exitoso", "Has iniciado sesión correctamente.");
 
 
-
-
-    if (usuarioValido.rol === 'vendedor') {
-      this.menuCtrl.enable(true, 'vendedor');
+     // Redirigir según el rol
+     if (usuarioValido.rol === 'vendedor') {
+      this.menuCtrl.enable(true, 'vendedor'); // Habilita el menú del vendedor
       this.router.navigate(['/catalogov'], navigationExtras); // Página del vendedor
     } else if (usuarioValido.rol === 'comprador') {
-      this.menuCtrl.enable(true, 'comprador');
+      this.menuCtrl.enable(true, 'comprador'); // Habilita el menú del comprador
       this.router.navigate(['/catalogoc'], navigationExtras); // Página del comprador
     }
   } else {
-    this.alerta("Error de login", "Usuario o contraseña incorrectos.");
+    this.alerta("Error de login", "Usuario o contraseña incorrectos."); // Mensaje de error si no es válido
   }
 }
 
