@@ -99,9 +99,15 @@ const routes: Routes = [
     loadChildren: () => import('./pages/comprador/editar-perfilc/editar-perfilc.module').then( m => m.EditarPerfilcPageModule)
   },
   {
+    path: 'registrar',
+    loadChildren: () => import('./pages/registrar/registrar.module').then( m => m.RegistrarPageModule)
+  },
+
+  {
     path: '**',
     loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
   },
+ 
 
 
 
