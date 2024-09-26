@@ -12,22 +12,6 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'loginv',
-    loadChildren: () => import('./pages/vendedor/loginv/loginv.module').then( m => m.LoginvPageModule)
-  },
-  {
-    path: 'loginc',
-    loadChildren: () => import('./pages/comprador/loginc/loginc.module').then( m => m.LogincPageModule)
-  },
-  {
-    path: 'registrarc',
-    loadChildren: () => import('./pages/comprador/registrarc/registrarc.module').then( m => m.RegistrarcPageModule)
-  },
-  {
-    path: 'registrarv',
-    loadChildren: () => import('./pages/vendedor/registrarv/registrarv.module').then( m => m.RegistrarvPageModule)
-  },
-  {
     path: 'catalogoc',
     loadChildren: () => import('./pages/comprador/catalogoc/catalogoc.module').then( m => m.CatalogocPageModule)
   },
@@ -63,23 +47,6 @@ const routes: Routes = [
     path: 'carrito',
     loadChildren: () => import('./pages/comprador/carrito/carrito.module').then( m => m.CarritoPageModule)
   },
-  {
-    path: 'cambio-contra-c',
-    loadChildren: () => import('./pages/comprador/cambio-contra-c/cambio-contra-c.module').then( m => m.CambioContraCPageModule)
-  },
-  {
-    path: 'cambio-contra-v',
-    loadChildren: () => import('./pages/vendedor/cambio-contra-v/cambio-contra-v.module').then( m => m.CambioContraVPageModule)
-  },
-
-  {
-    path: 'olvide-contrac',
-    loadChildren: () => import('./pages/comprador/olvide-contrac/olvide-contrac.module').then( m => m.OlvideContracPageModule)
-  },
-  {
-    path: 'olvide-contrav',
-    loadChildren: () => import('./pages/vendedor/olvide-contrav/olvide-contrav.module').then( m => m.OlvideContravPageModule)
-  },
 
   {
     path: 'productov',
@@ -102,15 +69,18 @@ const routes: Routes = [
     path: 'registrar',
     loadChildren: () => import('./pages/registrar/registrar.module').then( m => m.RegistrarPageModule)
   },
-
+  {
+    path: 'olvide-contra',
+    loadChildren: () => import('./pages/olvide-contra/olvide-contra.module').then( m => m.OlvideContraPageModule)
+  },
+  {
+    path: 'cambio-contra',
+    loadChildren: () => import('./pages/cambio-contra/cambio-contra.module').then( m => m.CambioContraPageModule)
+  },
   {
     path: '**',
     loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
   },
- 
-
-
-
 
 
 

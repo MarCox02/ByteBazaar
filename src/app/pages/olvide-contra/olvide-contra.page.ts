@@ -3,13 +3,15 @@ import { Router } from '@angular/router';
 import { AlertController, ToastController } from '@ionic/angular';
 
 @Component({
-  selector: 'app-olvide-contrac',
-  templateUrl: './olvide-contrac.page.html',
-  styleUrls: ['./olvide-contrac.page.scss'],
+  selector: 'app-olvide-contra',
+  templateUrl: './olvide-contra.page.html',
+  styleUrls: ['./olvide-contra.page.scss'],
 })
-export class OlvideContracPage implements OnInit {
+export class OlvideContraPage implements OnInit {
 
   constructor(private alertController: AlertController, private toastController: ToastController, private router: Router) { }
+
+  
 
   ngOnInit() {
   }
@@ -26,7 +28,7 @@ export class OlvideContracPage implements OnInit {
       return;
     }
 
-    this.router.navigate(['/cambio-contra-c']);
+    this.router.navigate(['/cambio-contra']);
     // Simulación de envío del correo electrónico
     this.presentToast('Correo electrónico enviado', 'Te hemos enviado un correo electrónico con instrucciones para recuperar tu contraseña');
   }

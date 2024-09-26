@@ -2,13 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, MenuController, ToastController } from '@ionic/angular';
 
-
 @Component({
-  selector: 'app-cambio-contra-c',
-  templateUrl: './cambio-contra-c.page.html',
-  styleUrls: ['./cambio-contra-c.page.scss'],
+  selector: 'app-cambio-contra',
+  templateUrl: './cambio-contra.page.html',
+  styleUrls: ['./cambio-contra.page.scss'],
 })
-export class CambioContraCPage implements OnInit {
+export class CambioContraPage implements OnInit {
 
   constructor(private menuCtrl: MenuController,private alertController: AlertController,  private router: Router, private toastController: ToastController) { }
 
@@ -27,9 +26,9 @@ cambiarContrasena(){
   }
   if (this.nuevaContrasena!== this.confirmarContrasena) {
     this.alerta('Error', 'Las contraseñas no coinciden.');
-    return;
+    return; 
   }
-  this.router.navigate(['/loginc'])
+  this.router.navigate(['/home'])
   this.presentToast('Éxito', 'Contraseña cambiada correctamente.');
 }
 
