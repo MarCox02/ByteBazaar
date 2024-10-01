@@ -2,13 +2,14 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
-  </ion-buttons>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
- <div class="contenedor">
-    <div class="">
+  <div class="contenedor">
+    <div>
+      <div class="error-message">{{ errorRut }}</div> 
       <ion-input
         class="formulario"
         helperText="con guión y sin puntos"
@@ -17,8 +18,10 @@
         fill="outline"
         placeholder="XXXXXXXX-X"
         [(ngModel)]="rut"
+        [errorText]="errorRut"
       ></ion-input>
-
+      
+      <div class="error-message">{{ errorUsuario }}</div> <!-- Mensaje de error -->
       <ion-input
         class="formulario"
         label="Usuario"
@@ -26,8 +29,10 @@
         fill="outline"
         placeholder="Ingrese el nombre de su Usuario"
         [(ngModel)]="usuario"
+        [errorText]="errorUsuario"
       ></ion-input>
-
+      
+      <div class="error-message">{{ errorNombre }}</div> <!-- Mensaje de error -->
       <ion-input
         class="formulario"
         label="Nombre"
@@ -35,8 +40,10 @@
         fill="outline"
         placeholder="Ingrese sus nombres"
         [(ngModel)]="nombre"
+        [errorText]="errorNombre"
       ></ion-input>
-
+      
+      <div class="error-message">{{ errorApellido }}</div> <!-- Mensaje de error -->
       <ion-input
         class="formulario"
         label="Apellido"
@@ -44,8 +51,10 @@
         fill="outline"
         placeholder="Ingrese sus apellidos"
         [(ngModel)]="apellido"
+        [errorText]="errorApellido"
       ></ion-input>
-
+      
+      <div class="error-message">{{ errorCorreo }}</div> <!-- Mensaje de error -->
       <ion-input
         class="formulario"
         helperText="Ingrese un Email Valido"
@@ -56,10 +65,11 @@
         fill="outline"
         placeholder="email@dominio.com"
         [(ngModel)]="correo"
+        [errorText]="errorCorreo"
       ></ion-input>
-
-      <ion-item
-      class="formulario">
+      
+      <div class="error-message">{{ errorRol }}</div> <!-- Mensaje de error -->
+      <ion-item class="formulario">
         <ion-label>Rol</ion-label>
         <ion-select [(ngModel)]="rol" placeholder="Selecciona tu rol">
           <ion-select-option value="vendedor">Vendedor</ion-select-option>
@@ -67,18 +77,20 @@
         </ion-select>
       </ion-item>
       
-
+      <div class="error-message">{{ errorContrasena }}</div> <!-- Mensaje de error -->
       <ion-input
         class="formulario"
         type="password"
         label="Contraseña"
         label-placement="floating"
-        helperText="*la contraseña de tener entre 6 y 20 caracteres  *la contraseña debe tener por lo menos una mayuscula, una minuscula y un digito "
+        helperText="*la contraseña debe tener entre 6 y 20 caracteres, *la contraseña debe tener por lo menos una mayúscula, una minúscula y un dígito"
         fill="outline"
         placeholder="Ingrese su contraseña"
         [(ngModel)]="contrasena"
+        [errorText]="errorContrasena"
       ></ion-input>
-
+      
+      <div class="error-message">{{ errorConfirmarContrasena }}</div> <!-- Mensaje de error -->
       <ion-input
         class="formulario"
         type="password"
@@ -88,7 +100,9 @@
         fill="outline"
         placeholder="Confirme su contraseña"
         [(ngModel)]="confirmarContrasena"
+        [errorText]="errorConfirmarContrasena"
       ></ion-input>
+      
     </div>
 
     <ion-button class="boton" (click)="formulario()">

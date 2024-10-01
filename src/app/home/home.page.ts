@@ -24,15 +24,17 @@ export class HomePage implements OnInit {
     private router: Router,
     private activerouter: ActivatedRoute
   ) {
-    // Recuperar datos del registro si se navega desde el registro
-    const navigation = this.router.getCurrentNavigation();
-    if (navigation && navigation.extras.state) {
-      const usuarioRegistrado = navigation.extras.state['datosUsuario'] as Usuario;
-      if (usuarioRegistrado) {
-        this.registrarUsuario(usuarioRegistrado);
+    // Escuchar cambios en los parámetros de la ruta
+    this.activerouter.queryParams.subscribe(params => {
+      const state = this.router.getCurrentNavigation()?.extras.state;
+      if (state) {
+        const usuarioRegistrado = state['datosUsuario'] as Usuario;
+        if (usuarioRegistrado) {
+          this.registrarUsuario(usuarioRegistrado);
+        }
       }
-    }
-  };
+    });
+  }
 
 
   ngOnInit() {

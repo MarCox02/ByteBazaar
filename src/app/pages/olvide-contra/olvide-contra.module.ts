@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { OlvideContracPageRoutingModule } from './olvide-contrac-routing.module';
+import { OlvideContraPageRoutingModule } from './olvide-contra-routing.module';
 
-import { OlvideContracPage } from './olvide-contrac.page';
+import { OlvideContraPage } from './olvide-contra.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    OlvideContracPageRoutingModule
+    OlvideContraPageRoutingModule
   ],
-  declarations: [OlvideContracPage]
+  declarations: [OlvideContraPage]
 })
-export class OlvideContracPageModule {}
+export class OlvideContraPageModule {}

@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { LoginvPage } from './loginv.page';
+import { OlvideContraPage } from './olvide-contra.page';
 
-describe('LoginvPage', () => {
-  let component: LoginvPage;
-  let fixture: ComponentFixture<LoginvPage>;
+describe('OlvideContraPage', () => {
+  let component: OlvideContraPage;
+  let fixture: ComponentFixture<OlvideContraPage>;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LoginvPage);
+    fixture = TestBed.createComponent(OlvideContraPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

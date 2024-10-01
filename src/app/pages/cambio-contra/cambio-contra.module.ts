@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { RegistrarcPageRoutingModule } from './registrarc-routing.module';
+import { CambioContraPageRoutingModule } from './cambio-contra-routing.module';
 
-import { RegistrarcPage } from './registrarc.page';
+import { CambioContraPage } from './cambio-contra.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    RegistrarcPageRoutingModule
+    CambioContraPageRoutingModule
   ],
-  declarations: [RegistrarcPage]
+  declarations: [CambioContraPage]
 })
-export class RegistrarcPageModule {}
+export class CambioContraPageModule {}
