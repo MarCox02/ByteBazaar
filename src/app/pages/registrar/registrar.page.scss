@@ -48,4 +48,9 @@
   helper-text{
     white-space: pre-line;
   }
+
+  .error-message {
+    color: red; /* Color del mensaje de error */
+    margin-top: 4px; /* Espacio entre el input y el mensaje de error */
+  }
   

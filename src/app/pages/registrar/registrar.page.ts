@@ -40,38 +40,93 @@ export class RegistrarPage implements OnInit {
   contrasena!: string;
   confirmarContrasena!: string;
 
+    // Mensajes de error
+  errorRut: string = '';
+  errorNombre: string = '';
+  errorApellido: string = '';
+  errorUsuario: string = '';
+  errorCorreo: string = '';
+  errorContrasena: string = '';
+  errorConfirmarContrasena: string = '';
+  errorRol: string = '';
+
   // Lista de usuarios
   listaUsuarios: Usuario[] = [];
+  
 
   formulario() {
-    // Validaciones de campos
-    if (!this.rol || !this.rut || !this.nombre || !this.apellido || !this.usuario || !this.correo || !this.contrasena || !this.confirmarContrasena) {
-      this.alerta("Campos vacíos", "Todos los campos son obligatorios");
-      return;
+
+    // Resetear mensajes de error
+    this.resetearErrores();
+
+     // Validaciones de campos
+     let hayErrores = false; // Bandera para verificar si hay errores
+
+  // Validaciones de campos
+  if (!this.rol) {
+    this.errorRol = "Rol es obligatorio";
+    hayErrores = true;
+  }
+  if (!this.rut) {
+    this.errorRut = "Rut es obligatorio";
+    hayErrores = true;
+  }
+  if (!this.nombre) {
+    this.errorNombre = "Nombre es obligatorio";
+    hayErrores = true;
+  }
+  if (!this.apellido) {
+    this.errorApellido = "Apellido es obligatorio";
+    hayErrores = true;
+  }
+  if (!this.usuario) {
+    this.errorUsuario = "Usuario es obligatorio";
+    hayErrores = true;
+  }
+  if (!this.correo) {
+    this.errorCorreo = "Correo es obligatorio";
+    hayErrores = true;
+  }
+  if (!this.contrasena) {
+    this.errorContrasena = "Contraseña es obligatoria";
+    hayErrores = true;
+  }
+  if (!this.confirmarContrasena) {
+    this.errorConfirmarContrasena = "Confirmar contraseña es obligatorio";
+    hayErrores = true;
+  }
+
+  // Validar si hay errores antes de continuar
+  if (hayErrores) {
+    return; // Si hay errores, no continuar
+  }
+
+
+    if (!this.validarRUT(this.rut)) {
+      this.errorRut = "El RUT ingresado no es válido";
+      hayErrores = true;
     }
 
     const patronEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     if (!patronEmail.test(this.correo)) {
-      this.alerta("Correo inválido", "Por favor, ingrese un correo electrónico válido.");
-      return;
+      this.errorCorreo = "Por favor, ingrese un correo electrónico válido.";
+      hayErrores = true;
     }
 
     const patronContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d.,@$!%*?&]{6,20}$/;
     if (!patronContrasena.test(this.contrasena)) {
-      this.alerta("Contraseña inválida", "La contraseña debe tener entre 6 y 20 caracteres, incluyendo al menos una mayúscula, una minúscula y un dígito.");
-      return;
+      this.errorContrasena = "El formato de la contraseña no es correcta  ";
+      hayErrores = true;
     }
 
     if (this.contrasena !== this.confirmarContrasena) {
-      this.alerta("Contraseñas no coinciden", "Las contraseñas no coinciden");
-      return;
+      this.errorConfirmarContrasena = "Las contraseñas no coinciden";
+      hayErrores = true;
     }
 
-    if (!this.validarRUT(this.rut)) {
-      this.alerta("RUT inválido", "El RUT ingresado no es válido");
+    if (hayErrores) {
       return;
     }
-
     // Crear el nuevo usuario
     const nuevoUsuario: Usuario = {
       rut: this.rut,
@@ -128,6 +183,19 @@ export class RegistrarPage implements OnInit {
 
     // Comparar el dígito verificador calculado con el ingresado
     return dvCalculado === dv;
+  }
+
+
+  /* Resetear mensajes de error */
+  resetearErrores() {
+    this.errorRut = '';
+    this.errorNombre = '';
+    this.errorApellido = '';
+    this.errorUsuario = '';
+    this.errorCorreo = '';
+    this.errorContrasena = '';
+    this.errorConfirmarContrasena = '';
+    this.errorRol = '';
   }
 
   /* Alertas */
