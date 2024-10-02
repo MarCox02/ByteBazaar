@@ -10,18 +10,44 @@ export class ServicebdService {
   public database!: SQLiteObject;
 
   //variables de las tablas
-  tablaRol: string = "CREATE TABLE IF NOT EXISTS rol(id_rol VARCHAR(5) PRIMARY KEY, nom_rol VARCHAR(20) NOT NULL);";
-  tablaTipoProducto: string = "CREATE TABLE IF NOT EXISTS tipoproducto(id_tipo VARCHAR(5) PRIMARY KEY, nom_tipo VARCHAR(20) NOT NULL);";
-  tablaComuna: string = "CREATE TABLE IF NOT EXISTS comuna(id_comuna VARCHAR(5) PRIMARY KEY, nom_comuna VARCHAR(20) NOT NULL);";
+  tablaRol: string = "CREATE TABLE IF NOT EXISTS rol(id_rol TEXT (5) PRIMARY KEY, nom_rol TEXT(20) NOT NULL);";
+  tablaTipoProducto: string = "CREATE TABLE IF NOT EXISTS tipoproducto(id_tipo TEXT(5) PRIMARY KEY, nom_tipo TEXT(20) NOT NULL);";
+  tablaComuna: string = "CREATE TABLE IF NOT EXISTS comuna(id_comuna TEXT(5) PRIMARY KEY, nom_comuna TEXT(20) NOT NULL);";
 
-  tablaUsuario: string = "CREATE TABLE IF NOT EXISTS usuario(rut VARCHAR(20) PRIMARY KEY, user VARCHAR(20) UNIQUE NOT NULL,\
-  nombre VARCHAR(40), apellido VARCHAR(40), correo VARCHAR(40) UNIQUE, telefono VARCHAR(12),foto_perfil BLOB NOT NULL,\
-  id_rol VARCHAR(5), direccion VARCHAR(40), id_comuna(5),FOREIGN KEY (id_rol) REFERENCES rol(id_rol),FOREIGN KEY (id_comuna) REFERENCES\
+  tablaUsuario: string = "CREATE TABLE IF NOT EXISTS usuario(rut TEXT(20) PRIMARY KEY, user TEXT (20) UNIQUE NOT NULL,\
+  nombre TEXT(40), apellido TEXT (40), correo TEXT(40) UNIQUE, telefono TEXT(12),foto_perfil BLOB NOT NULL,\
+  id_rol TEXT(5), direccion TEXT (40), id_comuna(5),FOREIGN KEY (id_rol) REFERENCES rol(id_rol),FOREIGN KEY (id_comuna) REFERENCES\
   id_comuna(id_comuna));";
 
   //falta producto, img producto, venta y su detalle
+  tablaProductos: string = "CREATE TABLE IF NOT EXISTS producto(id_producto INTEGER PRIMARY KEY, nom_producto TEXT NOT NULL,\
+  desc_producto TEXT,rut_v TEXT, precio REAL,\
+  stock INTEGER, id_tipo TEXT,FOREIGN KEY(rut_v) REFERENCES vendedores(rut_v))";
 
-  //variables de observables para las consultas de base de datos
+  tablaImagenProducto: string = "CREATE TABLE IF NOT EXISTS img_productos(\
+  id_producto INTEGER, \
+  imagen_prod BLOB, \
+  FOREIGN KEY (id_producto) REFERENCES producto(id_producto));";
+
+  tablaVenta: string = "CREATE TABLE IF NOT EXISTS venta (\
+  id_venta INTEGER PRIMARY KEY, \
+  rut_c TEXT, \
+  rut_v TEXT, \
+  fecha_venta DATE, \
+  total REAL, \
+  FOREIGN KEY (rut_c) REFERENCES usuario(rut),\
+  FOREIGN KEY (rut_v) REFERENCES usuario(rut));";
+
+  tablaDetalleVenta: string = "CREATE TABLE IF NOT EXISTS detalle_venta (\
+  id_detalle INTEGER PRIMARY KEY, \
+  id_producto INTEGER, \
+  id_venta INTEGER, \
+  cantidad INTEGER, \
+  precio_unitario REAL, \
+  FOREIGN KEY (id_producto) REFERENCES producto(id_producto),\
+  FOREIGN KEY (id_venta) REFERENCES venta(id_venta));";
+
+   //variables de observables para las consultas de base de datos
   listaUsuario = new BehaviorSubject([]);
 
   //variable observable para el estado de la Base de datos
@@ -63,6 +89,14 @@ export class ServicebdService {
       await this.database.executeSql(this.tablaComuna, []);
 
       await this.database.executeSql(this.tablaUsuario, []);
+
+      await this.database.executeSql(this.tablaProductos, []);
+
+      await this.database.executeSql(this.tablaImagenProducto, []);
+
+      await this.database.executeSql(this.tablaVenta, []);
+
+      await this.database.executeSql(this.tablaDetalleVenta, []);
 
     }catch(e){
       this.presentAlert('Crear Tablas', 'Error: ' + JSON.stringify(e));
