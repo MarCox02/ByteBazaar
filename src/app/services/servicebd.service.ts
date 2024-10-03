@@ -14,38 +14,16 @@ export class ServicebdService {
   tablaTipoProducto: string = "CREATE TABLE IF NOT EXISTS tipoproducto(id_tipo VARCHAR(5) PRIMARY KEY, nom_tipo VARCHAR(20) NOT NULL);";
   tablaComuna: string = "CREATE TABLE IF NOT EXISTS comuna(id_comuna VARCHAR(5) PRIMARY KEY, nom_comuna VARCHAR(20) NOT NULL);";
 
-  tablaUsuario: string = "CREATE TABLE IF NOT EXISTS usuario(rut VARCHAR(20) PRIMARY KEY, user VARCHAR (20) UNIQUE NOT NULL,\
-  nombre VARCHAR(40), apellido VARCHAR (40), correo VARCHAR(40) UNIQUE, telefono VARCHAR(12),foto_perfil BLOB NOT NULL,\
-  id_rol VARCHAR(5), direccion TEXT, id_comuna(5),FOREIGN KEY (id_rol) REFERENCES rol(id_rol),FOREIGN KEY (id_comuna) REFERENCES\
-  id_comuna(id_comuna));";
+  tablaUsuario: string = "CREATE TABLE IF NOT EXISTS usuario(rut VARCHAR(20) PRIMARY KEY, user VARCHAR (20) UNIQUE NOT NULL,nombre VARCHAR(40), apellido VARCHAR (40), correo VARCHAR(40) UNIQUE, telefono VARCHAR(12),foto_perfil TEXT NOT NULL,id_rol VARCHAR(5), direccion TEXT, id_comuna VARCHAR(5),FOREIGN KEY (id_rol) REFERENCES rol(id_rol),FOREIGN KEY (id_comuna) REFERENCES comuna(id_comuna));";
 
   //falta producto, img producto, venta y su detalle
-  tablaProductos: string = "CREATE TABLE IF NOT EXISTS producto(id_producto INTEGER PRIMARY KEY, nom_producto VARCHAR(20) NOT NULL,\
-  desc_producto TEXT ,rut_v VARCHAR(10), precio REAL,\
-  stock INTEGER, id_tipo VARCHAR(10),FOREIGN KEY(rut_v) REFERENCES vendedores(rut_v))";
+  tablaProductos: string = "CREATE TABLE IF NOT EXISTS producto(id_producto INTEGER PRIMARY KEY, nom_producto VARCHAR(20) NOT NULL,desc_producto TEXT ,rut_v VARCHAR(10), precio REAL,stock INTEGER, id_tipo VARCHAR(10),FOREIGN KEY(rut_v) REFERENCES vendedores(rut_v))";
 
-  tablaImagenProducto: string = "CREATE TABLE IF NOT EXISTS img_productos(\
-  id_producto INTEGER, \
-  imagen_prod BLOB, \
-  FOREIGN KEY (id_producto) REFERENCES producto(id_producto));";
+  tablaImagenProducto: string = "CREATE TABLE IF NOT EXISTS img_productos(id_producto INTEGER, imagen_prod TEXT, FOREIGN KEY (id_producto) REFERENCES producto(id_producto));";
 
-  tablaVenta: string = "CREATE TABLE IF NOT EXISTS venta (\
-  id_venta INTEGER PRIMARY KEY, \
-  rut_c VARCHAR(10), \
-  rut_v VARCHAR(10), \
-  fecha_venta DATE, \
-  total REAL, \
-  FOREIGN KEY (rut_c) REFERENCES usuario(rut),\
-  FOREIGN KEY (rut_v) REFERENCES usuario(rut));";
+  tablaVenta: string = "CREATE TABLE IF NOT EXISTS venta (id_venta INTEGER PRIMARY KEY, rut_c VARCHAR(10), rut_v VARCHAR(10), fecha_venta DATE, total REAL,  FOREIGN KEY (rut_c) REFERENCES usuario(rut),FOREIGN KEY (rut_v) REFERENCES usuario(rut));";
 
-  tablaDetalleVenta: string = "CREATE TABLE IF NOT EXISTS detalle_venta (\
-  id_detalle INTEGER PRIMARY KEY, \
-  id_producto INTEGER, \
-  id_venta INTEGER, \
-  cantidad INTEGER, \
-  precio_unitario REAL, \
-  FOREIGN KEY (id_producto) REFERENCES producto(id_producto),\
-  FOREIGN KEY (id_venta) REFERENCES venta(id_venta));";
+  tablaDetalleVenta: string = "CREATE TABLE IF NOT EXISTS detalle_venta (id_detalle INTEGER PRIMARY KEY, id_producto INTEGER, id_venta INTEGER, cantidad INTEGER, precio_unitario REAL, FOREIGN KEY (id_producto) REFERENCES producto(id_producto),FOREIGN KEY (id_venta) REFERENCES venta(id_venta));";
 
    //variables de observables para las consultas de base de datos
   listaUsuario = new BehaviorSubject([]);
@@ -64,7 +42,7 @@ export class ServicebdService {
     this.platform.ready().then(()=>{
       //crear la base de datos
       this.sqlite.create({
-        name: 'bdnoticia.db',
+        name: 'Bytebazaar .db',
         location: 'default'
       }).then((bd: SQLiteObject)=>{
         //guardar la conexion
@@ -73,8 +51,9 @@ export class ServicebdService {
         this.crearTablas();
         //modificar el estatus de la base de datos
         this.isDBReady.next(true);
+        this.presentAlert('Éxito', 'La base de datos se creó correctamente.');
       }).catch(e=>{
-        this.presentAlert('Crear BD', 'Error: ' + JSON.stringify(e));
+        this.presentAlert('Crear BD', 'Error en crear la BD: ' + JSON.stringify(e));
       })
     })
   }

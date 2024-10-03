@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { MenuController, AlertController, ToastController } from '@ionic/angular';
+import { ServicebdService } from '../services/servicebd.service';
+import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 interface Usuario {
   rut: string;
   nombre: string;
@@ -22,7 +24,9 @@ export class HomePage implements OnInit {
     private alertController: AlertController,
     private toastController: ToastController,
     private router: Router,
-    private activerouter: ActivatedRoute
+    private activerouter: ActivatedRoute,
+    private bd: ServicebdService,
+    private storage: NativeStorage
   ) {
     // Escuchar cambios en los parámetros de la ruta
     this.activerouter.queryParams.subscribe(params => {
@@ -40,8 +44,8 @@ export class HomePage implements OnInit {
   ngOnInit() {
     this.menuCtrl.enable(false, 'comprador');
     this.menuCtrl.enable(false, 'vendedor');
+    this.bd.crearBD();
   }
-
   usuario: string = '';
   contrasena: string = '';
   rol: string = '';
@@ -55,6 +59,7 @@ export class HomePage implements OnInit {
     { rut: '13579246-8', nombre: 'Victor', apellido: 'Gonzalez', usuario: 'Victor', correo: 'victor@example.com', contrasena: 'Victor123', rol: 'comprador' }
   ];
 
+  
 // Agrega usuarios registrados
 registrarUsuario(nuevoUsuario: Usuario) {
   this.listaUsuarios.push(nuevoUsuario);
