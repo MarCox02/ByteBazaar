@@ -1,5 +1,5 @@
 {
-  "name": "devMovil",
+  "name": "ByteBazaar",
   "version": "0.0.1",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
@@ -30,6 +30,7 @@
     "@capacitor/keyboard": "6.0.2",
     "@capacitor/status-bar": "6.0.1",
     "@ionic/angular": "^8.0.0",
+    "ByteBazaar": "file:",
     "cordova-plugin-nativestorage": "^2.3.2",
     "cordova-sqlite-storage": "^6.1.0",
     "devMovil": "file:",
