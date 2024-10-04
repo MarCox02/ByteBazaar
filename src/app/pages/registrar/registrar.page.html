@@ -28,7 +28,7 @@
         label-placement="floating"
         fill="outline"
         placeholder="Ingrese el nombre de su Usuario"
-        [(ngModel)]="usuario"
+        [(ngModel)]="user"
         [errorText]="errorUsuario"
       ></ion-input>
       
@@ -68,14 +68,25 @@
         [errorText]="errorCorreo"
       ></ion-input>
       
+      <div class="error-message">{{ errorTelefono }}</div> <!-- Mensaje de error -->
+      <ion-input
+        class="formulario"
+        label="Teléfono"
+        label-placement="floating"
+        fill="outline"
+        placeholder="Ingrese su teléfono"
+        [(ngModel)]="telefono"
+        [errorText]="errorTelefono"
+      ></ion-input>
+
       <div class="error-message">{{ errorRol }}</div> <!-- Mensaje de error -->
       <ion-item class="formulario">
         <ion-label>Rol</ion-label>
         <ion-select [(ngModel)]="rol" placeholder="Selecciona tu rol">
-          <ion-select-option value="vendedor">Vendedor</ion-select-option>
-          <ion-select-option value="comprador">Comprador</ion-select-option>
+            <ion-select-option value="1">Vendedor</ion-select-option>  <!-- Asigna el id 1 -->
+            <ion-select-option value="2">Comprador</ion-select-option> <!-- Asigna el id 2 -->
         </ion-select>
-      </ion-item>
+    </ion-item>
       
       <div class="error-message">{{ errorContrasena }}</div> <!-- Mensaje de error -->
       <ion-input
@@ -109,4 +120,10 @@
       Crear Cuenta
     </ion-button>
   </div>
+  <ion-list>
+    <ion-item *ngFor="let usuario of usuarios">
+      <h2>{{ usuario.user }} {{ usuario.nombre }}</h2>
+      <p>{{ usuario.correo }}</p>
+    </ion-item>
+  </ion-list>
 </ion-content>
