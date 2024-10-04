@@ -9,6 +9,7 @@ interface Usuario {
   usuario: string;
   correo: string;
   contrasena: string;
+  telefono: string;
   rol: string; // Agregar rol a la interfaz
 }
 
@@ -36,6 +37,7 @@ export class RegistrarPage implements OnInit {
   nombre!: string;
   apellido!: string;
   usuario!: string;
+  telefono!: string;
   correo!: string;
   contrasena!: string;
   confirmarContrasena!: string;
@@ -45,6 +47,7 @@ export class RegistrarPage implements OnInit {
   errorNombre: string = '';
   errorApellido: string = '';
   errorUsuario: string = '';
+  errorTelefono: string = '';
   errorCorreo: string = '';
   errorContrasena: string = '';
   errorConfirmarContrasena: string = '';
@@ -83,6 +86,10 @@ export class RegistrarPage implements OnInit {
     this.errorUsuario = "Usuario es obligatorio";
     hayErrores = true;
   }
+  if (!this.telefono) {
+    this.errorTelefono = "Teléfono es obligatorio";
+    hayErrores = true;
+  }
   if (!this.correo) {
     this.errorCorreo = "Correo es obligatorio";
     hayErrores = true;
@@ -113,6 +120,12 @@ export class RegistrarPage implements OnInit {
       hayErrores = true;
     }
 
+    const patronTelefono = /^9\d{8}$/; // Expresión regular para validar número de teléfono chileno
+    if (!patronTelefono.test(this.telefono)) {
+      this.errorTelefono = "Teléfono inválido. Debe comenzar con 9 y tener 9 dígitos.";
+      hayErrores = true;
+    }
+
     const patronContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d.,@$!%*?&]{6,20}$/;
     if (!patronContrasena.test(this.contrasena)) {
       this.errorContrasena = "El formato de la contraseña no es correcta  ";
@@ -133,6 +146,7 @@ export class RegistrarPage implements OnInit {
       nombre: this.nombre,
       apellido: this.apellido,
       usuario: this.usuario,
+      telefono: this.telefono,
       correo: this.correo,
       contrasena: this.contrasena,
       rol: this.rol // Asignar rol

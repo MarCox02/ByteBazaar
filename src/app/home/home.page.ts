@@ -10,7 +10,8 @@ interface Usuario {
   usuario: string;
   correo: string;
   contrasena: string;
-  rol: string; // Agregado para manejar el rol
+  telefono: string;
+  rol: string; // Agregar rol a la interfaz
 }
 @Component({
   selector: 'app-home',
@@ -54,9 +55,9 @@ export class HomePage implements OnInit {
 
   // Usuarios estáticos para el ejemplo
   listaUsuarios: Usuario[] = [
-    { rut: '12345678-9', nombre: 'Angel', apellido: 'Perugini', usuario: 'Angel', correo: 'angel@example.com', contrasena: 'Angel123', rol: 'vendedor' },
-    { rut: '87654321-0', nombre: 'Martin', apellido: 'Cox', usuario: 'Martin', correo: 'martin@example.com', contrasena: 'Martin123', rol: 'vendedor' },
-    { rut: '13579246-8', nombre: 'Victor', apellido: 'Gonzalez', usuario: 'Victor', correo: 'victor@example.com', contrasena: 'Victor123', rol: 'comprador' }
+    { rut: '12345678-9', nombre: 'Angel', apellido: 'Perugini', usuario: 'Angel',telefono: '933336269', correo: 'angel@example.com', contrasena: 'Angel123', rol: 'vendedor' },
+    { rut: '87654321-0', nombre: 'Martin', apellido: 'Cox', usuario: 'Martin', telefono: '955555555',correo: 'martin@example.com', contrasena: 'Martin123', rol: 'vendedor' },
+    { rut: '13579246-8', nombre: 'Victor', apellido: 'Gonzalez', usuario: 'Victor',telefono: '966665555', correo: 'victor@example.com', contrasena: 'Victor123', rol: 'comprador' }
   ];
 
   
