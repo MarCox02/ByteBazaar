@@ -1,17 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationExtras, Router } from '@angular/router';
+import { Router } from '@angular/router';
+import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AlertController, MenuController, ToastController } from '@ionic/angular';
-
-interface Usuario {
-  rut: string;
-  nombre: string;
-  apellido: string;
-  usuario: string;
-  correo: string;
-  contrasena: string;
-  telefono: string;
-  rol: string; // Agregar rol a la interfaz
-}
+import { ServicebdService } from 'src/app/services/servicebd.service';
+import { Usuario } from 'src/app/services/usuario';
 
 @Component({
   selector: 'app-registrar',
@@ -19,16 +11,26 @@ interface Usuario {
   styleUrls: ['./registrar.page.scss'],
 })
 export class RegistrarPage implements OnInit {
+  usuarios: Usuario[] = [];
+
+  
+
   constructor(
     private menuCtrl: MenuController,
     private alertController: AlertController,
     private router: Router,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private sqlite: SQLite, 
+    private servicesbd: ServicebdService
   ) {}
 
   ngOnInit() {
     this.menuCtrl.enable(false, 'vendedor');
     this.menuCtrl.enable(false, 'comprador');
+    this.servicesbd.fetchUsuarios().subscribe((data: Usuario[]) => {
+      this.usuarios = data;
+    });
+
   }
 
   // Variables del formulario
@@ -36,7 +38,7 @@ export class RegistrarPage implements OnInit {
   rut!: string;
   nombre!: string;
   apellido!: string;
-  usuario!: string;
+  user!: string;
   telefono!: string;
   correo!: string;
   contrasena!: string;
@@ -57,7 +59,7 @@ export class RegistrarPage implements OnInit {
   listaUsuarios: Usuario[] = [];
   
 
-  formulario() {
+  async formulario() {
 
     // Resetear mensajes de error
     this.resetearErrores();
@@ -82,7 +84,7 @@ export class RegistrarPage implements OnInit {
     this.errorApellido = "Apellido es obligatorio";
     hayErrores = true;
   }
-  if (!this.usuario) {
+  if (!this.user) {
     this.errorUsuario = "Usuario es obligatorio";
     hayErrores = true;
   }
@@ -126,6 +128,7 @@ export class RegistrarPage implements OnInit {
       hayErrores = true;
     }
 
+    
     const patronContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d.,@$!%*?&]{6,20}$/;
     if (!patronContrasena.test(this.contrasena)) {
       this.errorContrasena = "El formato de la contraseña no es correcta  ";
@@ -140,35 +143,39 @@ export class RegistrarPage implements OnInit {
     if (hayErrores) {
       return;
     }
+    
     // Crear el nuevo usuario
     const nuevoUsuario: Usuario = {
+      user: this.user,
       rut: this.rut,
       nombre: this.nombre,
       apellido: this.apellido,
-      usuario: this.usuario,
-      telefono: this.telefono,
       correo: this.correo,
+      telefono: this.telefono,
+      foto_perfil: 'assets/foto perfil.jpg', // Imagen de usuario por defecto
       contrasena: this.contrasena,
-      rol: this.rol // Asignar rol
+      id_rol: this.rol // Manteniendo 'rol' como un string
     };
 
     // Agregar el nuevo usuario a la lista
     this.listaUsuarios.push(nuevoUsuario);
 
-    // Preparar los datos para enviarlos al login
-    let navigationExtras: NavigationExtras = {
-      state: {
-        rol: this.rol,
-        datosUsuario: nuevoUsuario
-      }
-    };
-
-    // Mostrar el mensaje de registro exitoso
+   // Llamar al servicio para registrar el usuario en la base de datos
+   try {
+    await this.servicesbd.registrarUsuario(nuevoUsuario);
+    await this.mostrarUsuarioRegistrado(nuevoUsuario); // Mostrar el usuario registrado
     this.alerta_t("Registro exitoso", "Te has registrado correctamente, ahora puedes iniciar sesión");
-    
-    // Navegar al login y pasar los datos
-    this.router.navigate(['/home'], navigationExtras);
+    this.router.navigate(['/home']);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : JSON.stringify(error);
+    if (errorMessage.includes('El RUT ya está registrado.')) {
+      this.alerta("Error", "El RUT ingresado ya está registrado en el sistema.");
+    } else {
+      console.error('Error al registrar usuario: ', errorMessage);
+      this.alerta("Error", "No se pudo registrar el usuario. Intenta nuevamente.");
+    }
   }
+}
 
   validarRUT(rut: string): boolean {
     // Eliminar los puntos y guiones del RUT
@@ -206,6 +213,7 @@ export class RegistrarPage implements OnInit {
     this.errorNombre = '';
     this.errorApellido = '';
     this.errorUsuario = '';
+    this.errorTelefono = '';
     this.errorCorreo = '';
     this.errorContrasena = '';
     this.errorConfirmarContrasena = '';
@@ -232,4 +240,23 @@ export class RegistrarPage implements OnInit {
 
     await alert_t.present();
   }
+
+
+  async mostrarUsuarioRegistrado(usuario: Usuario) {
+    const alert = await this.alertController.create({
+      header: 'Nuevo Usuario Registrado',
+      message: `
+        <strong>Usuario:</strong> ${usuario.user}<br>
+        <strong>RUT:</strong> ${usuario.rut}<br>
+        <strong>Nombre:</strong> ${usuario.nombre}<br>
+        <strong>Apellido:</strong> ${usuario.apellido}<br>
+        <strong>Correo:</strong> ${usuario.correo}<br>
+        <strong>Teléfono:</strong> ${usuario.telefono}<br>
+      `,
+      buttons: ['OK']
+    });
+  
+    await alert.present();
+  }
+
 }
