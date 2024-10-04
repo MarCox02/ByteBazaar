@@ -74,6 +74,26 @@ const routes: Routes = [
     loadChildren: () => import('./pages/olvide-contra/olvide-contra.module').then( m => m.OlvideContraPageModule)
   },
   {
+    path: 'direccion',
+    loadChildren: () => import('./pages/direccion/direccion.module').then( m => m.DireccionPageModule)
+  },
+  {
+    path: 'tarjeta',
+    loadChildren: () => import('./pages/tarjeta/tarjeta.module').then( m => m.TarjetaPageModule)
+  },
+  {
+    path: 'boleta',
+    loadChildren: () => import('./pages/boleta/boleta.module').then( m => m.BoletaPageModule)
+  },
+  {
+    path: 'edittarjeta',
+    loadChildren: () => import('./pages/edittarjeta/edittarjeta.module').then( m => m.EdittarjetaPageModule)
+  },
+  {
+    path: 'editdireccion',
+    loadChildren: () => import('./pages/editdireccion/editdireccion.module').then( m => m.EditdireccionPageModule)
+  },
+  {
     path: 'cambio-contra',
     loadChildren: () => import('./pages/cambio-contra/cambio-contra.module').then( m => m.CambioContraPageModule)
   },
@@ -81,6 +101,8 @@ const routes: Routes = [
     path: '**',
     loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
   },
+
+
 
 
 
