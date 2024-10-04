@@ -68,6 +68,17 @@
         [errorText]="errorCorreo"
       ></ion-input>
       
+      <div class="error-message">{{ errorTelefono }}</div> <!-- Mensaje de error -->
+      <ion-input
+        class="formulario"
+        label="Teléfono"
+        label-placement="floating"
+        fill="outline"
+        placeholder="Ingrese su teléfono"
+        [(ngModel)]="telefono"
+        [errorText]="errorTelefono"
+      ></ion-input>
+
       <div class="error-message">{{ errorRol }}</div> <!-- Mensaje de error -->
       <ion-item class="formulario">
         <ion-label>Rol</ion-label>
