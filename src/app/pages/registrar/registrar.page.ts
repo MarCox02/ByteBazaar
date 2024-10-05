@@ -13,14 +13,14 @@ import { Usuario } from 'src/app/services/usuario';
 export class RegistrarPage implements OnInit {
   usuarios: Usuario[] = [];
 
-  
+
 
   constructor(
     private menuCtrl: MenuController,
     private alertController: AlertController,
     private router: Router,
     private toastController: ToastController,
-    private sqlite: SQLite, 
+    private sqlite: SQLite,
     private servicesbd: ServicebdService
   ) {}
 
@@ -57,7 +57,7 @@ export class RegistrarPage implements OnInit {
 
   // Lista de usuarios
   listaUsuarios: Usuario[] = [];
-  
+
 
   async formulario() {
 
@@ -128,7 +128,7 @@ export class RegistrarPage implements OnInit {
       hayErrores = true;
     }
 
-    
+
     const patronContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d.,@$!%*?&]{6,20}$/;
     if (!patronContrasena.test(this.contrasena)) {
       this.errorContrasena = "El formato de la contraseña no es correcta  ";
@@ -143,7 +143,7 @@ export class RegistrarPage implements OnInit {
     if (hayErrores) {
       return;
     }
-    
+
     // Crear el nuevo usuario
     const nuevoUsuario: Usuario = {
       user: this.user,
@@ -158,7 +158,7 @@ export class RegistrarPage implements OnInit {
     };
 
     // Agregar el nuevo usuario a la lista
-    this.listaUsuarios.push(nuevoUsuario);
+    //this.listaUsuarios.push(nuevoUsuario);
 
    // Llamar al servicio para registrar el usuario en la base de datos
    try {
@@ -255,7 +255,7 @@ export class RegistrarPage implements OnInit {
       `,
       buttons: ['OK']
     });
-  
+
     await alert.present();
   }
 
