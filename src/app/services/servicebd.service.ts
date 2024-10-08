@@ -41,7 +41,7 @@ export class ServicebdService {
   registroRoles: string = "INSERT OR IGNORE INTO rol(id_rol, nom_rol) VALUES ('1', 'vendedor'), ('2', 'comprador');";
   registroComunas: string = "INSERT OR IGNORE INTO comuna(id_comuna, nom_comuna) VALUES ('1', 'Santiago'), ('2', 'Las Condes'), ('3', 'Providencia');";
   registroUsuario: string = "INSERT OR IGNORE INTO usuario(user, rut, nombre, apellido, correo, telefono, foto_perfil, id_rol, contrasena) VALUES ('usuario1', '12345678-9', 'Juan', 'Pérez', 'juan.perez@mail.com', 912345678, 'path_a_foto', '1', 'Contrasena1');";
-  registroTarjetas: string = "INSERT OR IGNORE INTO tarjetas(id_tarjeta, rut_usuario, numero_tarjeta, CVC, fecha_exp) VALUES ('1','12345678-9','4567456745674567','666','6','26')"
+  registroTarjetas: string = "INSERT OR IGNORE INTO tarjetas(id_tarjeta, rut_usuario, numero_tarjeta, CVC, fecha_exp) VALUES ('1','12345678-9','4567456745674567','666','6','2026')"
   
   //variables de observables para las consultas de base de datos
   listaUsuario = new BehaviorSubject<Usuario[]>([]); // Asegúrate de que tenga el tipo correcto
