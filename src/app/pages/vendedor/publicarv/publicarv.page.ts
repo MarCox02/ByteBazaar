@@ -59,9 +59,13 @@ export class PublicarvPage implements OnInit {
       return;
     }
 
-     // Obtiene el RUT del vendedor
-     const rutVendedor = await this.bdService.obtenerRutVendedor();
-     if (!rutVendedor) return;
+    try {
+      const rutVendedor = await this.storage.getItem('rutVendedor');
+      if (!rutVendedor) {
+        this.alerta('Error', 'No se encontró el RUT del vendedor.');
+        return;
+      } 
+      
 
     // Crea una nueva instancia de Producto
     const nuevoProducto: Producto = {
@@ -75,16 +79,14 @@ export class PublicarvPage implements OnInit {
       imagen: this.imageSrc as string 
     };
 
-    try {
-      await this.bdService.registrarProducto(nuevoProducto);
-      this.alerta('Éxito', 'Producto registrado correctamente');
-      this.cargarProductos(); 
-      this.router.navigate(['/catalogov']);
-    } catch (error) {
-      this.alerta('Error', 'Hubo un error al registrar el producto');
-      console.error(error);
-    }
+    await this.bdService.registrarProducto(nuevoProducto);
+    this.alerta('Éxito', 'Producto registrado correctamente');
+    this.cargarProductos(); 
+    this.router.navigate(['/catalogov']);
+  } catch (error) {
+    this.alerta('Error', 'Hubo un problema al recuperar el RUT del vendedor');
   }
+}
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {

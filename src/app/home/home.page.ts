@@ -58,7 +58,7 @@ registrarUsuario(nuevoUsuario: Usuario) {
 async login() {
   try {
     const user = await this.servicesbd.consultarUsuario(this.usuario, this.contrasena);
-    
+
     if (user) {
       this.alerta_t("Login exitoso", "Has iniciado sesión correctamente.");
 
@@ -71,6 +71,7 @@ async login() {
 
       if (user.id_rol === '1') { // Si es vendedor
         await this.storage.setItem('rutVendedor', user.rut); // Guardar el RUT
+        this.alerta("RUT guardado", `RUT: ${user.rut}`);
       }
 
       // Define los extras de navegación con el usuario
@@ -94,10 +95,11 @@ async login() {
       this.alerta("Error de login", "Usuario o contraseña incorrectos.");
     }
   } catch (error) {
-    console.error("Error en el login:", error);
-    this.alerta("Error de login", "Hubo un problema al intentar iniciar sesión.");
+    // Reemplazar el console.error con una alerta
+    await this.alerta("Error de login", "Hubo un problema al intentar iniciar sesión.");
   }
 }
+
 
 
 

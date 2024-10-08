@@ -22,11 +22,11 @@ export class ServicebdService {
   tablaTipoProducto: string = "CREATE TABLE IF NOT EXISTS tipoproducto(id_tipo VARCHAR(5) PRIMARY KEY, nom_tipo VARCHAR(20) NOT NULL);";
   tablaComuna: string = "CREATE TABLE IF NOT EXISTS comuna(id_comuna VARCHAR(5) PRIMARY KEY, nom_comuna VARCHAR(20) NOT NULL);";
 
-  tablaUsuario: string = "CREATE TABLE IF NOT EXISTS usuario(user VARCHAR (20) UNIQUE NOT NULL, rut VARCHAR(20) PRIMARY KEY, nombre VARCHAR(40), apellido VARCHAR(40), correo VARCHAR(40) UNIQUE, telefono NUMBER, foto_perfil TEXT NOT NULL, contrasena TEXT NOT NULL, id_rol VARCHAR(5), FOREIGN KEY (id_rol) REFERENCES rol(id_rol));";
+  tablaUsuario: string = "CREATE TABLE IF NOT EXISTS usuario(user VARCHAR (20) UNIQUE NOT NULL, rut VARCHAR(20) PRIMARY KEY, nombre VARCHAR(40), apellido VARCHAR(40), correo VARCHAR(40) UNIQUE, telefono NUMBER, foto_perfil BLOB NOT NULL, contrasena TEXT NOT NULL, id_rol VARCHAR(5), FOREIGN KEY (id_rol) REFERENCES rol(id_rol));";
 
   tablaProducto: string = "CREATE TABLE IF NOT EXISTS producto(id_producto INTEGER PRIMARY KEY, nom_producto VARCHAR(20) NOT NULL, desc_producto TEXT, rut_v VARCHAR(20), precio NUMBER, stock NUMBER, id_tipo VARCHAR(5), FOREIGN KEY(rut_v) REFERENCES usuario(rut), FOREIGN KEY(id_tipo) REFERENCES tipoproducto(id_tipo));";
 
-  tablaImagenProducto: string = "CREATE TABLE IF NOT EXISTS img_producto(id_producto INTEGER, imagen_prod TEXT, FOREIGN KEY (id_producto) REFERENCES producto(id_producto));";
+  tablaImagenProducto: string = "CREATE TABLE IF NOT EXISTS img_producto(id_producto INTEGER, imagen_prod BLOB, FOREIGN KEY (id_producto) REFERENCES producto(id_producto));";
 
   tablaDirecciones: string = "CREATE TABLE IF NOT EXISTS direcciones(id_direccion INTEGER PRIMARY KEY, nom_direccion TEXT, id_comuna VARCHAR(5), rut_usuario VARCHAR(20), FOREIGN KEY(id_comuna) REFERENCES comuna(id_comuna), FOREIGN KEY(rut_usuario) REFERENCES usuario(rut));";
 
@@ -228,18 +228,13 @@ async registrarUsuario(usuario: Usuario): Promise<any> {
 async obtenerRutVendedor(): Promise<string | null> {
   try {
     const rutVendedor = await this.storage.getItem('rutVendedor');
-    if (!rutVendedor) {
-      this.presentAlert('Error', 'No se pudo obtener el RUT del vendedor. Por favor inicia sesión nuevamente.');
-      return null;
-    }
+    console.log('RUT obtenido:', rutVendedor); // Verifica que se esté obteniendo correctamente
     return rutVendedor;
   } catch (error) {
-    console.error('Error al obtener el RUT del vendedor:', error);
-    this.presentAlert('Error', 'Hubo un problema al intentar obtener el RUT del vendedor.');
+    await this.presentAlert('Error al obtener el RUT del vendedor:', `${error}`);
     return null;
   }
 }
-
 
 //Producto
 
@@ -256,7 +251,7 @@ async registrarProducto(producto: Producto): Promise<any> {
 
   try {
     // Obtener el RUT del vendedor logueado
-    const rutVendedor =this.obtenerRutVendedor(); // Obtén el RUT del vendedor logueado
+    const rutVendedor = await this.obtenerRutVendedor(); // Obtén el RUT del vendedor logueado
     
     if (!rutVendedor) {
       throw new Error('No se ha podido obtener el RUT del vendedor logueado');
