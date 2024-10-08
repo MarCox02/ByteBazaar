@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { AlertController, Platform } from '@ionic/angular';
 import { Usuario } from './usuario';
 import { Producto } from './producto';
-import { AuthService } from './auth.service';
+import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 @Injectable({
   providedIn: 'root'
 })
@@ -13,7 +13,7 @@ export class ServicebdService {
   public database!: SQLiteObject;
 
 
-  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController,private authService: AuthService) {
+  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController,private storage: NativeStorage) {
     this.crearBD();
   }
 
@@ -62,7 +62,7 @@ export class ServicebdService {
         //guardar la conexion
         this.database = bd;
         //llamar a la funcion de crear tablas
-        this.resetearBaseDeDatos();
+        this.crearTablas();
         //modificar el estatus de la base de datos
         this.isDBReady.next(true);
         this.presentAlert('Éxito', 'La base de datos se creó correctamente.');
@@ -138,14 +138,18 @@ export class ServicebdService {
     }
   }
 
-  async consultarUsuario(user: string, contra: string) {
+  async consultarUsuario(user: string, contra: string): Promise<Usuario | null> {
     const sql = 'SELECT user, contrasena, id_rol FROM usuario WHERE user = ? AND contrasena = ?';
-    const res = await this.database.executeSql(sql, [user, contra]);
-
-    if (res.rows.length > 0) {
-      return res.rows.item(0); // retorna el usuario encontrado(primero)
-    } else {
-      return null; // No hay usuario coincidente
+    try {
+      const res = await this.database.executeSql(sql, [user, contra]);
+      if (res.rows.length > 0) {
+        return res.rows.item(0); // retorna el usuario encontrado
+      } else {
+        throw new Error('Usuario o contraseña incorrectos.'); // Lanza un error específico
+      }
+    } catch (error) {
+      console.error('Error al consultar el usuario:', error);
+      throw new Error('Error al acceder a la base de datos.'); // Mensaje genérico para la UI
     }
   }
   
@@ -220,30 +224,23 @@ async registrarUsuario(usuario: Usuario): Promise<any> {
   }
 }
 
-// Método para obtener el ID del usuario logueado
-private async obtenerIdUsuarioLogueado(): Promise<string | null> {
-  const userId = this.authService.getUserId(); // Obtén el ID desde el servicio de autenticación
-  return userId; // Retorna el ID del usuario logueado
-}
 
-// Método para obtener un usuario por ID
-async verUsuarioPorId(id: string): Promise<any> {
-  const currentUserId = this.authService.getUserId(); // Obtén el ID del usuario autenticado
-
-  if (!currentUserId) {
-    throw new Error('Usuario no autenticado'); // Lanza un error si no hay usuario logueado
-  }
-
-  try { 
-    const query = 'SELECT * FROM usuario WHERE rut = ?'; // Cambié 'usuarios' a 'usuario'
-    const result = await this.database.executeSql(query, [id]); // Cambié 'this.db' a 'this.database'
-
-    return result.rows.length > 0 ? result.rows.item(0) : null; // Devuelve el usuario encontrado
+async obtenerRutVendedor(): Promise<string | null> {
+  try {
+    const rutVendedor = await this.storage.getItem('rutVendedor');
+    if (!rutVendedor) {
+      this.presentAlert('Error', 'No se pudo obtener el RUT del vendedor. Por favor inicia sesión nuevamente.');
+      return null;
+    }
+    return rutVendedor;
   } catch (error) {
-    console.error('Error al consultar el usuario:', error);
-    throw new Error('Error al consultar el usuario'); // Maneja errores de la consulta
+    console.error('Error al obtener el RUT del vendedor:', error);
+    this.presentAlert('Error', 'Hubo un problema al intentar obtener el RUT del vendedor.');
+    return null;
   }
 }
+
+
 //Producto
 
 async registrarProducto(producto: Producto): Promise<any> {
@@ -259,8 +256,11 @@ async registrarProducto(producto: Producto): Promise<any> {
 
   try {
     // Obtener el RUT del vendedor logueado
-    const rutVendedor = await this.obtenerIdUsuarioLogueado(); // Obtén el RUT del vendedor logueado
-
+    const rutVendedor =this.obtenerRutVendedor(); // Obtén el RUT del vendedor logueado
+    
+    if (!rutVendedor) {
+      throw new Error('No se ha podido obtener el RUT del vendedor logueado');
+    }
     // Insertar el producto
     const result = await this.database.executeSql(insertQuery, [
       producto.nom_producto,
