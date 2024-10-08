@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ServicebdService } from 'src/app/services/servicebd.service';
 
 @Component({
   selector: 'app-tarjeta',
@@ -7,9 +9,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TarjetaPage implements OnInit {
 
-  constructor() { }
+  tarjetas: any = [
+    {
+      id: '',
+      titulo: '',
+      texto: ''
+    }
+  ]
+
+  constructor(private servicesbd: ServicebdService, private router: Router) { }
 
   ngOnInit() {
+    
   }
 
 }
