@@ -3,6 +3,8 @@ import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AlertController, Platform } from '@ionic/angular';
 import { Usuario } from './usuario';
+import { Producto } from './producto';
+import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 @Injectable({
   providedIn: 'root'
 })
@@ -11,7 +13,7 @@ export class ServicebdService {
   public database!: SQLiteObject;
 
 
-  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController) {
+  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController,private storage: NativeStorage) {
     this.crearBD();
   }
 
@@ -87,6 +89,17 @@ export class ServicebdService {
       await this.database.executeSql(this.tablaTarjetas, []);
 
       this.presentAlert('Éxito', 'Las tablas fueron creadas exitosamente.');
+
+      // Insertar tipos de productos
+      const registroTiposProductos = `
+      INSERT OR IGNORE INTO tipoproducto(id_tipo, nom_tipo) VALUES 
+      ('1', 'Laptop'), 
+      ('2', 'Accesorio'), 
+      ('3', 'Monitor'), 
+      ('4', 'Teclado'), 
+      ('5', 'Mouse');
+    `;
+    await this.database.executeSql(registroTiposProductos, []);
     } catch (e) {
       this.presentAlert('Error en la creación de tablas', 'Error: ' + JSON.stringify(e));
       return; // Si falla la creación de tablas, detener el flujo
@@ -128,17 +141,27 @@ export class ServicebdService {
     }
   }
 
-  async consultarUsuario(user: string, contra: string) {
+  async consultarUsuario(user: string, contra: string): Promise<Usuario | null> {
     const sql = 'SELECT user, contrasena, id_rol FROM usuario WHERE user = ? AND contrasena = ?';
-    const res = await this.database.executeSql(sql, [user, contra]);
-
-    if (res.rows.length > 0) {
-      return res.rows.item(0); // retorna el usuario encontrado(primero)
-    } else {
-      return null; // No hay usuario coincidente
+    try {
+      const res = await this.database.executeSql(sql, [user, contra]);
+      if (res.rows.length > 0) {
+        return res.rows.item(0); // retorna el usuario encontrado
+      } else {
+        throw new Error('Usuario o contraseña incorrectos.'); // Lanza un error específico
+      }
+    } catch (error) {
+      console.error('Error al consultar el usuario:', error);
+      throw new Error('Error al acceder a la base de datos.'); // Mensaje genérico para la UI
     }
   }
+  
+  async resetearBaseDeDatos() {
+    await this.dropearTablas();   // Elimina las tablas
+    await this.crearTablas();     // Crea las tablas nuevamente
+  }
 
+//USUARIOS
 
   async verUsuario() {
     try {
@@ -167,10 +190,6 @@ export class ServicebdService {
     }
 }
 
-async resetearBaseDeDatos() {
-  await this.dropearTablas();   // Elimina las tablas
-  await this.crearTablas();     // Crea las tablas nuevamente
-}
 async registrarUsuario(usuario: Usuario): Promise<any> {
   try {
     const query = 'SELECT COUNT(*) as count FROM usuario WHERE rut = ?';
@@ -197,6 +216,8 @@ async registrarUsuario(usuario: Usuario): Promise<any> {
       usuario.id_rol
     ]);
 
+    
+
     // Después de registrar, llama a verUsuario para actualizar la lista
     await this.verUsuario();
 
@@ -205,6 +226,89 @@ async registrarUsuario(usuario: Usuario): Promise<any> {
     return Promise.reject(error);
   }
 }
+
+
+async obtenerRutVendedor(): Promise<string | null> {
+  try {
+    const rutVendedor = await this.storage.getItem('rutVendedor');
+    console.log('RUT obtenido:', rutVendedor); // Verifica que se esté obteniendo correctamente
+    return rutVendedor;
+  } catch (error) {
+    await this.presentAlert('Error al obtener el RUT del vendedor:', `${error}`);
+    return null;
+  }
+}
+
+//Producto
+
+async registrarProducto(producto: Producto): Promise<any> {
+  const insertQuery = `
+    INSERT INTO producto (nom_producto, desc_producto, rut_v, precio, stock, id_tipo)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+
+  const imagenInsertQuery = `
+    INSERT INTO img_producto (id_producto, imagen_prod)
+    VALUES (?, ?)
+  `;
+
+  try {
+    // Obtener el RUT del vendedor logueado
+    const rutVendedor = await this.obtenerRutVendedor(); // Obtén el RUT del vendedor logueado
+    
+    if (!rutVendedor) {
+      throw new Error('No se ha podido obtener el RUT del vendedor logueado');
+    }
+    // Insertar el producto
+    const result = await this.database.executeSql(insertQuery, [
+      producto.nom_producto,
+      producto.desc_producto,
+      rutVendedor, // Aquí utilizamos el RUT del vendedor logueado
+      producto.precio,
+      producto.stock,
+      producto.id_tipo
+    ]);
+
+    const productId = result.insertId; // ID del producto recién insertado
+
+    // Ahora insertar la imagen del producto
+    if (producto.imagen) {
+      await this.database.executeSql(imagenInsertQuery, [productId, producto.imagen]);
+    }
+
+    return Promise.resolve();
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
+
+
+async verProductos() {
+  try {
+    const res = await this.database.executeSql('SELECT * FROM producto', []);
+    const productos: any[] = []; // Almacena los productos
+
+    if (res.rows.length > 0) {
+      for (let i = 0; i < res.rows.length; i++) {
+        const producto = {
+          id_producto: res.rows.item(i).id_producto,
+          nom_producto: res.rows.item(i).nom_producto,
+          desc_producto: res.rows.item(i).desc_producto,
+          stock: res.rows.item(i).stock,
+          precio: res.rows.item(i).precio,
+        };
+        productos.push(producto);
+      }
+    }
+    return productos;
+  } catch (error) {
+    console.error('Error al obtener productos: ', error);
+    throw error;
+  }
+}
+
+
+
 
   fetchUsuarios(): Observable<Usuario[]> {
     const sql = 'SELECT * FROM usuario';
@@ -224,6 +328,9 @@ async registrarUsuario(usuario: Usuario): Promise<any> {
   dbState(){
     return this.isDBReady.asObservable();
   }
+
+
+
 
   async presentAlert(titulo:string, msj:string) {
     const alert = await this.alertController.create({
