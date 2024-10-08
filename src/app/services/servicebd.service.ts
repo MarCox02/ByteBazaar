@@ -12,7 +12,7 @@ export class ServicebdService {
   //variable de conexion a la BD
   public database!: SQLiteObject;
 
-  
+
   constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController,private authService: AuthService) {
     this.crearBD();
   }
@@ -49,7 +49,7 @@ export class ServicebdService {
 
 
 
-  
+
 
   crearBD(){
     //verificar si la plataforma esta lista
@@ -106,7 +106,7 @@ export class ServicebdService {
       await this.database.executeSql(this.registroRoles, []);
       await this.database.executeSql(this.registroComunas, []);
       await this.database.executeSql(this.registroUsuario, []); // Inserta el usuario por defecto
-  
+
       this.presentAlert('Éxito', 'Los registros por defecto fueron insertados exitosamente.');
     } catch (e) {
       this.presentAlert('Error en la inserción de registros por defecto', 'Error: ' + JSON.stringify(e));
@@ -114,7 +114,7 @@ export class ServicebdService {
      // Verificar usuarios insertados
       this.verUsuario();
 
-  
+
     // Cambiar el estado de la base de datos como lista
     this.isDBReady.next(true);
   }
@@ -138,6 +138,17 @@ export class ServicebdService {
     }
   }
 
+  async consultarUsuario(user: string, contra: string) {
+    const sql = 'SELECT user, contrasena, id_rol FROM usuario WHERE user = ? AND contrasena = ?';
+    const res = await this.database.executeSql(sql, [user, contra]);
+
+    if (res.rows.length > 0) {
+      return res.rows.item(0); // retorna el usuario encontrado(primero)
+    } else {
+      return null; // No hay usuario coincidente
+    }
+  }
+  
   async resetearBaseDeDatos() {
     await this.dropearTablas();   // Elimina las tablas
     await this.crearTablas();     // Crea las tablas nuevamente
@@ -334,6 +345,6 @@ async verProductos() {
   }
 
 
- 
+
 
 }
