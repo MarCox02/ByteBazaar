@@ -13,7 +13,7 @@ export class ServicebdService {
   public database!: SQLiteObject;
 
 
-  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController,private storage: NativeStorage) {
+  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController,private nativeStorage: NativeStorage) {
     this.crearBD();
   }
 
@@ -34,14 +34,14 @@ export class ServicebdService {
 
   tablaDetalleVenta: string = "CREATE TABLE IF NOT EXISTS detalle_venta (id_detalle INTEGER PRIMARY KEY autoincrement, id_producto INTEGER, id_venta INTEGER, cantidad INTEGER, precio_unitario REAL, FOREIGN KEY (id_producto) REFERENCES producto(id_producto),FOREIGN KEY (id_venta) REFERENCES venta(id_venta));";
 
-  tablaTarjetas: string = "CREATE TABLE IF NOT EXISTS tarjetas(id_tarjeta INTEGER PRIMARY KEY autoincrement, rut_usuario VARCHAR(20), numero_tarjeta NUMBER UNIQUE NOT NULL, CVC NUMBER, FE_mes NUMBER,FE_anio NUMBER FOREIGN KEY(rut_usuario) REFERENCES usuario(rut));";
+  tablaTarjetas: string = "CREATE TABLE IF NOT EXISTS tarjetas(id_tarjeta INTEGER PRIMARY KEY autoincrement, rut_usuario VARCHAR(20), numero_tarjeta NUMBER UNIQUE NOT NULL, CVC NUMBER, FE_mes NUMBER,FE_anio NUMBER, FOREIGN KEY(rut_usuario) REFERENCES usuario(rut));";
 
   //variables para insert por defectos en nuestra tabla
 
   registroRoles: string = "INSERT OR IGNORE INTO rol(id_rol, nom_rol) VALUES ('1', 'vendedor'), ('2', 'comprador');";
   registroComunas: string = "INSERT OR IGNORE INTO comuna(id_comuna, nom_comuna) VALUES ('1', 'Santiago'), ('2', 'Las Condes'), ('3', 'Providencia');";
   registroUsuario: string = "INSERT OR IGNORE INTO usuario(user, rut, nombre, apellido, correo, telefono, foto_perfil, id_rol, contrasena) VALUES ('usuario1', '12345678-9', 'Juan', 'Pérez', 'juan.perez@mail.com', 912345678, 'path_a_foto', '1', 'Contrasena1');";
-  registroTarjetas: string = "INSERT OR IGNORE INTO tarjetas(id_tarjeta, rut_usuario, numero_tarjeta, CVC, fecha_exp) VALUES ('1','12345678-9','4567456745674567','666','6','26')"
+  registroTarjetas: string = "INSERT OR IGNORE INTO tarjetas(id_tarjeta, rut_usuario, numero_tarjeta, CVC, FE_mes,FE_anio) VALUES ('1','12345678-9','4567456745674567','666','6','26')";
   
   //variables de observables para las consultas de base de datos
   listaUsuario = new BehaviorSubject<Usuario[]>([]); // Asegúrate de que tenga el tipo correcto
@@ -64,7 +64,7 @@ export class ServicebdService {
         //guardar la conexion
         this.database = bd;
         //llamar a la funcion de crear tablas
-        this.crearTablas();
+        this.resetearBaseDeDatos();
         //modificar el estatus de la base de datos
         this.isDBReady.next(true);
         this.presentAlert('Éxito', 'La base de datos se creó correctamente.');
@@ -230,8 +230,8 @@ async registrarUsuario(usuario: Usuario): Promise<any> {
 
 async obtenerRutVendedor(): Promise<string | null> {
   try {
-    const rutVendedor = await this.storage.getItem('rutVendedor');
-    console.log('RUT obtenido:', rutVendedor); // Verifica que se esté obteniendo correctamente
+    const rutVendedor = await this.nativeStorage.getItem('rutVendedor');
+    console.log('RUT obtenido:', rutVendedor);
     return rutVendedor;
   } catch (error) {
     await this.presentAlert('Error al obtener el RUT del vendedor:', `${error}`);
@@ -254,11 +254,12 @@ async registrarProducto(producto: Producto): Promise<any> {
 
   try {
     // Obtener el RUT del vendedor logueado
-    const rutVendedor = await this.obtenerRutVendedor(); // Obtén el RUT del vendedor logueado
-    
+    const rutVendedor = await this.obtenerRutVendedor(); // Asegúrate de usar 'await'
+
     if (!rutVendedor) {
       throw new Error('No se ha podido obtener el RUT del vendedor logueado');
     }
+
     // Insertar el producto
     const result = await this.database.executeSql(insertQuery, [
       producto.nom_producto,
@@ -278,6 +279,7 @@ async registrarProducto(producto: Producto): Promise<any> {
 
     return Promise.resolve();
   } catch (error) {
+    await this.presentAlert('Error al registrar el producto', `${error}`);
     return Promise.reject(error);
   }
 }

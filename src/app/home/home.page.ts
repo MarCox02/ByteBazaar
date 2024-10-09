@@ -22,7 +22,7 @@ export class HomePage implements OnInit {
     private router: Router,
     private activerouter: ActivatedRoute,
     private bd: ServicebdService,
-    private storage: NativeStorage,
+    private nativeStorage: NativeStorage,
     private servicesbd: ServicebdService,
   ) {}
 
@@ -63,17 +63,9 @@ async login() {
       this.alerta_t("Login exitoso", "Has iniciado sesión correctamente.");
 
       // Guardar un valor de prueba en LocalStorage
-      await this.storage.setItem('prueba', 'testValue');
+      await this.nativeStorage.setItem('rutVendedor', user.rut);
+      console.log('RUT guardado:', user.rut);
       
-      // Leer el valor de prueba para asegurarte de que NativeStorage funciona correctamente
-      const testValue = await this.storage.getItem('prueba');
-      console.log('Valor de prueba:', testValue); // Deberías ver 'testValue' en la consola
-
-      if (user.id_rol === '1') { // Si es vendedor
-        await this.storage.setItem('rutVendedor', user.rut); // Guardar el RUT
-        this.alerta("RUT guardado", `RUT: ${user.rut}`);
-      }
-
       // Define los extras de navegación con el usuario
       const navigationExtras: NavigationExtras = {
         state: {
