@@ -1,29 +1,23 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
+    <ion-title>Mis Tarjetas</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-list>
-      <ion-item-sliding *ngFor="let x of tarjetas">
-        <ion-item>
-          <h2>{{ x.titulo }}</h2>
-          <ion-label style="word-wrap: break-word;white-space: normal;">{{ x.texto }}</ion-label>
-        </ion-item>
-  
-        <ion-item-options side="end">
-          <ion-item-option (click)="modificar(x)">
-            <ion-icon slot="icon-only" name="pencil"></ion-icon>
-          </ion-item-option>
-          <ion-item-option color="danger" (click)="eliminar(x)">
-            <ion-icon slot="icon-only" name="trash"></ion-icon>
-          </ion-item-option>
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-list>
-  </ion-header>
+<ion-content>
+  <ion-list *ngIf="tarjetas.length > 0">
+    <ion-item *ngFor="let tarjeta of tarjetas">
+      <ion-label>
+        <h2>{{ tarjeta.numero_tarjeta }}</h2>
+        <p>Expira: {{ tarjeta.FE_mes }}/{{ tarjeta.FE_anio }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-button  expand="full">Añadir Método de Pago</ion-button>
+  <ion-note *ngIf="tarjetas.length === 0">No tienes tarjetas guardadas.</ion-note>
 </ion-content>
+
+    
