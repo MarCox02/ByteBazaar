@@ -193,10 +193,6 @@ export class ServicebdService {
         return [];
       });
   }
-        await this.presentAlert('Error en Base de Datos', 'Error al acceder a la base de datos.');
-        return null; // Cambia el retorno en caso de error
-    }
-}
 
   
   async resetearBaseDeDatos() {
@@ -335,6 +331,73 @@ async registrarProducto(producto: Producto): Promise<any> {
   }
 }
 
+async actualizarProducto(producto: Producto): Promise<void> {
+  try {
+    // Verificar que el producto tenga un ID válido
+    if (!producto.id_producto) {
+      await this.presentAlert('Error', 'El ID del producto no está definido.');
+      return Promise.reject('ID no definido');
+    }
+
+    // Actualizar la información del producto en la tabla producto
+    const updateQuery = `
+      UPDATE producto
+      SET nom_producto = ?, desc_producto = ?, precio = ?, stock = ?, id_tipo = ?
+      WHERE id_producto = ?
+    `;
+
+    const updateValues = [
+      producto.nom_producto,
+      producto.desc_producto,
+      producto.precio,
+      producto.stock,
+      producto.id_tipo,
+      producto.id_producto
+    ];
+
+    await this.database.executeSql(updateQuery, updateValues);
+
+    // Actualizar la imagen en la tabla img_producto
+    if (producto.imagen) {
+      const imagenUpdateQuery = `
+        UPDATE img_producto
+        SET imagen_prod = ?
+        WHERE id_producto = ?
+      `;
+
+      await this.database.executeSql(imagenUpdateQuery, [producto.imagen, producto.id_producto]);
+    }
+
+    return Promise.resolve();
+  } catch (error) {
+    await this.presentAlert('Error al actualizar el producto', `${error}`);
+    console.error('Error en actualizarProducto:', error); // Log detallado
+    return Promise.reject(error);
+  }
+}
+
+
+async eliminarProducto(idProducto: number): Promise<void> {
+  try {
+    // Primero, eliminar las imágenes asociadas en la tabla img_producto
+    const eliminarImagenQuery = `
+      DELETE FROM img_producto WHERE id_producto = ?
+    `;
+    await this.database.executeSql(eliminarImagenQuery, [idProducto]);
+
+    // Ahora, eliminar el producto de la tabla producto
+    const eliminarProductoQuery = `
+      DELETE FROM producto WHERE id_producto = ?
+    `;
+    await this.database.executeSql(eliminarProductoQuery, [idProducto]);
+
+    return Promise.resolve();
+  } catch (error) {
+    await this.presentAlert('Error al eliminar el producto', `${error}`);
+    console.error('Error en eliminarProducto:', error); // Log detallado
+    return Promise.reject(error);
+  }
+}
 
 async verProductos(): Promise<Producto[]> {
   try {
@@ -420,6 +483,31 @@ async verProductosPorVendedor(rutVendedor: string | null): Promise<Producto[]> {
     console.error('Error al obtener productos por vendedor: ', error);
     throw error; // Lanza el error para manejarlo en el lugar donde se llama
   }
+}
+
+async obtenerProductoPorId(idProducto: number): Promise<Producto | null> {
+  const query = `
+    SELECT p.*, i.imagen_prod
+    FROM producto p
+    LEFT JOIN img_producto i ON p.id_producto = i.id_producto
+    WHERE p.id_producto = ?
+  `;
+  const result = await this.database.executeSql(query, [idProducto]);
+  
+  if (result.rows.length > 0) {
+    const item = result.rows.item(0);
+    return {
+      id_producto: item.id_producto,
+      nom_producto: item.nom_producto,
+      desc_producto: item.desc_producto,
+      precio: item.precio,
+      stock: item.stock,
+      id_tipo: item.id_tipo,
+      imagen: item.imagen_prod, // Aquí aseguramos que se obtiene la imagen correcta
+      rut_v: item.rut_v
+    };
+  }
+  return null; // Devolver null si no se encuentra el producto
 }
 
 

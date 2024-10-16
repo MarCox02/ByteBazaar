@@ -7,22 +7,32 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-card class="contendedor">
-    <img class="imagen" alt="Imagen del producto" src="assets/computador lenovo.jpg" />
+  <ion-card *ngIf="producto" class="contenedor">
+    <img class="imagen" alt="Imagen del producto" [src]="producto.imagen" />
+    
     <ion-card-header>
-      <ion-card-title>Laptop Gamer Lenovo</ion-card-title>
-      <ion-card-subtitle>#2564</ion-card-subtitle>
+      <ion-card-title>
+        <input [(ngModel)]="producto.nom_producto" placeholder="Nombre del producto" [disabled]="!isEditing" />
+      </ion-card-title>
+      <ion-card-subtitle>#{{ producto.id_producto }}</ion-card-subtitle>
     </ion-card-header>
+    
     <ion-card-content>
       <p class="descripcion">
-        Esta laptop gamer Lenovo está equipada con un procesador Intel Core i7 de 9ª generación, 16GB de RAM y una tarjeta gráfica NVIDIA GeForce GTX 1660 Ti. Ideal para gaming y trabajo intensivo.
+        <textarea [(ngModel)]="producto.desc_producto" placeholder="Descripción" [disabled]="!isEditing"></textarea>
       </p>
-      <p class="dinero">$2.500.000</p>
+      <p class="dinero">{{ producto.precio | currency }}</p>
+      
+      <ion-button (click)="cambiarImagen()" color="secondary" *ngIf="isEditing">
+        <ion-icon name="camera"></ion-icon> Cambiar Imagen
+      </ion-button>
     </ion-card-content>
   </ion-card>
 
   <div class="botones">
-    <ion-button expand="block" color="primary">Editar</ion-button>
-    <ion-button expand="block" color="danger" >Eliminar</ion-button>
+    <ion-button expand="block" color="primary" (click)="toggleEdit()">
+      {{ isEditing ? 'Guardar Cambios' : 'Editar' }}
+    </ion-button>
+    <ion-button expand="block" color="danger" (click)="eliminarProducto()">Eliminar</ion-button>
   </div>
 </ion-content>

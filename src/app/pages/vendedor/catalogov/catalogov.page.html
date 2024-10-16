@@ -18,7 +18,7 @@
       </ion-card-header>
       <ion-card-content>
         <p>{{ producto.desc_producto }}</p>
-        <p class="dinero">${{ producto.precio }}</p>
+        <p class="dinero">{{ producto.precio | currency}}</p>
       </ion-card-content>
     </ion-card>
   </div>

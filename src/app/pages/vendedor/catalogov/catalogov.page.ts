@@ -28,10 +28,11 @@ export class CatalogovPage implements OnInit {
     } else {
       this.alerta('Error', 'No se pudo obtener el RUT del vendedor.');
     }
-
-    await this.cargarProductos();
   }
-
+  
+  ionViewWillEnter() {
+    this.cargarProductos(); // Se ejecuta cada vez que la página está a punto de mostrarse
+  }
   async cargarProductos() {
     try {
        // Obtén el rut del vendedor desde NativeStorage o de donde lo estés almacenando

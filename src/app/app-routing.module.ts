@@ -49,7 +49,7 @@ const routes: Routes = [
   },
 
   {
-    path: 'productov',
+    path: 'productov/:id',
     loadChildren: () => import('./pages/vendedor/productov/productov.module').then( m => m.ProductovPageModule)
   },
 
