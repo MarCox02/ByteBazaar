@@ -8,19 +8,30 @@
 
 <ion-content [fullscreen]="true" class="ion-padding">
   <ion-list lines="full" class="contenedor">
+    <!-- Imagen de perfil -->
     <ion-item class="item-personalizado">
-      <ion-input type="email"  fill="solid" label="Correo Electronico" labelPlacement="floating"
-      ></ion-input>
+      <ion-avatar slot="start">
+        <img [src]="fotoPerfil || 'ruta/default_avatar.jpg''" alt="Foto de perfil">
+      </ion-avatar>
+      <ion-label>Foto de Perfil</ion-label>
+
+      <!-- Botón para seleccionar una nueva imagen -->
+      <ion-icon name="camera" *ngIf="editMode" (click)="fileInput.click()" style="cursor: pointer;"></ion-icon>
+      <input type="file" accept="image/*" (change)="onFileSelected($event)" #fileInput hidden>
+    </ion-item>
+
+    <!-- Otros campos -->
+    <ion-item class="item-personalizado">
+      <ion-input type="email" fill="solid" label="Correo Electrónico" labelPlacement="floating"
+        [(ngModel)]="correo" [disabled]="!editMode"></ion-input>
     </ion-item>
     <ion-item class="item-personalizado">
-      <ion-input type="text"  fill="solid" label="Nombre de Usuario" labelPlacement="floating"></ion-input>
-    </ion-item>
-    <ion-item class="item-personalizado">
-      <ion-input type="password"  fill="solid" label="Contraseña" labelPlacement="floating"></ion-input>
+      <ion-input type="text" fill="solid" label="Nombre de Usuario" labelPlacement="floating"
+        [(ngModel)]="nombreUsuario" [disabled]="!editMode"></ion-input>
     </ion-item>
   </ion-list>
 
-  <ion-button expand="block" color="primary" class="boton-guardar" [routerLink]="['/perfilv']" >
-    Guardar Cambios
+  <ion-button expand="block" color="primary" (click)="toggleEdit()">
+    {{ editMode ? 'Guardar Cambios' : 'Editar Datos Personales' }}
   </ion-button>
 </ion-content>

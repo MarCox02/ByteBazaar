@@ -123,7 +123,7 @@
   <ion-list>
     <ion-item *ngFor="let usuario of usuarios">
       <h2>{{ usuario.user }} {{ usuario.nombre }} {{ usuario.rut}}</h2>
-      <p>{{ usuario.correo }}</p>
+      <p>{{ usuario.correo }} {{usuario.contrasena}}</p>
     </ion-item>
   </ion-list>
 </ion-content>

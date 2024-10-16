@@ -243,7 +243,29 @@ async registrarUsuario(usuario: Usuario): Promise<any> {
   }
 }
 
+async actualizarUsuario(usuario: Usuario): Promise<void> {
+  const query = `
+    UPDATE usuario 
+    SET correo = ?, 
+        user = ?, 
+        foto_perfil = ? -- Aquí se actualiza la columna de la foto de perfil
+    WHERE rut = ?`; // Asegúrate de usar el identificador correcto, en este caso `rut`
 
+  const valores = [
+    usuario.correo,
+    usuario.user,
+    usuario.foto_perfil, // La imagen en formato Base64
+    usuario.rut // La clave para identificar el usuario a actualizar
+  ];
+
+  try {
+    await this.database.executeSql(query, valores);
+    console.log('Usuario actualizado correctamente en la base de datos.');
+  } catch (error) {
+    console.error('Error al actualizar el usuario en la base de datos:', error);
+    throw error;
+  }
+}
 //Producto
 
 async registrarProducto(producto: Producto): Promise<any> {
@@ -339,13 +361,32 @@ async verProductosPorVendedor(rutVendedor: string | null): Promise<Producto[]> {
     throw new Error("El RUT del vendedor no puede ser nulo.");
   }
 
-  const query = `SELECT * FROM producto WHERE rut_v = ?`;
+  const query = `
+    SELECT p.*, i.imagen_prod 
+    FROM producto p
+    LEFT JOIN img_producto i ON p.id_producto = i.id_producto
+    WHERE p.rut_v = ?
+  `;
+
   try {
     const result = await this.database.executeSql(query, [rutVendedor]);
 
     const productos: Producto[] = [];
     for (let i = 0; i < result.rows.length; i++) {
-      productos.push(result.rows.item(i));
+      const item = result.rows.item(i);
+
+      const producto: Producto = {
+        id_producto: item.id_producto,
+        nom_producto: item.nom_producto,
+        desc_producto: item.desc_producto,
+        stock: item.stock,
+        precio: item.precio,
+        id_tipo: item.id_tipo,
+        rut_v: item.rut_v,
+        imagen: item.imagen_prod // Obtiene la imagen desde la tabla img_producto
+      };
+
+      productos.push(producto);
     }
     return productos;
   } catch (error) {
