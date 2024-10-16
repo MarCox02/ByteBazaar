@@ -192,10 +192,6 @@ export class ServicebdService {
         this.presentAlert('Error consultando tarjetas', 'Error: '+ JSON.stringify(error));
         return [];
       });
-  }
-        await this.presentAlert('Error en Base de Datos', 'Error al acceder a la base de datos.');
-        return null; // Cambia el retorno en caso de error
-    }
 }
 
   
@@ -265,7 +261,7 @@ async registrarUsuario(usuario: Usuario): Promise<any> {
     await this.verUsuario();
 
     return Promise.resolve();
-  } catch (error) {
+  }catch (error) {
     return Promise.reject(error);
   }
 }
@@ -455,8 +451,4 @@ async verProductosPorVendedor(rutVendedor: string | null): Promise<Producto[]> {
 
     await alert.present();
   }
-
-
-
-
 }

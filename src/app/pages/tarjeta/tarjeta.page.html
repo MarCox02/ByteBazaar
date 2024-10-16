@@ -8,25 +8,36 @@
 </ion-header>
 
 <ion-content>
-  <ion-list *ngIf="tarjetas.length > 0">    
-    <ion-item-sliding *ngFor="let card of tarjetas">
-      <ion-item>
-        <h2>{{ card.numero_tarjeta }}</h2>
-        <p>Expira: {{ card.FE_mes }}/{{ card.FE_anio }}</p>
-      </ion-item>
-      <ion-item-options side="start">
-        <ion-item-option (click)="modificar(card.numero_tarjeta)">
-          <ion-icon slot="icon-only" name="pencil"></ion-icon>
-        </ion-item-option>
-      </ion-item-options>
-      <ion-item-options side="end" >
-        <ion-item-option color="danger" (click)="eliminar(card.numero_tarjeta)">
-          <ion-icon slot="icon-only" name="trash"></ion-icon>
-        </ion-item-option>
-      </ion-item-options>
-    </ion-item-sliding>
-  </ion-list>
-  <ion-button  expand="full">Añadir Nuevo Método de Pago</ion-button>
-  <ion-note *ngIf="tarjetas.length === 0">No tienes tarjetas guardadas.</ion-note>
-</ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Tus Tarjetas</ion-card-title>
+      <ion-note *ngIf="tarjetas.length === 0">No tienes tarjetas guardadas.</ion-note>
+    </ion-card-header>
+  
+    <ion-card-content>
+      <ion-list *ngIf="tarjetas.length > 0">    
+        <ion-item-sliding *ngFor="let card of tarjetas">
+          <ion-item>
+            <h2>{{ card.numero_tarjeta }}</h2>
+            <p>Expira: {{ card.FE_mes }}/{{ card.FE_anio }}</p>
+          </ion-item>
+          <ion-item-options side="start">
+            <ion-item-option (click)="modificar(card.numero_tarjeta)">
+              <ion-icon slot="icon-only" name="pencil"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+          <ion-item-options side="end" >
+            <ion-item-option color="danger" (click)="eliminar(card.numero_tarjeta)">
+              <ion-icon slot="icon-only" name="trash"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+    </ion-card-content>
+    <ion-button  expand="full">Añadir Nuevo Método de Pago</ion-button>
+  </ion-card>
+  
+  </ion-content>
+  
+    
 
