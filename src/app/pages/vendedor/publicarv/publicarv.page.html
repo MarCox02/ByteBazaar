@@ -10,13 +10,11 @@
   <div class="contenedor">
     
       <ion-list  class="formulario" >
-        <ion-item *ngIf="imageSrc">
-          <ion-img [src]="imageSrc" class="img"></ion-img>
+        <ion-item *ngIf="imagen">
+          <img *ngIf="imagen" [src]="imagen" alt="Sin imagen" style="height: 250px;width: 250px;"/>
         </ion-item>
 
-        <ion-item>
-          <input type="file" (change)="onFileSelected($event)" accept="image/*">
-        </ion-item>
+        <ion-button (click)="tomarfoto()">Tomar Foto</ion-button>
       </ion-list>
     
     <ion-input class="formulario" helperText="" color="dark" label="Nombre del Producto" label-placement="floating" fill="outline"
@@ -43,7 +41,7 @@
   <ion-list>
     <ion-item *ngFor="let producto of productos">
       <ion-avatar slot="start" style="width: 64px; height: 64px;">
-        <img [src]="producto.imagen" alt="{{ producto.nom_producto }}" style="object-fit: cover; width: 100%; height: 100%;">
+        <img [src]="producto.imagen" alt="{{ producto.nom_producto }}" style="height: 250px;width: 250px;">
       </ion-avatar>
       <ion-label>
         <h2>{{ producto.nom_producto }}</h2>
@@ -53,4 +51,5 @@
       </ion-label>
     </ion-item>
   </ion-list>
+
 </ion-content>

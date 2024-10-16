@@ -9,22 +9,22 @@
 <ion-content [fullscreen]="true">
   <div class="perfil-container">
     <ion-avatar class="perfil">
-      <img src="/assets/foto perfil.jpg" alt="Foto de perfil">
+      <img [src]="usuario?.foto_perfil || '/assets/foto perfil.jpg'" alt="Foto de perfil">
     </ion-avatar>
     <div class="detalle-perfil">
 
-      <!-- Nombre de Completo -->
+      <!-- Nombre Completo -->
       <ion-text class="perfil-Nombre">
-        <p>Nombre de Usuario</p>
+        <p>{{ usuario?.nombre }}</p> <!-- Muestra el nombre del usuario -->
       </ion-text>
 
       <ion-text class="perfil-usuario">
-        <h2>Nombre de Usuario</h2>
+        <h2>{{ usuario?.user }}</h2> <!-- Muestra el nombre de usuario -->
       </ion-text>
 
       <!-- Correo electrónico -->
       <ion-text class="perfil-email">
-        <p>exampleduocuc.cl</p>
+        <p>{{ usuario?.correo }}</p> <!-- Muestra el correo del usuario -->
       </ion-text>
     </div>
   </div>
@@ -45,27 +45,6 @@
         <ion-item>
           <ion-icon name="card-outline"></ion-icon>
           <ion-label>Medios de Pago</ion-label>
-        </ion-item>
-        <ion-item>
-
-        </ion-item>
-        <ion-item>
-
-        </ion-item>
-        <ion-item>
-
-        </ion-item>
-        <ion-item>
-
-        </ion-item>
-        <ion-item>
-
-        </ion-item>
-        <ion-item>
-
-        </ion-item>
-        <ion-item>
-
         </ion-item>
         <ion-item [routerLink]="['/']">
           <ion-icon name="log-out-outline"></ion-icon>
