@@ -5,7 +5,6 @@ export class Producto {
     precio!: number; // Precio del producto
     stock!: number; // Cantidad disponible
     id_tipo!: string; // El ID del tipo de producto (relacionado con la tabla tipoproducto)
-    imagen!: Blob; // Añade este campo opcional para la imagen
+    imagen!: string; // Añade este campo opcional para la imagen
+    rut_v!: string; // RUT del vendedor
 }
-
-
