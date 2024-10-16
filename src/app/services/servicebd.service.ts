@@ -5,6 +5,9 @@ import { AlertController, Platform } from '@ionic/angular';
 import { Usuario } from './usuario';
 import { Producto } from './producto';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
+import { UserService } from './user.service';
+import { firstValueFrom } from 'rxjs';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -13,7 +16,10 @@ export class ServicebdService {
   public database!: SQLiteObject;
 
 
-  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController,private nativeStorage: NativeStorage) {
+  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController,
+    private nativeStorage: NativeStorage,
+    private userService: UserService
+  ) {
     this.crearBD();
   }
 
@@ -64,7 +70,7 @@ export class ServicebdService {
         //guardar la conexion
         this.database = bd;
         //llamar a la funcion de crear tablas
-        this.resetearBaseDeDatos();
+        this.crearTablas();
         //modificar el estatus de la base de datos
         this.isDBReady.next(true);
         this.presentAlert('Éxito', 'La base de datos se creó correctamente.');
@@ -228,23 +234,13 @@ async registrarUsuario(usuario: Usuario): Promise<any> {
 }
 
 
-async obtenerRutVendedor(): Promise<string | null> {
-  try {
-    const rutVendedor = await this.nativeStorage.getItem('rutVendedor');
-    console.log('RUT obtenido:', rutVendedor);
-    return rutVendedor;
-  } catch (error) {
-    await this.presentAlert('Error al obtener el RUT del vendedor:', `${error}`);
-    return null;
-  }
-}
-
 //Producto
 
 async registrarProducto(producto: Producto): Promise<any> {
+  try {
   const insertQuery = `
-    INSERT INTO producto (nom_producto, desc_producto, rut_v, precio, stock, id_tipo)
-    VALUES (?, ?, ?, ?, ?, ?)
+    INSERT INTO producto (nom_producto, desc_producto, precio, stock, id_tipo)
+    VALUES (?, ?, ?, ?, ?)
   `;
 
   const imagenInsertQuery = `
@@ -252,19 +248,10 @@ async registrarProducto(producto: Producto): Promise<any> {
     VALUES (?, ?)
   `;
 
-  try {
-    // Obtener el RUT del vendedor logueado
-    const rutVendedor = await this.obtenerRutVendedor(); // Asegúrate de usar 'await'
-
-    if (!rutVendedor) {
-      throw new Error('No se ha podido obtener el RUT del vendedor logueado');
-    }
-
     // Insertar el producto
     const result = await this.database.executeSql(insertQuery, [
       producto.nom_producto,
       producto.desc_producto,
-      rutVendedor, // Aquí utilizamos el RUT del vendedor logueado
       producto.precio,
       producto.stock,
       producto.id_tipo
