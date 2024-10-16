@@ -8,15 +8,25 @@
 </ion-header>
 
 <ion-content>
-  <ion-list *ngIf="tarjetas.length > 0">
-    <ion-item *ngFor="let tarjeta of tarjetas">
-      <ion-label>
-        <h2>{{ tarjeta.numero_tarjeta }}</h2>
-        <p>Expira: {{ tarjeta.FE_mes }}/{{ tarjeta.FE_anio }}</p>
-      </ion-label>
-    </ion-item>
+  <ion-list *ngIf="tarjetas.length > 0">    
+    <ion-item-sliding *ngFor="let card of tarjetas">
+      <ion-item>
+        <h2>{{ card.numero_tarjeta }}</h2>
+        <p>Expira: {{ card.FE_mes }}/{{ card.FE_anio }}</p>
+      </ion-item>
+      <ion-item-options side="start">
+        <ion-item-option (click)="modificar(card.numero_tarjeta)">
+          <ion-icon slot="icon-only" name="pencil"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+      <ion-item-options side="end" >
+        <ion-item-option color="danger" (click)="eliminar(card.numero_tarjeta)">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
   </ion-list>
-  <ion-button  expand="full">Añadir Método de Pago</ion-button>
+  <ion-button  expand="full">Añadir Nuevo Método de Pago</ion-button>
   <ion-note *ngIf="tarjetas.length === 0">No tienes tarjetas guardadas.</ion-note>
 </ion-content>
 

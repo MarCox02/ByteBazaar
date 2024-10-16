@@ -24,5 +24,10 @@ export class TarjetaPage implements OnInit {
         this.tarjetas = data;
       });
   }
-
+  eliminar(numero_tarjeta: any){
+    this.servicesbd.presentAlert('Error en eliminacion de datos', 'no se puede eliminar todavia'+numero_tarjeta);
+  }
+  modificar(numero_tarjeta: any){
+    this.servicesbd.presentAlert('Error en modificion de datos', 'no se puede modificar todavia'+numero_tarjeta);
+  }
 }
