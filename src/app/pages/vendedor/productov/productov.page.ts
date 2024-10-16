@@ -15,16 +15,19 @@ export class ProductovPage implements OnInit {
 
   producto: Producto | null = null;
   idProducto: number | null = null; // Permitir que sea nulo inicialmente
+  tiposProducto: { id_tipo: string; nom_tipo: string }[] = [];
   isEditing: boolean = false; // Estado de edición
   
   constructor(private menuCtrl: MenuController,private bdService: ServicebdService, private userService: UserService,
     private route: ActivatedRoute,private alertController: AlertController,private router: Router
-
+    
   ) { }
 
   async ngOnInit() {
     this.menuCtrl.enable(false,'comprador')
     this.menuCtrl.enable(true,'vendedor')
+
+    this.tiposProducto = await this.bdService.obtenerTiposProducto();
 
     // Obtener el id del producto desde la URL
     const idParam = this.route.snapshot.paramMap.get('id');

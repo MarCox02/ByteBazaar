@@ -342,7 +342,7 @@ async actualizarProducto(producto: Producto): Promise<void> {
     // Actualizar la información del producto en la tabla producto
     const updateQuery = `
       UPDATE producto
-      SET nom_producto = ?, desc_producto = ?, precio = ?, stock = ?, id_tipo = ?
+      SET nom_producto = ?, desc_producto = ?, precio = ?, stock = ?, id_tipo = ?, rut_v = ?
       WHERE id_producto = ?
     `;
 
@@ -352,6 +352,7 @@ async actualizarProducto(producto: Producto): Promise<void> {
       producto.precio,
       producto.stock,
       producto.id_tipo,
+      producto.rut_v, // Asegúrate de incluir el RUT aquí
       producto.id_producto
     ];
 
@@ -371,11 +372,10 @@ async actualizarProducto(producto: Producto): Promise<void> {
     return Promise.resolve();
   } catch (error) {
     await this.presentAlert('Error al actualizar el producto', `${error}`);
-    console.error('Error en actualizarProducto:', error); // Log detallado
+    console.error('Error en actualizarProducto:', error);
     return Promise.reject(error);
   }
 }
-
 
 async eliminarProducto(idProducto: number): Promise<void> {
   try {
@@ -402,9 +402,10 @@ async eliminarProducto(idProducto: number): Promise<void> {
 async verProductos(): Promise<Producto[]> {
   try {
     const res = await this.database.executeSql(`
-      SELECT p.*, i.imagen_prod 
+      SELECT p.*, i.imagen_prod, t.nom_tipo 
       FROM producto p 
       LEFT JOIN img_producto i ON p.id_producto = i.id_producto
+      LEFT JOIN tipoproducto t ON p.id_tipo = t.id_tipo
     `, []);
     
     const productos: Producto[] = [];
@@ -420,7 +421,8 @@ async verProductos(): Promise<Producto[]> {
         precio: item.precio,
         id_tipo: item.id_tipo,
         rut_v: item.rut_v,
-        imagen: item.imagen_prod // Ahora la imagen se obtiene directamente
+        imagen: item.imagen_prod, // Ahora la imagen se obtiene directamente
+        nom_tipo: item.nom_tipo // Aquí agregas el nombre del tipo
       };
 
       productos.push(producto);
@@ -432,7 +434,6 @@ async verProductos(): Promise<Producto[]> {
     return []; // Retorna un array vacío en caso de error
   }
 }
-
 async obtenerImagen(id_producto: number): Promise<string | null> {
   try {
     const res = await this.database.executeSql('SELECT imagen_prod FROM img_producto WHERE id_producto = ?', [id_producto]);
@@ -452,9 +453,10 @@ async verProductosPorVendedor(rutVendedor: string | null): Promise<Producto[]> {
   }
 
   const query = `
-    SELECT p.*, i.imagen_prod 
+    SELECT p.*, i.imagen_prod,t.nom_tipo
     FROM producto p
     LEFT JOIN img_producto i ON p.id_producto = i.id_producto
+    LEFT JOIN tipoproducto t ON p.id_tipo = t.id_tipo
     WHERE p.rut_v = ?
   `;
 
@@ -473,7 +475,8 @@ async verProductosPorVendedor(rutVendedor: string | null): Promise<Producto[]> {
         precio: item.precio,
         id_tipo: item.id_tipo,
         rut_v: item.rut_v,
-        imagen: item.imagen_prod // Obtiene la imagen desde la tabla img_producto
+        imagen: item.imagen_prod, // Obtiene la imagen desde la tabla img_producto
+        nom_tipo: item.nom_tipo
       };
 
       productos.push(producto);
@@ -483,6 +486,16 @@ async verProductosPorVendedor(rutVendedor: string | null): Promise<Producto[]> {
     console.error('Error al obtener productos por vendedor: ', error);
     throw error; // Lanza el error para manejarlo en el lugar donde se llama
   }
+}
+
+async obtenerTiposProducto(): Promise<{ id_tipo: string; nom_tipo: string }[]> {
+  const sql = `SELECT id_tipo, nom_tipo FROM tipoproducto`; // Consulta para obtener tipos de productos
+  const result = await this.database.executeSql(sql, []);
+  const tipos = [];
+  for (let i = 0; i < result.rows.length; i++) {
+    tipos.push(result.rows.item(i));
+  }
+  return tipos;
 }
 
 async obtenerProductoPorId(idProducto: number): Promise<Producto | null> {

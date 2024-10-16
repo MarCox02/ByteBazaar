@@ -14,6 +14,7 @@ import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 export class CatalogovPage implements OnInit {
 
   productos: Producto[] = [];
+  tiposProducto: { id_tipo: string; nom_tipo: string }[] = [];
   rutVendedor: string | null = null;
   usuario: string = '';
   constructor(private bdService: ServicebdService, private userService: UserService,    private alertController: AlertController,
@@ -33,6 +34,8 @@ export class CatalogovPage implements OnInit {
   ionViewWillEnter() {
     this.cargarProductos(); // Se ejecuta cada vez que la página está a punto de mostrarse
   }
+
+
   async cargarProductos() {
     try {
        // Obtén el rut del vendedor desde NativeStorage o de donde lo estés almacenando
@@ -56,6 +59,11 @@ export class CatalogovPage implements OnInit {
       this.alerta('Error', 'No se pudieron cargar los productos');
       console.error('Error al cargar productos:', error);
     }
+  }
+
+  obtenerNombreTipo(id_tipo: string): string {
+    const tipo = this.tiposProducto.find(t => t.id_tipo === id_tipo);
+    return tipo ? tipo.nom_tipo : 'Tipo desconocido'; // Maneja caso si el tipo no se encuentra
   }
 
   async alerta(titulo: string, mensaje: string) {

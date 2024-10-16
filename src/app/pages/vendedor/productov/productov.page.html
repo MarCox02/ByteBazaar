@@ -23,6 +23,15 @@
       </p>
       <p class="dinero">{{ producto.precio | currency }}</p>
       
+      <ion-item *ngIf="isEditing">
+        <ion-label>Tipo de Producto</ion-label>
+        <ion-select [(ngModel)]="producto.id_tipo" [disabled]="!isEditing">
+          <ion-select-option *ngFor="let tipo of tiposProducto" [value]="tipo.id_tipo">
+            {{ tipo.nom_tipo }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+      
       <ion-button (click)="cambiarImagen()" color="secondary" *ngIf="isEditing">
         <ion-icon name="camera"></ion-icon> Cambiar Imagen
       </ion-button>

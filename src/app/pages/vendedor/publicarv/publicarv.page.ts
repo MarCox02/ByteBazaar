@@ -22,7 +22,8 @@ export class PublicarvPage implements OnInit {
   precio: number | null = null;
   productos: Producto[] = [];
   rutVendedor: string | null = null; // Campo para almacenar el RUT del vendedor
-
+  tiposProducto: { id_tipo: string; nom_tipo: string }[] = []; // Almacena los tipos de producto
+  tipoSeleccionado: string | null = null; // Tipo de producto seleccionado
 
   constructor(private menuCtrl: MenuController, private alertController: AlertController, private router: Router,
     private bdService: ServicebdService,private storage: NativeStorage,private userService: UserService
@@ -41,7 +42,7 @@ export class PublicarvPage implements OnInit {
     } else {
         this.alerta('Error', 'No se pudo obtener el RUT del vendedor.');
     }
-
+    await this.cargarTiposProducto(); // Cargar tipos de productos
     this.cargarProductos();
 }
 
@@ -54,7 +55,15 @@ async cargarProductos() {
   }
 }
 
-
+async cargarTiposProducto() {
+  try {
+    // Aquí deberías implementar tu método para obtener los tipos de productos de la base de datos
+    this.tiposProducto = await this.bdService.obtenerTiposProducto();
+  } catch (error) {
+    this.alerta('Error', 'No se pudieron cargar los tipos de producto');
+    console.error('Error al cargar tipos de producto:', error);
+  }
+}
 
 tomarfoto = async () => {
   const image = await Camera.getPhoto({
@@ -80,11 +89,17 @@ tomarfoto = async () => {
       this.cantidad <= 0 ||
       this.precio === null ||
       this.precio <= 0 ||
+      !this.tipoSeleccionado|| // Validar que se seleccione un tipo
       !this.imagen
     ) {
       this.alerta('Error', 'Por favor, asegúrate de completar todos los campos correctamente.');
       return;
     }
+
+     // Obtener el nombre del tipo basado en el tipo seleccionado
+  const tipoSeleccionado = this.tiposProducto.find(tipo => tipo.id_tipo === this.tipoSeleccionado);
+  const nombreTipo = tipoSeleccionado ? tipoSeleccionado.nom_tipo : 'Tipo desconocido';
+
   
     const nuevoProducto: Producto = {
       id_producto: 0, // Este se autoincrementará en la base de datos
@@ -92,9 +107,10 @@ tomarfoto = async () => {
       desc_producto: this.descripcionProducto,
       precio: this.precio!, // Asegúrate de que sea un número
       stock: this.cantidad!, // Asegúrate de que sea un número
-      id_tipo: '1', // Este valor debe ser válido
+      id_tipo: this.tipoSeleccionado!, // Usar el tipo seleccionado
       imagen: this.imagen, // Asegúrate de que sea una cadena de texto
-      rut_v: this.rutVendedor! // Asegúrate de que no sea null
+      rut_v: this.rutVendedor!, // Asegúrate de que no sea null
+      nom_tipo: nombreTipo // Agregar el nombre del tipo
   };
   
     try {
