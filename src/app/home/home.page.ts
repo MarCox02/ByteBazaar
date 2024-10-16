@@ -5,6 +5,7 @@ import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { Usuario } from 'src/app/services/usuario';
 import { Platform } from '@ionic/angular';
+import { UserService } from '../services/user.service';
 
 
 @Component({
@@ -22,8 +23,10 @@ export class HomePage implements OnInit {
     private router: Router,
     private activerouter: ActivatedRoute,
     private bd: ServicebdService,
-    private storage: NativeStorage,
+    private nativeStorage: NativeStorage,
     private servicesbd: ServicebdService,
+    private userService: UserService // Cambié esto
+
   ) {}
 
 
@@ -61,18 +64,7 @@ async login() {
 
     if (user) {
       this.alerta_t("Login exitoso", "Has iniciado sesión correctamente.");
-
-      // Guardar un valor de prueba en LocalStorage
-      await this.storage.setItem('prueba', 'testValue');
-      
-      // Leer el valor de prueba para asegurarte de que NativeStorage funciona correctamente
-      const testValue = await this.storage.getItem('prueba');
-      console.log('Valor de prueba:', testValue); // Deberías ver 'testValue' en la consola
-
-      if (user.id_rol === '1') { // Si es vendedor
-        await this.storage.setItem('rutVendedor', user.rut); // Guardar el RUT
-        this.alerta("RUT guardado", `RUT: ${user.rut}`);
-      }
+      await this.userService.login(user); // Guarda el usuario en el servicio
 
       // Define los extras de navegación con el usuario
       const navigationExtras: NavigationExtras = {

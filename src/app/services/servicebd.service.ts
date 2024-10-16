@@ -3,8 +3,11 @@ import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AlertController, Platform } from '@ionic/angular';
 import { Usuario } from './usuario';
-import { Producto } from './producto';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
+import { UserService } from './user.service';
+import { firstValueFrom } from 'rxjs';
+import { Producto } from './producto';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -13,7 +16,10 @@ export class ServicebdService {
   public database!: SQLiteObject;
 
 
-  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController,private storage: NativeStorage) {
+  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController,
+    private nativeStorage: NativeStorage,
+    private userService: UserService
+  ) {
     this.crearBD();
   }
 
@@ -36,24 +42,23 @@ export class ServicebdService {
 
   tablaTarjetas: string = "CREATE TABLE IF NOT EXISTS tarjeta(id_tarjeta INTEGER PRIMARY KEY autoincrement, rut_usuario VARCHAR(20), numero_tarjeta NUMBER UNIQUE NOT NULL, CVC NUMBER, FE_mes NUMBER,FE_anio NUMBER, FOREIGN KEY(rut_usuario) REFERENCES usuario(rut));";
 
+
   //variables para insert por defectos en nuestra tabla
 
   registroRoles: string = "INSERT OR IGNORE INTO rol(id_rol, nom_rol) VALUES ('1', 'vendedor'), ('2', 'comprador');";
   registroComunas: string = "INSERT OR IGNORE INTO comuna(id_comuna, nom_comuna) VALUES ('1', 'Santiago'), ('2', 'Las Condes'), ('3', 'Providencia');";
   registroUsuario: string = "INSERT OR IGNORE INTO usuario(user, rut, nombre, apellido, correo, telefono, foto_perfil, id_rol, contrasena) VALUES ('usuario1', '12345678-9', 'Juan', 'Pérez', 'juan.perez@mail.com', 912345678, 'path_a_foto', '1', 'Contrasena1');";
+
   registroUsuario2: string = "INSERT OR IGNORE INTO usuario(user, rut, nombre, apellido, correo, telefono, foto_perfil, id_rol, contrasena) VALUES ('usuario2', '22222222-2', 'John', 'Smith', 'John.smith@mail.com', 912345678, 'path_a_foto', '2', 'Contrasena2');";
   registroTarjeta: string = "INSERT OR IGNORE INTO tarjeta(id_tarjeta, rut_usuario, numero_tarjeta, CVC, FE_mes, FE_anio) VALUES ('1','12345678-9','4567456745674567','666','6','2026')";
   registroTarjeta2: string = "INSERT OR IGNORE INTO tarjeta(id_tarjeta, rut_usuario, numero_tarjeta, CVC, FE_mes, FE_anio) VALUES ('2','22222222-2','4222222222222222','222','2','2026')";
+
   
   //variables de observables para las consultas de base de datos
   listaUsuario = new BehaviorSubject<Usuario[]>([]); // Asegúrate de que tenga el tipo correcto
 
   //variable observable para el estado de la Base de datos
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
-
-
-
-
 
   crearBD(){
     //verificar si la plataforma esta lista
@@ -146,14 +151,27 @@ export class ServicebdService {
   }
 
   async consultarUsuario(user: string, contra: string): Promise<Usuario | null> {
-    const sql = 'SELECT user, contrasena, id_rol FROM usuario WHERE user = ? AND contrasena = ?';
+    const sql = 'SELECT rut, nombre, apellido, user, telefono, foto_perfil, correo, contrasena, id_rol FROM usuario WHERE user = ? AND contrasena = ?';
     try {
-      const res = await this.database.executeSql(sql, [user, contra]);
-      if (res.rows.length > 0) {
-        return res.rows.item(0); // retorna el usuario encontrado
-      } else {
-        throw new Error('Usuario o contraseña incorrectos.'); // Lanza un error específico
-      }
+        const res = await this.database.executeSql(sql, [user, contra]);
+        if (res.rows.length > 0) {
+            // Crea un objeto Usuario a partir de los datos recuperados
+            const usuarioEncontrado: Usuario = {
+                rut: res.rows.item(0).rut,
+                nombre: res.rows.item(0).nombre,
+                apellido: res.rows.item(0).apellido,
+                user: res.rows.item(0).user,
+                telefono: res.rows.item(0).telefono,
+                foto_perfil: res.rows.item(0).foto_perfil,
+                correo: res.rows.item(0).correo,
+                contrasena: res.rows.item(0).contrasena,
+                id_rol: res.rows.item(0).id_rol,
+            };
+            return usuarioEncontrado; // Retorna el objeto Usuario completo
+        } else {
+            await this.presentAlert('Login Fallido', 'Usuario o contraseña incorrectos.');
+            return null; // Cambia el retorno en caso de error
+        }
     } catch (error) {
       this.presentAlert('Error consultando usuarios', 'Error: ' + JSON.stringify(error));
       throw new Error('Error al acceder a la base de datos.'); // Mensaje genérico para la UI
@@ -175,6 +193,11 @@ export class ServicebdService {
         return [];
       });
   }
+        await this.presentAlert('Error en Base de Datos', 'Error al acceder a la base de datos.');
+        return null; // Cambia el retorno en caso de error
+    }
+}
+
   
   async resetearBaseDeDatos() {
     await this.dropearTablas();   // Elimina las tablas
@@ -247,86 +270,157 @@ async registrarUsuario(usuario: Usuario): Promise<any> {
   }
 }
 
+async actualizarUsuario(usuario: Usuario): Promise<void> {
+  const query = `
+    UPDATE usuario 
+    SET correo = ?, 
+        user = ?, 
+        foto_perfil = ? -- Aquí se actualiza la columna de la foto de perfil
+    WHERE rut = ?`; // Asegúrate de usar el identificador correcto, en este caso `rut`
 
-async obtenerRutVendedor(): Promise<string | null> {
+  const valores = [
+    usuario.correo,
+    usuario.user,
+    usuario.foto_perfil, // La imagen en formato Base64
+    usuario.rut // La clave para identificar el usuario a actualizar
+  ];
+
   try {
-    const rutVendedor = await this.storage.getItem('rutVendedor');
-    console.log('RUT obtenido:', rutVendedor); // Verifica que se esté obteniendo correctamente
-    return rutVendedor;
+    await this.database.executeSql(query, valores);
+    console.log('Usuario actualizado correctamente en la base de datos.');
   } catch (error) {
-    await this.presentAlert('Error al obtener el RUT del vendedor:', `${error}`);
-    return null;
+    console.error('Error al actualizar el usuario en la base de datos:', error);
+    throw error;
   }
 }
-
 //Producto
 
 async registrarProducto(producto: Producto): Promise<any> {
-  const insertQuery = `
-    INSERT INTO producto (nom_producto, desc_producto, rut_v, precio, stock, id_tipo)
-    VALUES (?, ?, ?, ?, ?, ?)
-  `;
-
-  const imagenInsertQuery = `
-    INSERT INTO img_producto (id_producto, imagen_prod)
-    VALUES (?, ?)
-  `;
-
   try {
-    // Obtener el RUT del vendedor logueado
-    const rutVendedor = await this.obtenerRutVendedor(); // Obtén el RUT del vendedor logueado
-    
-    if (!rutVendedor) {
-      throw new Error('No se ha podido obtener el RUT del vendedor logueado');
+    if (!producto.rut_v) {
+      await this.presentAlert('Error', 'El RUT del vendedor no está definido.');
+      return Promise.reject('RUT no definido');
     }
-    // Insertar el producto
+
+    const insertQuery = `
+      INSERT INTO producto (nom_producto, desc_producto, precio, stock, id_tipo, rut_v)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `;
+
+    const imagenInsertQuery = `
+      INSERT INTO img_producto (id_producto, imagen_prod)
+      VALUES (?, ?)
+    `;
+
     const result = await this.database.executeSql(insertQuery, [
       producto.nom_producto,
       producto.desc_producto,
-      rutVendedor, // Aquí utilizamos el RUT del vendedor logueado
       producto.precio,
       producto.stock,
-      producto.id_tipo
+      producto.id_tipo,
+      producto.rut_v
     ]);
 
-    const productId = result.insertId; // ID del producto recién insertado
+    const productId = result.insertId;
 
-    // Ahora insertar la imagen del producto
     if (producto.imagen) {
       await this.database.executeSql(imagenInsertQuery, [productId, producto.imagen]);
     }
 
     return Promise.resolve();
   } catch (error) {
+    await this.presentAlert('Error al registrar el producto', `${error}`);    
+    console.error('Error en registrarProducto:', error); // Log detallado
     return Promise.reject(error);
   }
 }
 
 
-async verProductos() {
+async verProductos(): Promise<Producto[]> {
   try {
-    const res = await this.database.executeSql('SELECT * FROM producto', []);
-    const productos: any[] = []; // Almacena los productos
+    const res = await this.database.executeSql(`
+      SELECT p.*, i.imagen_prod 
+      FROM producto p 
+      LEFT JOIN img_producto i ON p.id_producto = i.id_producto
+    `, []);
+    
+    const productos: Producto[] = [];
 
-    if (res.rows.length > 0) {
-      for (let i = 0; i < res.rows.length; i++) {
-        const producto = {
-          id_producto: res.rows.item(i).id_producto,
-          nom_producto: res.rows.item(i).nom_producto,
-          desc_producto: res.rows.item(i).desc_producto,
-          stock: res.rows.item(i).stock,
-          precio: res.rows.item(i).precio,
-        };
-        productos.push(producto);
-      }
+    for (let i = 0; i < res.rows.length; i++) {
+      const item = res.rows.item(i);
+
+      const producto: Producto = {
+        id_producto: item.id_producto,
+        nom_producto: item.nom_producto,
+        desc_producto: item.desc_producto,
+        stock: item.stock,
+        precio: item.precio,
+        id_tipo: item.id_tipo,
+        rut_v: item.rut_v,
+        imagen: item.imagen_prod // Ahora la imagen se obtiene directamente
+      };
+
+      productos.push(producto);
     }
     return productos;
   } catch (error) {
-    console.error('Error al obtener productos: ', error);
-    throw error;
+    console.error('Error al ver productos:', error);
+    await this.presentAlert('Error al ver productos', `${error}`);
+    return []; // Retorna un array vacío en caso de error
   }
 }
 
+async obtenerImagen(id_producto: number): Promise<string | null> {
+  try {
+    const res = await this.database.executeSql('SELECT imagen_prod FROM img_producto WHERE id_producto = ?', [id_producto]);
+    if (res.rows.length > 0) {
+      return res.rows.item(0).imagen_prod; // Retorna la imagen
+    }
+    return null; // Retorna null si no hay imagen
+  } catch (error) {
+    console.error('Error al obtener la imagen:', error);
+    return null; // Retorna null en caso de error
+  }
+}
+
+async verProductosPorVendedor(rutVendedor: string | null): Promise<Producto[]> {
+  if (!rutVendedor) {
+    throw new Error("El RUT del vendedor no puede ser nulo.");
+  }
+
+  const query = `
+    SELECT p.*, i.imagen_prod 
+    FROM producto p
+    LEFT JOIN img_producto i ON p.id_producto = i.id_producto
+    WHERE p.rut_v = ?
+  `;
+
+  try {
+    const result = await this.database.executeSql(query, [rutVendedor]);
+
+    const productos: Producto[] = [];
+    for (let i = 0; i < result.rows.length; i++) {
+      const item = result.rows.item(i);
+
+      const producto: Producto = {
+        id_producto: item.id_producto,
+        nom_producto: item.nom_producto,
+        desc_producto: item.desc_producto,
+        stock: item.stock,
+        precio: item.precio,
+        id_tipo: item.id_tipo,
+        rut_v: item.rut_v,
+        imagen: item.imagen_prod // Obtiene la imagen desde la tabla img_producto
+      };
+
+      productos.push(producto);
+    }
+    return productos;
+  } catch (error) {
+    console.error('Error al obtener productos por vendedor: ', error);
+    throw error; // Lanza el error para manejarlo en el lugar donde se llama
+  }
+}
 
 
 
