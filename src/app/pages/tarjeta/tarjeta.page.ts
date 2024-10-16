@@ -9,18 +9,25 @@ import { ServicebdService } from 'src/app/services/servicebd.service';
 })
 export class TarjetaPage implements OnInit {
 
-  tarjetas: any = [
-    {
-      id: '',
-      titulo: '',
-      texto: ''
-    }
-  ]
+  tarjetas: any[] = [];
+  rutUsuario: string = '12345678-9';
 
   constructor(private servicesbd: ServicebdService, private router: Router) { }
 
   ngOnInit() {
-    
+    this.cargarTarjetas();
   }
 
+  cargarTarjetas() {
+    this.servicesbd.getTarjetasByRUT(this.rutUsuario)
+      .then(data => {
+        this.tarjetas = data;
+      });
+  }
+  eliminar(numero_tarjeta: any){
+    this.servicesbd.presentAlert('Error en eliminacion de datos', 'no se puede eliminar todavia'+numero_tarjeta);
+  }
+  modificar(numero_tarjeta: any){
+    this.servicesbd.presentAlert('Error en modificion de datos', 'no se puede modificar todavia'+numero_tarjeta);
+  }
 }

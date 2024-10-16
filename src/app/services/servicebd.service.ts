@@ -40,14 +40,19 @@ export class ServicebdService {
 
   tablaDetalleVenta: string = "CREATE TABLE IF NOT EXISTS detalle_venta (id_detalle INTEGER PRIMARY KEY autoincrement, id_producto INTEGER, id_venta INTEGER, cantidad INTEGER, precio_unitario REAL, FOREIGN KEY (id_producto) REFERENCES producto(id_producto),FOREIGN KEY (id_venta) REFERENCES venta(id_venta));";
 
-  tablaTarjetas: string = "CREATE TABLE IF NOT EXISTS tarjetas(id_tarjeta INTEGER PRIMARY KEY autoincrement, rut_usuario VARCHAR(20), numero_tarjeta NUMBER UNIQUE NOT NULL, CVC NUMBER, FE_mes NUMBER,FE_anio NUMBER, FOREIGN KEY(rut_usuario) REFERENCES usuario(rut));";
+  tablaTarjetas: string = "CREATE TABLE IF NOT EXISTS tarjeta(id_tarjeta INTEGER PRIMARY KEY autoincrement, rut_usuario VARCHAR(20), numero_tarjeta NUMBER UNIQUE NOT NULL, CVC NUMBER, FE_mes NUMBER,FE_anio NUMBER, FOREIGN KEY(rut_usuario) REFERENCES usuario(rut));";
+
 
   //variables para insert por defectos en nuestra tabla
 
   registroRoles: string = "INSERT OR IGNORE INTO rol(id_rol, nom_rol) VALUES ('1', 'vendedor'), ('2', 'comprador');";
   registroComunas: string = "INSERT OR IGNORE INTO comuna(id_comuna, nom_comuna) VALUES ('1', 'Santiago'), ('2', 'Las Condes'), ('3', 'Providencia');";
   registroUsuario: string = "INSERT OR IGNORE INTO usuario(user, rut, nombre, apellido, correo, telefono, foto_perfil, id_rol, contrasena) VALUES ('usuario1', '12345678-9', 'Juan', 'Pérez', 'juan.perez@mail.com', 912345678, 'path_a_foto', '1', 'Contrasena1');";
-  registroTarjetas: string = "INSERT OR IGNORE INTO tarjetas(id_tarjeta, rut_usuario, numero_tarjeta, CVC, FE_mes,FE_anio) VALUES ('1','12345678-9','4567456745674567','666','6','26')";
+
+  registroUsuario2: string = "INSERT OR IGNORE INTO usuario(user, rut, nombre, apellido, correo, telefono, foto_perfil, id_rol, contrasena) VALUES ('usuario2', '22222222-2', 'John', 'Smith', 'John.smith@mail.com', 912345678, 'path_a_foto', '2', 'Contrasena2');";
+  registroTarjeta: string = "INSERT OR IGNORE INTO tarjeta(id_tarjeta, rut_usuario, numero_tarjeta, CVC, FE_mes, FE_anio) VALUES ('1','12345678-9','4567456745674567','666','6','2026')";
+  registroTarjeta2: string = "INSERT OR IGNORE INTO tarjeta(id_tarjeta, rut_usuario, numero_tarjeta, CVC, FE_mes, FE_anio) VALUES ('2','22222222-2','4222222222222222','222','2','2026')";
+
   
   //variables de observables para las consultas de base de datos
   listaUsuario = new BehaviorSubject<Usuario[]>([]); // Asegúrate de que tenga el tipo correcto
@@ -110,8 +115,10 @@ export class ServicebdService {
       // Insertar los registros por defecto
       await this.database.executeSql(this.registroRoles, []);
       await this.database.executeSql(this.registroComunas, []);
-      await this.database.executeSql(this.registroUsuario, []); // Inserta el usuario por defecto
-      await this.database.executeSql(this.registroTarjetas, []);
+      await this.database.executeSql(this.registroUsuario, []);
+      await this.database.executeSql(this.registroUsuario2, []); // Inserta el usuario por defecto
+      await this.database.executeSql(this.registroTarjeta, []);
+      await this.database.executeSql(this.registroTarjeta2, []);
       this.presentAlert('Éxito', 'Los registros por defecto fueron insertados exitosamente.');
     } catch (e) {
       this.presentAlert('Error en la inserción de registros por defecto', 'Error: ' + JSON.stringify(e));
@@ -132,7 +139,7 @@ export class ServicebdService {
       await this.database.executeSql('DROP TABLE IF EXISTS img_producto', []);
       await this.database.executeSql('DROP TABLE IF EXISTS producto', []);
       await this.database.executeSql('DROP TABLE IF EXISTS direcciones', []);
-      await this.database.executeSql('DROP TABLE IF EXISTS Tarjetas', []);
+      await this.database.executeSql('DROP TABLE IF EXISTS tarjetas', []);
       await this.database.executeSql('DROP TABLE IF EXISTS usuario', []);
       await this.database.executeSql('DROP TABLE IF EXISTS comuna', []);
       await this.database.executeSql('DROP TABLE IF EXISTS tipoproducto', []);
@@ -166,11 +173,31 @@ export class ServicebdService {
             return null; // Cambia el retorno en caso de error
         }
     } catch (error) {
-        console.error('Error al consultar el usuario:', error);
+      this.presentAlert('Error consultando usuarios', 'Error: ' + JSON.stringify(error));
+      throw new Error('Error al acceder a la base de datos.'); // Mensaje genérico para la UI
+    }
+  }
+
+
+  getTarjetasByRUT(rut: string): Promise<any[]> {
+    return this.database.executeSql('SELECT * FROM tarjeta WHERE rut_usuario = ?', [rut])
+      .then((res) => {
+        let tarjetas = [];
+        for (let i = 0; i < res.rows.length; i++) {
+          tarjetas.push(res.rows.item(i));
+        }
+        return tarjetas;
+      })
+      .catch(error => {
+        this.presentAlert('Error consultando tarjetas', 'Error: '+ JSON.stringify(error));
+        return [];
+      });
+  }
         await this.presentAlert('Error en Base de Datos', 'Error al acceder a la base de datos.');
         return null; // Cambia el retorno en caso de error
     }
 }
+
   
   async resetearBaseDeDatos() {
     await this.dropearTablas();   // Elimina las tablas
@@ -202,7 +229,7 @@ export class ServicebdService {
             this.listaUsuario.next(usuarios); // Enviar la lista de usuarios a BehaviorSubject
         }
     } catch (error) {
-        this.presentAlert('Error al verificar usuarios', 'Error: ' + JSON.stringify(error));
+      this.presentAlert('Error al verificar usuarios', 'Error: ' + JSON.stringify(error));
     }
 }
 
