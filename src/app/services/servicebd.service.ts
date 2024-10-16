@@ -5,7 +5,6 @@ import { AlertController, Platform } from '@ionic/angular';
 import { Usuario } from './usuario';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 import { UserService } from './user.service';
-import { firstValueFrom } from 'rxjs';
 import { Producto } from './producto';
 
 @Injectable({
