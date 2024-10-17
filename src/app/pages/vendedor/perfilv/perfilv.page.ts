@@ -19,14 +19,31 @@ export class PerfilvPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.menuCtrl.enable(false,'comprador')
-    this.menuCtrl.enable(true,'vendedor')
+    const usuario = await this.userService.obtenerUsuario();
+    if (usuario) {
+      // Establecer el rol y habilitar/deshabilitar el menú correspondiente
+      const rol = usuario.id_rol; // Suponiendo que id_rol es un string
+
+      // Habilitar y deshabilitar los menús según el rol
+      this.menuCtrl.enable(rol === '2', 'comprador'); // Habilitar menú de comprador
+      this.menuCtrl.enable(rol === '1', 'vendedor'); // Habilitar menú de vendedor
+    }
    // Suscribirse al observable
    this.userSubscription = this.userService.currentUser$.subscribe(usuario => {
     this.usuario = usuario; // Actualiza el perfil con el usuario
   });
  // Cargar el usuario inicialmente
  this.usuario = await this.userService.obtenerUsuario();
+ if (this.usuario) {
+  // Habilitar o deshabilitar menús según el rol
+  if (this.usuario.id_rol === 'vendedor') {
+    this.menuCtrl.enable(true, 'vendedor');
+    this.menuCtrl.enable(false, 'comprador');
+  } else {
+    this.menuCtrl.enable(false, 'vendedor');
+    this.menuCtrl.enable(true, 'comprador');
+  }
+}
 }
 ngOnDestroy() {
   // Asegúrate de cancelar la suscripción al destruir el componente

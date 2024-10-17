@@ -33,9 +33,6 @@ async login(usuario: Usuario) {
     contrasena: usuario.contrasena,
     id_rol: usuario.id_rol
   };
-
-  this.presentAlert("Usuario a guardar en NativeStorage:", `${usuario.rut}`);
-
   await this.nativeStorage.setItem('usuario', usuarioALogar);
   this.currentUserSubject.next(usuarioALogar);
 }

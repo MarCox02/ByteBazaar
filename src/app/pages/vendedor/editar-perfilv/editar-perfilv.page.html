@@ -21,6 +21,15 @@
     </ion-item>
 
     <!-- Otros campos -->
+
+    <ion-item class="item-personalizado">
+      <ion-label>Rol</ion-label>
+      <ion-select [(ngModel)]="id_rol" [disabled]="!editMode">
+        <ion-select-option value="1">Vendedor</ion-select-option>
+        <ion-select-option value="2">Comprador</ion-select-option>
+      </ion-select>
+    </ion-item>
+
     <ion-item class="item-personalizado">
       <ion-input type="email" fill="solid" label="Correo Electrónico" labelPlacement="floating"
         [(ngModel)]="correo" [disabled]="!editMode"></ion-input>

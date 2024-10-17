@@ -18,11 +18,19 @@ export class CatalogovPage implements OnInit {
   rutVendedor: string | null = null;
   usuario: string = '';
   constructor(private bdService: ServicebdService, private userService: UserService,    private alertController: AlertController,
-    private storage: NativeStorage
+    private storage: NativeStorage, private menuCtrl: MenuController
   )
 {}
   async ngOnInit() {
     const usuario = await this.userService.obtenerUsuario();
+    if (usuario) {
+      // Establecer el rol y habilitar/deshabilitar el menú correspondiente
+      const rol = usuario.id_rol; // Suponiendo que id_rol es un string
+
+      // Habilitar y deshabilitar los menús según el rol
+      this.menuCtrl.enable(rol === '2', 'comprador'); // Habilitar menú de comprador
+      this.menuCtrl.enable(rol === '1', 'vendedor'); // Habilitar menú de vendedor
+    }
     if (usuario) {
       this.rutVendedor = usuario.rut; // Asumiendo que 'rut' es la propiedad correcta en el objeto Usuario
       this.usuario = usuario.nombre; // Suponiendo que el nombre está en el objeto Usuario

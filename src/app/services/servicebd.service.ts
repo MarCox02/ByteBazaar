@@ -49,10 +49,9 @@ export class ServicebdService {
   registroUsuario: string = "INSERT OR IGNORE INTO usuario(user, rut, nombre, apellido, correo, telefono, foto_perfil, id_rol, contrasena) VALUES ('usuario1', '12345678-9', 'Juan', 'Pérez', 'juan.perez@mail.com', 912345678, 'path_a_foto', '1', 'Contrasena1');";
 
   registroUsuario2: string = "INSERT OR IGNORE INTO usuario(user, rut, nombre, apellido, correo, telefono, foto_perfil, id_rol, contrasena) VALUES ('usuario2', '22222222-2', 'John', 'Smith', 'John.smith@mail.com', 912345678, 'path_a_foto', '2', 'Contrasena2');";
-  registroTarjeta: string = "INSERT OR IGNORE INTO tarjeta(id_tarjeta, rut_usuario, numero_tarjeta, CVC, FE_mes, FE_anio) VALUES ('1','12345678-9','4567456745674567','666','6','2026')";
-  registroTarjeta2: string = "INSERT OR IGNORE INTO tarjeta(id_tarjeta, rut_usuario, numero_tarjeta, CVC, FE_mes, FE_anio) VALUES ('2','22222222-2','4222222222222222','222','2','2026')";
+  registroTarjeta: string = "INSERT OR IGNORE INTO tarjeta(rut_usuario, numero_tarjeta, CVC, FE_mes, FE_anio) VALUES ('12345678-9','4567456745674567','666','6','2026')";
+  registroTarjeta2: string = "INSERT OR IGNORE INTO tarjeta(rut_usuario, numero_tarjeta, CVC, FE_mes, FE_anio) VALUES ('22222222-2','4222222222222222','222','2','2026')";
 
-  
   //variables de observables para las consultas de base de datos
   listaUsuario = new BehaviorSubject<Usuario[]>([]); // Asegúrate de que tenga el tipo correcto
 
@@ -73,7 +72,6 @@ export class ServicebdService {
         this.crearTablas();
         //modificar el estatus de la base de datos
         this.isDBReady.next(true);
-        this.presentAlert('Éxito', 'La base de datos se creó correctamente.');
       }).catch(e=>{
         this.presentAlert('Crear BD', 'Error en crear la BD: ' + JSON.stringify(e));
       })
@@ -93,8 +91,6 @@ export class ServicebdService {
       await this.database.executeSql(this.tablaVenta, []);
       await this.database.executeSql(this.tablaDetalleVenta, []);
       await this.database.executeSql(this.tablaTarjetas, []);
-
-      this.presentAlert('Éxito', 'Las tablas fueron creadas exitosamente.');
 
       // Insertar tipos de productos
       const registroTiposProductos = `
@@ -118,7 +114,6 @@ export class ServicebdService {
       await this.database.executeSql(this.registroUsuario2, []); // Inserta el usuario por defecto
       await this.database.executeSql(this.registroTarjeta, []);
       await this.database.executeSql(this.registroTarjeta2, []);
-      this.presentAlert('Éxito', 'Los registros por defecto fueron insertados exitosamente.');
     } catch (e) {
       this.presentAlert('Error en la inserción de registros por defecto', 'Error: ' + JSON.stringify(e));
     }
@@ -270,14 +265,16 @@ async actualizarUsuario(usuario: Usuario): Promise<void> {
     UPDATE usuario 
     SET correo = ?, 
         user = ?, 
-        foto_perfil = ? -- Aquí se actualiza la columna de la foto de perfil
-    WHERE rut = ?`; // Asegúrate de usar el identificador correcto, en este caso `rut`
+        foto_perfil = ?, 
+        id_rol = ?  -- Actualizando también el rol
+    WHERE rut = ?`;
 
   const valores = [
     usuario.correo,
     usuario.user,
     usuario.foto_perfil, // La imagen en formato Base64
-    usuario.rut // La clave para identificar el usuario a actualizar
+    usuario.id_rol, // Asegúrate de incluir el rol aquí
+    usuario.rut // Clave para identificar al usuario
   ];
 
   try {
