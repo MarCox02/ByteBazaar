@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ServicebdService } from 'src/app/services/servicebd.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-tarjeta',
@@ -10,13 +11,21 @@ import { ServicebdService } from 'src/app/services/servicebd.service';
 export class TarjetaPage implements OnInit {
 
   tarjetas: any[] = [];
-  rutUsuario: string = '12345678-9';
+  rutUsuario: string = '';
+  constructor(private servicesbd: ServicebdService, private userService: UserService, private router: Router) { }
 
-  constructor(private servicesbd: ServicebdService, private router: Router) { }
+  async ngOnInit() {
+    const usuario = await this.userService.obtenerUsuario();
+    if (usuario) {
+      this.rutUsuario = usuario.rut; // Asumiendo que 'rut' es la propiedad correcta en el objeto Usuario
+    } else {
+      this.servicesbd.presentAlert('Error', 'No se pudo obtener el RUT del vendedor.');
+    }
 
-  ngOnInit() {
     this.cargarTarjetas();
   }
+    
+  
 
   cargarTarjetas() {
     this.servicesbd.getTarjetasByRUT(this.rutUsuario)
