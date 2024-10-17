@@ -26,14 +26,19 @@ export class EditarPerfilcPage implements OnInit {
 
   async ngOnInit() {
     const usuario = await this.userService.obtenerUsuario();
-    if (usuario) {
-      // Establecer el rol y habilitar/deshabilitar el menú correspondiente
-      const rol = usuario.id_rol; // Suponiendo que id_rol es un string
+  if (usuario) {
+    // Establecer el rol y habilitar/deshabilitar el menú correspondiente
+    const rol = usuario.id_rol; // Suponiendo que id_rol es un string
 
-      // Habilitar y deshabilitar los menús según el rol
-      this.menuCtrl.enable(rol === '2', 'comprador'); // Habilitar menú de comprador
-      this.menuCtrl.enable(rol === '1', 'vendedor'); // Habilitar menú de vendedor
+    // Habilitar y deshabilitar los menús según el rol
+    if (rol === '2') {
+      this.menuCtrl.enable(true, 'comprador'); // Habilitar menú de comprador
+      this.menuCtrl.enable(false, 'vendedor'); // Deshabilitar menú de vendedor
+    } else if (rol === '1') {
+      this.menuCtrl.enable(false, 'comprador'); // Deshabilitar menú de comprador
+      this.menuCtrl.enable(true, 'vendedor'); // Habilitar menú de vendedor
     }
+  }
   
     // Obtener el usuario desde el servicio
     this.usuario = await this.userService.obtenerUsuario();

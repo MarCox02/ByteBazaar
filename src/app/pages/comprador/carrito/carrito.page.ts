@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { MenuController } from '@ionic/angular';
+import { MenuController, ToastController } from '@ionic/angular';
+import { CarritoService } from 'src/app/services/carrito.service';
 
 @Component({
   selector: 'app-carrito',
@@ -7,28 +8,42 @@ import { MenuController } from '@ionic/angular';
   styleUrls: ['./carrito.page.scss'],
 })
 export class CarritoPage implements OnInit {
-  public carrito = [
-    {id:'#2564',nombre: 'laptop Gamer Lenovo',url:'/productoc',precio:250000,tag:'Laptop',marca:'Lenovo',img:'/assets/computador lenovo.jpg'},
-    {id:'#3214',nombre: 'Mouse Gamer logitec',url:'/catalogoc',precio:25000,tag:'Mouse',marca:'logitec',img:'/assets/mouselogitex.jpg'},
-  ]
-  public total: any;
-  public envio: any;
+  public carrito: any[] = [];
 
-  getTotalPrice(): number {
-    let total = 0;
+  
 
-    // Using a for loop to iterate through the items
-    for (let i = 0; i < this.carrito.length; i++) {
-      total += this.carrito[i].precio;
-    }
-    return total;
-  }
+  constructor(private menuCtrl: MenuController,private carritoService: CarritoService,private toastController: ToastController) { }
 
-  constructor(private menuCtrl: MenuController) { }
 
   ngOnInit() {
     this.menuCtrl.enable(true,'comprador')
     this.menuCtrl.enable(false,'vendedor')
+
+    this.carrito = this.carritoService.obtenerCarrito();
+  }
+  getTotalPrice(): number {
+    return this.carrito.reduce((total, item) => total + item.precio, 0);
   }
 
+  eliminarProducto(index: number) {
+    const productoEliminado = this.carrito[index].nombre; // Guardar el nombre del producto para mostrar en el toast
+    this.carrito.splice(index, 1); // Eliminar el producto del carrito
+    this.carritoService.actualizarCarrito(this.carrito); // Asegúrate de que tu servicio tenga un método para actualizar el carrito
+    this.presentToast('Producto eliminado', `${productoEliminado} ha sido eliminado del carrito.`);
+  }
+
+  limpiarCarrito() {
+    this.carrito = [];
+    this.carritoService.actualizarCarrito(this.carrito); // Actualizar el carrito en el servicio
+    this.presentToast('Carrito limpiado', 'Todos los productos han sido eliminados del carrito.');
+  }
+
+  async presentToast(titulo: string, mensaje: string) {
+    const toast = await this.toastController.create({
+      message: mensaje,
+      duration: 2000,
+      position: 'top',
+    });
+    await toast.present();
+  }
 }

@@ -31,12 +31,9 @@ export class PublicarvPage implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.menuCtrl.enable(false, 'comprador');
-    this.menuCtrl.enable(true, 'vendedor');
-
-    // Obtener el usuario y su RUT
     const usuario = await this.userService.obtenerUsuario();
-
+    this.menuCtrl.enable(false,'comprador')
+    this.menuCtrl.enable(true,'vendedor')
     if (usuario) {
         this.rutVendedor = usuario.rut; // Asumiendo que 'rut' es la propiedad correcta en el objeto Usuario
     } else {

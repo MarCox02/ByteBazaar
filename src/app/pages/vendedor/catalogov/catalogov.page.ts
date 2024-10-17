@@ -23,14 +23,8 @@ export class CatalogovPage implements OnInit {
 {}
   async ngOnInit() {
     const usuario = await this.userService.obtenerUsuario();
-    if (usuario) {
-      // Establecer el rol y habilitar/deshabilitar el menú correspondiente
-      const rol = usuario.id_rol; // Suponiendo que id_rol es un string
-
-      // Habilitar y deshabilitar los menús según el rol
-      this.menuCtrl.enable(rol === '2', 'comprador'); // Habilitar menú de comprador
-      this.menuCtrl.enable(rol === '1', 'vendedor'); // Habilitar menú de vendedor
-    }
+    this.menuCtrl.enable(false,'comprador')
+    this.menuCtrl.enable(true,'vendedor')
     if (usuario) {
       this.rutVendedor = usuario.rut; // Asumiendo que 'rut' es la propiedad correcta en el objeto Usuario
       this.usuario = usuario.nombre; // Suponiendo que el nombre está en el objeto Usuario

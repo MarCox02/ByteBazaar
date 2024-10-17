@@ -26,7 +26,6 @@ export class ProductovPage implements OnInit {
   async ngOnInit() {
     this.menuCtrl.enable(false,'comprador')
     this.menuCtrl.enable(true,'vendedor')
-
     this.tiposProducto = await this.bdService.obtenerTiposProducto();
 
     // Obtener el id del producto desde la URL

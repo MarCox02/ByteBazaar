@@ -3,36 +3,44 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
+    <ion-title>Tu Carrito</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-card>
-
+  <ion-card *ngIf="carrito.length > 0">
     <ion-card-content>
-
-      <ion-item>
-        <ion-card-title>Tu Carrito </ion-card-title>
-      </ion-item>
-
-      <ion-list *ngFor="let c of carrito; let i =index">
-
-        <ion-item [routerLink]="[c.url]">
+      <ion-list>
+        <ion-item *ngFor="let item of carrito; let i = index">
           <ion-thumbnail slot="start">
-            <img class="img-carrito" alt="{{c.nombre}}" src="{{c.img}}" />
+            <img class="img-carrito" alt="{{item.nombre}}" [src]="item.img" />
           </ion-thumbnail>
-          <ion-label>{{c.nombre}}<p>{{c.id}}  Tags:{{c.tag}},{{c.marca}}</p><b style="color:red;">{{c.precio | currency:'CLP ':true:'4.0-0'}}</b></ion-label>
+          <ion-label>
+            <h2>{{item.nombre}}</h2>
+            <p>ID: {{item.id}} | Tags: {{item.tag}}</p>
+            <b style="color:red;">{{item.precio | currency:'CLP ':true:'4.0-0'}}</b>
+          </ion-label>
+          <ion-button color="danger" (click)="eliminarProducto(i)">
+            <ion-icon name="trash"></ion-icon>
+          </ion-button>
         </ion-item>
-
       </ion-list>
+
       <ion-item>
-
         <ion-note slot="end">
-          <p >Envio: {{ (getTotalPrice()/10) | currency:'CLP ':true:'4.0-0' }}</p>
-          <b style="font-size: x-large;">Total: {{ getTotalPrice()+getTotalPrice()/10 | currency:'CLP ':true:'4.0-0' }}</b>
+          <p>Envio: {{ (getTotalPrice() / 10) | currency:'CLP ':true:'4.0-0' }}</p>
+          <b style="font-size: x-large;">Total: {{ (getTotalPrice() + getTotalPrice() / 10) | currency:'CLP ':true:'4.0-0' }}</b>
         </ion-note>
-
       </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="carrito.length === 0">
+    <ion-card-header>
+      <ion-card-title>No hay productos en tu carrito</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>Agrega productos a tu carrito para empezar a comprar.</p>
     </ion-card-content>
   </ion-card>
 </ion-content>

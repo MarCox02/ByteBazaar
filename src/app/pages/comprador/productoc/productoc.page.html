@@ -7,19 +7,39 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-card class="contendedor">
-    <img class="imagen" alt="Imagen del producto" src="assets/computador lenovo.jpg" />
+  <ion-card *ngIf="producto" class="contenedor">
+    <img class="imagen" alt="Imagen del producto" [src]="producto.imagen" />
+
     <ion-card-header>
-      <ion-card-title>Laptop Gamer Lenovo</ion-card-title>
-      <ion-card-subtitle>#2564</ion-card-subtitle>
+      <ion-card-title>
+        <h2>{{ producto.nom_producto }}</h2>
+      </ion-card-title>
+      <ion-card-subtitle>#{{ producto.id_producto }}</ion-card-subtitle>
     </ion-card-header>
+
     <ion-card-content>
       <p class="descripcion">
-        Esta laptop gamer Lenovo está equipada con un procesador Intel Core i7 de 9ª generación, 16GB de RAM y una tarjeta gráfica NVIDIA GeForce GTX 1660 Ti. Ideal para gaming y trabajo intensivo.
+        <textarea [(ngModel)]="producto.desc_producto" placeholder="Descripción" [disabled]="true" readonly></textarea>
       </p>
-      <p class="dinero">$250.000</p>
+      <p class="dinero">{{ producto.precio | currency }}</p>
 
-      <ion-button expand="full" (click)="aniadirProducto()">Añadir a tu Carrito</ion-button>
+      <ion-item>
+        <ion-label>Tipo de Producto</ion-label>
+        <ion-select [(ngModel)]="producto.id_tipo" disabled>
+          <ion-select-option *ngFor="let tipo of tiposProducto" [value]="tipo.id_tipo">
+            {{ tipo.nom_tipo }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
     </ion-card-content>
   </ion-card>
+
+  <div class="botones">
+    <ion-button expand="block" color="primary" (click)="agregarAlCarrito()">
+      <ion-icon name="cart"></ion-icon> Agregar al Carrito
+    </ion-button>
+    <ion-button expand="block" color="light" routerLink="/catalogoc">
+      Volver al Catálogo
+    </ion-button>
+  </div>
 </ion-content>
