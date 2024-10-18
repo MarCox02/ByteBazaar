@@ -124,7 +124,8 @@ export class RegistrarPage implements OnInit {
 
     const patronTelefono = /^9\d{8}$/; // Expresión regular para validar número de teléfono chileno
     if (!patronTelefono.test(this.telefono)) {
-      this.errorTelefono = "Teléfono inválido. Debe comenzar con 9 y tener 9 dígitos.";
+      this.errorTelefono = `Teléfono inválido. 
+      Debe comenzar con 9 y tener 9 dígitos.`;
       hayErrores = true;
     }
 
@@ -139,6 +140,7 @@ export class RegistrarPage implements OnInit {
       this.errorConfirmarContrasena = "Las contraseñas no coinciden";
       hayErrores = true;
     }
+  
 
     if (hayErrores) {
       return;

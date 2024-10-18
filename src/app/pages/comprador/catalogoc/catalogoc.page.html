@@ -26,6 +26,7 @@
       
       <ion-card-content>
         <p>{{ producto.desc_producto }}</p>
+        <br>
         <p>Stock: {{ producto.stock }}</p>
         <p>Publicado por: {{ producto.usuario_vendedor }}</p> <!-- Muestra el nombre del vendedor aquí -->
         <p class="dinero">{{ producto.precio | currency:'CLP':'symbol':'1.0-0' }}</p>

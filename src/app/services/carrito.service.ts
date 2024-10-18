@@ -11,8 +11,18 @@ export class CarritoService {
   constructor() { }
 
 
-  agregarProducto(item: Producto) {
-    this.carrito.push(item); // Agrega el producto al carrito
+   // Método para agregar un producto al carrito
+   agregarProducto(item: Producto) {
+    // Verificar si el producto ya existe en el carrito
+    const index = this.carrito.findIndex(p => p.id_producto === item.id_producto);
+    
+    if (index !== -1) {
+      // Aumentar la cantidad si el producto ya está en el carrito
+      this.carrito[index].cantidad = (this.carrito[index].cantidad || 0) + (item.cantidad || 0);
+    } else {
+      // Si no está, añadir el producto al carrito con la cantidad especificada
+      this.carrito.push({ ...item, cantidad: item.cantidad });
+    }
   }
 
   // Método para agregar un producto al carrito

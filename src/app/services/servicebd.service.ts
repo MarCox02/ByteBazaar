@@ -285,6 +285,17 @@ async actualizarUsuario(usuario: Usuario): Promise<void> {
     throw error;
   }
 }
+
+async eliminarUsuario(rut: string): Promise<void> {
+  try {
+    const query = `DELETE FROM usuario WHERE rut = ?`;
+    await this.database.executeSql(query, [rut]);
+    console.log(`Usuario con RUT ${rut} eliminado exitosamente.`);
+  } catch (error) {
+    console.error(`Error al eliminar el usuario con RUT ${rut}:`, error);
+    throw new Error('Error al eliminar el usuario. Intenta nuevamente.');
+  }
+}
 //Producto
 
 async registrarProducto(producto: Producto): Promise<any> {
