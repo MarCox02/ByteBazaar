@@ -17,6 +17,8 @@ export class CatalogovPage implements OnInit {
   tiposProducto: { id_tipo: string; nom_tipo: string }[] = [];
   rutVendedor: string | null = null;
   usuario: string = '';
+  searchText: string = ''; // Declaración de la variable para el texto de búsqueda
+
   constructor(private bdService: ServicebdService, private userService: UserService,    private alertController: AlertController,
     private storage: NativeStorage, private menuCtrl: MenuController
   )
@@ -66,6 +68,24 @@ export class CatalogovPage implements OnInit {
   obtenerNombreTipo(id_tipo: string): string {
     const tipo = this.tiposProducto.find(t => t.id_tipo === id_tipo);
     return tipo ? tipo.nom_tipo : 'Tipo desconocido'; // Maneja caso si el tipo no se encuentra
+  }
+
+
+  async filterProducts() {
+    if (this.searchText) {
+      const filteredProducts = this.productos.filter(producto =>
+        producto.nom_producto.toLowerCase().includes(this.searchText.toLowerCase())
+      );
+
+      // Actualizar la lista de productos mostrados con los productos filtrados
+      if (filteredProducts.length > 0) {
+        this.productos = filteredProducts;
+      } else {
+        this.alerta('Error', 'No se encontraron productos que coincidan con la búsqueda.');
+      }
+    } else {
+      await this.cargarProductos(); // Recargar todos los productos
+    }
   }
 
   async alerta(titulo: string, mensaje: string) {

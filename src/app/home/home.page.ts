@@ -110,7 +110,7 @@ async login() {
     const alert_t = await this.toastController.create({
       message: mensaje,
       duration: 2000,
-      position: 'top',
+      position: 'bottom',
     });
 
     await alert_t.present();

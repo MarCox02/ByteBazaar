@@ -11,8 +11,8 @@ export class CarritoService {
   constructor() { }
 
 
-  agregarProducto(item: any) {
-    this.carrito.push(item);
+  agregarProducto(item: Producto) {
+    this.carrito.push(item); // Agrega el producto al carrito
   }
 
   // Método para agregar un producto al carrito

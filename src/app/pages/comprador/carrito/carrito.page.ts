@@ -22,14 +22,36 @@ export class CarritoPage implements OnInit {
     this.carrito = this.carritoService.obtenerCarrito();
   }
   getTotalPrice(): number {
-    return this.carrito.reduce((total, item) => total + item.precio, 0);
+    return this.carrito.reduce((total, item) => total + (item.precio * item.cantidad), 0);
   }
 
   eliminarProducto(index: number) {
-    const productoEliminado = this.carrito[index].nombre; // Guardar el nombre del producto para mostrar en el toast
+    const productoEliminado = this.carrito[index].nom_producto; // Usar nom_producto en lugar de nombre
     this.carrito.splice(index, 1); // Eliminar el producto del carrito
-    this.carritoService.actualizarCarrito(this.carrito); // Asegúrate de que tu servicio tenga un método para actualizar el carrito
+    this.carritoService.actualizarCarrito(this.carrito); // Actualiza el carrito en el servicio
     this.presentToast('Producto eliminado', `${productoEliminado} ha sido eliminado del carrito.`);
+  }
+
+  cambiarCantidad(index: number, incremento: number) {
+    const nuevoCantidad = this.carrito[index].cantidad + incremento; // Ajustar la cantidad
+    const stockDisponible = this.carrito[index].stock; // Obtener el stock disponible del producto
+
+    if (nuevoCantidad < 0) {
+      this.presentToast('Cantidad no válida', 'La cantidad no puede ser menor a 0.');
+      return; // No permitir que la cantidad sea menor a 0
+    }
+
+    if (nuevoCantidad > stockDisponible) {
+      this.presentToast('Stock insuficiente', `Solo hay ${stockDisponible} unidades disponibles.`);
+      return; // No permitir que la cantidad supere el stock
+    }
+
+    if (nuevoCantidad === 0) {
+      this.eliminarProducto(index); // Eliminar el producto si la cantidad llega a 0
+    } else {
+      this.carrito[index].cantidad = nuevoCantidad; // Actualizar la cantidad en el carrito
+      this.carritoService.actualizarCarrito(this.carrito); // Actualiza el carrito en el servicio
+    }
   }
 
   limpiarCarrito() {

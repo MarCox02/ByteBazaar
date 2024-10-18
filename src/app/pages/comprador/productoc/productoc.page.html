@@ -23,6 +23,14 @@
       </p>
       <p class="dinero">{{ producto.precio | currency }}</p>
 
+
+      <ion-item>
+        <ion-label>Selecciona la cantidad:</ion-label>
+        <ion-button (click)="disminuirCantidad()">-</ion-button>
+        <ion-input type="number" [(ngModel)]="cantidad" min="1" [max]="producto.stock" placeholder="1"></ion-input>
+        <ion-button (click)="incrementarCantidad()">+</ion-button>
+      </ion-item>
+
       <ion-item>
         <ion-label>Tipo de Producto</ion-label>
         <ion-select [(ngModel)]="producto.id_tipo" disabled>
@@ -31,6 +39,8 @@
           </ion-select-option>
         </ion-select>
       </ion-item>
+
+      <p>Publicado por: {{ producto.usuario_vendedor }}</p> <!-- Muestra el nombre del vendedor aquí -->
     </ion-card-content>
   </ion-card>
 

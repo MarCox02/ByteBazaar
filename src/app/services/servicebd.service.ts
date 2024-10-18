@@ -398,10 +398,11 @@ async eliminarProducto(idProducto: number): Promise<void> {
 async verProductos(): Promise<Producto[]> {
   try {
     const res = await this.database.executeSql(`
-      SELECT p.*, i.imagen_prod, t.nom_tipo 
+      SELECT p.*, i.imagen_prod, t.nom_tipo, u.user 
       FROM producto p 
       LEFT JOIN img_producto i ON p.id_producto = i.id_producto
       LEFT JOIN tipoproducto t ON p.id_tipo = t.id_tipo
+      LEFT JOIN usuario u ON p.rut_v = u.rut  -- Unión con la tabla de usuarios
     `, []);
     
     const productos: Producto[] = [];
@@ -418,7 +419,8 @@ async verProductos(): Promise<Producto[]> {
         id_tipo: item.id_tipo,
         rut_v: item.rut_v,
         imagen: item.imagen_prod, // Ahora la imagen se obtiene directamente
-        nom_tipo: item.nom_tipo // Aquí agregas el nombre del tipo
+        nom_tipo: item.nom_tipo, // Aquí agregas el nombre del tipo
+        usuario_vendedor: item.user // Agrega el nombre del vendedor aquí
       };
 
       productos.push(producto);
@@ -449,10 +451,11 @@ async verProductosPorVendedor(rutVendedor: string | null): Promise<Producto[]> {
   }
 
   const query = `
-    SELECT p.*, i.imagen_prod,t.nom_tipo
+    SELECT p.*, i.imagen_prod, t.nom_tipo, u.user
     FROM producto p
     LEFT JOIN img_producto i ON p.id_producto = i.id_producto
     LEFT JOIN tipoproducto t ON p.id_tipo = t.id_tipo
+    LEFT JOIN usuario u ON p.rut_v = u.rut  -- Unión con la tabla de usuarios
     WHERE p.rut_v = ?
   `;
 
@@ -472,7 +475,8 @@ async verProductosPorVendedor(rutVendedor: string | null): Promise<Producto[]> {
         id_tipo: item.id_tipo,
         rut_v: item.rut_v,
         imagen: item.imagen_prod, // Obtiene la imagen desde la tabla img_producto
-        nom_tipo: item.nom_tipo
+        nom_tipo: item.nom_tipo,
+        usuario_vendedor: item.user // Agrega el nombre del vendedor aquí
       };
 
       productos.push(producto);
@@ -483,6 +487,7 @@ async verProductosPorVendedor(rutVendedor: string | null): Promise<Producto[]> {
     throw error; // Lanza el error para manejarlo en el lugar donde se llama
   }
 }
+
 
 async obtenerTiposProducto(): Promise<{ id_tipo: string; nom_tipo: string }[]> {
   const sql = `SELECT id_tipo, nom_tipo FROM tipoproducto`; // Consulta para obtener tipos de productos
@@ -496,11 +501,14 @@ async obtenerTiposProducto(): Promise<{ id_tipo: string; nom_tipo: string }[]> {
 
 async obtenerProductoPorId(idProducto: number): Promise<Producto | null> {
   const query = `
-    SELECT p.*, i.imagen_prod
+    SELECT p.*, i.imagen_prod, t.nom_tipo, u.user
     FROM producto p
     LEFT JOIN img_producto i ON p.id_producto = i.id_producto
+    LEFT JOIN tipoproducto t ON p.id_tipo = t.id_tipo
+    LEFT JOIN usuario u ON p.rut_v = u.rut  -- Unir con la tabla de usuarios
     WHERE p.id_producto = ?
   `;
+  
   const result = await this.database.executeSql(query, [idProducto]);
   
   if (result.rows.length > 0) {
@@ -512,12 +520,15 @@ async obtenerProductoPorId(idProducto: number): Promise<Producto | null> {
       precio: item.precio,
       stock: item.stock,
       id_tipo: item.id_tipo,
-      imagen: item.imagen_prod, // Aquí aseguramos que se obtiene la imagen correcta
-      rut_v: item.rut_v
+      imagen: item.imagen_prod, // Asegurar que se obtiene la imagen correcta
+      rut_v: item.rut_v,
+      nom_tipo: item.nom_tipo, // Incluir el nombre del tipo de producto
+      usuario_vendedor: item.user // Agregar el nombre del vendedor aquí
     };
   }
   return null; // Devolver null si no se encuentra el producto
 }
+
 
 
 

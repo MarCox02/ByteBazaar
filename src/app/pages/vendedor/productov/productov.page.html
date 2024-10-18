@@ -21,8 +21,20 @@
       <p class="descripcion">
         <textarea [(ngModel)]="producto.desc_producto" placeholder="Descripción" [disabled]="!isEditing"></textarea>
       </p>
-      <p class="dinero">{{ producto.precio | currency }}</p>
-      
+          <ion-item *ngIf="isEditing">
+            <ion-label position="floating">Stock</ion-label>
+              <ion-input 
+              type="number" 
+              [(ngModel)]="producto.stock" 
+              placeholder="Cantidad en stock" 
+              [disabled]="!isEditing"
+            ></ion-input>
+          </ion-item>      
+
+          <p *ngIf="!isEditing">El Stock del producto es: {{ producto.stock }}</p>
+
+           
+
       <ion-item *ngIf="isEditing">
         <ion-label>Tipo de Producto</ion-label>
         <ion-select [(ngModel)]="producto.id_tipo" [disabled]="!isEditing">
@@ -31,6 +43,19 @@
           </ion-select-option>
         </ion-select>
       </ion-item>
+
+      <ion-item *ngIf="isEditing">
+        <ion-label position="floating">Precio</ion-label>
+        <ion-input 
+          type="number" 
+          [(ngModel)]="producto.precio" 
+          placeholder="Precio del producto" 
+          [disabled]="!isEditing">
+        </ion-input>
+      </ion-item>
+
+      <p *ngIf="!isEditing" class="dinero">{{ producto.precio | currency }}</p>
+
       
       <ion-button (click)="cambiarImagen()" color="secondary" *ngIf="isEditing">
         <ion-icon name="camera"></ion-icon> Cambiar Imagen
@@ -38,10 +63,22 @@
     </ion-card-content>
   </ion-card>
 
+    <!-- Mensajes de error -->
+    <div *ngIf="mensajeErrorNombre" class="error-message">{{ mensajeErrorNombre }}</div>
+    <div *ngIf="mensajeErrorDescripcion" class="error-message">{{ mensajeErrorDescripcion }}</div>
+    <div *ngIf="mensajeErrorStock" class="error-message">{{ mensajeErrorStock }}</div>
+    <div *ngIf="mensajeErrorTipo" class="error-message">{{ mensajeErrorTipo }}</div>
+    <div *ngIf="mensajeErrorPrecio" class="error-message">{{ mensajeErrorPrecio }}</div>
+    <div *ngIf="mensajeErrorImagen" class="error-message">{{ mensajeErrorImagen }}</div>
+
+
+
   <div class="botones">
     <ion-button expand="block" color="primary" (click)="toggleEdit()">
       {{ isEditing ? 'Guardar Cambios' : 'Editar' }}
     </ion-button>
     <ion-button expand="block" color="danger" (click)="eliminarProducto()">Eliminar</ion-button>
   </div>
+
+   
 </ion-content>

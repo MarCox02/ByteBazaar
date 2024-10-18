@@ -15,6 +15,8 @@ export class ProductocPage implements OnInit {
 
   producto: Producto | undefined; 
   tiposProducto: any[] = []; // Asegúrate de declarar esto
+  public cantidad: number = 1; // Valor predeterminado
+
 
   constructor(private menuCtrl: MenuController,private alertController: AlertController,  private router: Router, 
      private toastController: ToastController, private carritoService: CarritoService, private userService: UserService,
@@ -44,30 +46,52 @@ export class ProductocPage implements OnInit {
 }
 
 
-  agregarAlCarrito() {
-    if (!this.producto) {
-      this.presentToast('El producto no está disponible.');
-      return;
-    }
-
-    const item = {
-      id: this.producto.id_producto,
-      nombre: this.producto.nom_producto,
-      img: this.producto.imagen,
+agregarAlCarrito() {
+  if (this.producto) {
+    const item: Producto = {
+      id_producto: this.producto.id_producto,
+      nom_producto: this.producto.nom_producto,
+      desc_producto: this.producto.desc_producto,
       precio: this.producto.precio,
-      tag: this.producto.nom_tipo, // Suponiendo que este campo se relaciona con el tipo
-      url: `/producto/${this.producto.id_producto}`, // URL del detalle del producto
+      stock: this.producto.stock,
+      id_tipo: this.producto.id_tipo,
+      imagen: this.producto.imagen, // Asegúrate de que esto esté correctamente asignado
+      rut_v: this.producto.rut_v,
+      nom_tipo: this.producto.nom_tipo,
+      usuario_vendedor: this.producto.usuario_vendedor,
+      cantidad: this.cantidad // Asigna la cantidad seleccionada
     };
 
-    // Agregar el producto al carrito usando el servicio
-    this.carritoService.agregarProducto(item);
-    this.presentToast(`${item.nombre}ha sido agregado a tu carrito.`);
+    // Verifica que todos los campos requeridos estén presentes
+    if (item.id_producto && item.nom_producto && item.imagen && item.precio !== undefined && item.stock !== undefined && this.cantidad > 0) {
+      this.carritoService.agregarProducto(item);
+      this.presentToast(`${item.nom_producto} ha sido agregado al carrito.`);
+    } else {
+      console.error('El producto no tiene todos los campos requeridos o la cantidad es cero.');
+    }
   }
+}
+
+// Métodos para incrementar y disminuir la cantidad
+incrementarCantidad() {
+  if (this.cantidad < this.producto?.stock!) {
+    this.cantidad++;
+  }
+}
+
+disminuirCantidad() {
+  if (this.cantidad > 1) {
+    this.cantidad--;
+  } else if (this.cantidad === 1) {
+    this.cantidad = 1; // Mantener en 1
+  }
+}
+
   async presentToast( mensaje: string) {
     const alert_t = await this.toastController.create({
       message: mensaje,
       duration: 2000,
-      position: 'top',
+      position: 'bottom',
     });
 
     await alert_t.present();

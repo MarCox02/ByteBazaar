@@ -28,3 +28,11 @@
     justify-content: space-around;
     margin: 20px 16px;
   }
+
+  .error-message {
+    color: red; /* Cambia el color del texto de error */
+    background-color: #ffe6e6; /* Fondo ligeramente rojo para resaltar el error */
+    padding: 10px; /* Espaciado interno */
+    border-radius: 5px; /* Bordes redondeados */
+    margin-top: 10px; /* Espaciado superior */
+  }

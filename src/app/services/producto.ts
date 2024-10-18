@@ -8,4 +8,8 @@ export class Producto {
     imagen!: string; // Añade este campo opcional para la imagen
     rut_v!: string; // RUT del vendedor
     nom_tipo?: string; // Nombre del tipo de producto (opcional)
+    usuario_vendedor?: string; // Nombre del usuario del vendedor (opcional)
+    cantidad?: number; // Agregar cantidad como opcional
+
+
 }
