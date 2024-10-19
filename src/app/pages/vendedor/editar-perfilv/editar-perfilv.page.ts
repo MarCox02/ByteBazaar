@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AlertController, MenuController } from '@ionic/angular';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { UserService } from 'src/app/services/user.service';
@@ -17,18 +18,33 @@ export class EditarPerfilvPage implements OnInit {
   fotoPerfil: string | null = ''; // Ruta de la foto de perfil
   nuevaFoto: File | null = null; // Archivo de la nueva foto de perfil
   usuario: Usuario | null = null;
+  id_rol: string = ''; // Para manejar el cambio de rol
 
-  constructor(private userService: UserService, private alertController: AlertController,private menuCtrl: MenuController,private servicebd: ServicebdService) { }
+  constructor(private userService: UserService, private alertController: AlertController,private menuCtrl: MenuController,
+    private servicebd: ServicebdService, private router: Router) { }
 
   async ngOnInit() {
-    this.menuCtrl.enable(false,'comprador')
-    this.menuCtrl.enable(true,'vendedor')
+    const usuario = await this.userService.obtenerUsuario();
+  if (usuario) {
+    // Establecer el rol y habilitar/deshabilitar el menú correspondiente
+    const rol = usuario.id_rol; // Suponiendo que id_rol es un string
+
+    // Habilitar y deshabilitar los menús según el rol
+    if (rol === '2') {
+      this.menuCtrl.enable(true, 'comprador'); // Habilitar menú de comprador
+      this.menuCtrl.enable(false, 'vendedor'); // Deshabilitar menú de vendedor
+    } else if (rol === '1') {
+      this.menuCtrl.enable(false, 'comprador'); // Deshabilitar menú de comprador
+      this.menuCtrl.enable(true, 'vendedor'); // Habilitar menú de vendedor
+    }
+  }
     // Obtener el usuario desde el servicio
     this.usuario = await this.userService.obtenerUsuario();
     if (this.usuario) {
       this.correo = this.usuario.correo;
       this.nombreUsuario = this.usuario.user;
       this.fotoPerfil = this.usuario.foto_perfil || 'ruta/default_avatar.jpg';
+      this.id_rol = this.usuario.id_rol;
     }
   }
 
@@ -49,19 +65,20 @@ export class EditarPerfilvPage implements OnInit {
     }
   }
 
-  toggleEdit() {
+  async toggleEdit() {
     if (this.editMode) {
       // Guardar cambios
-      this.actualizarUsuario();
+      await this.actualizarUsuario();
     }
     this.editMode = !this.editMode; // Alternar el modo de edición
   }
-
+  
   async actualizarUsuario() {
     if (this.usuario) {
       // Actualiza las propiedades del usuario
       this.usuario.correo = this.correo;
       this.usuario.user = this.nombreUsuario;
+      this.usuario.id_rol = this.id_rol; // Actualizar el rol
   
       // Manejo de la nueva foto
       if (this.nuevaFoto) {
@@ -78,13 +95,20 @@ export class EditarPerfilvPage implements OnInit {
         await this.servicebd.actualizarUsuario(this.usuario);
         await this.userService.login(this.usuario); // Actualiza el almacenamiento en NativeStorage
         await this.alerta('Éxito', 'Datos actualizados correctamente');
+  
+        // Redirigir según el rol después de guardar los cambios
+        if (this.usuario.id_rol === '1') { // Vendedor
+          this.router.navigate(['/perfilv']);
+        } else if (this.usuario.id_rol === '2') { // Comprador
+          this.router.navigate(['/perfilc']);
+        }
       } catch (error) {
         console.error('Error al actualizar el usuario:', error);
         await this.alerta('Error', 'No se pudo actualizar los datos. Intenta nuevamente.');
       }
     }
   }
-
+  
   convertirArchivoABase64(file: File): Promise<string | ArrayBuffer | null> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();

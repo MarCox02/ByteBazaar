@@ -3,36 +3,58 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
+    <ion-title>Tu Carrito</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-card>
+<ion-card-content>
+  <ion-list>
+    <ion-item *ngFor="let item of carrito; let i = index" lines="full">
+      <ion-thumbnail slot="start" class="img-container">
+        <img class="img-carrito" [src]="item.imagen" alt="{{item.nom_producto}}" />
+      </ion-thumbnail>
 
-    <ion-card-content>
+      <ion-label>
+        <h2>{{item.nom_producto}}</h2>
+        <p>ID: {{item.id_producto}} | {{item.nom_tipo}}</p>
+        <b class="precio">{{item.precio | currency:'CLP ':true:'4.0-0'}}</b>
+      </ion-label>
 
-      <ion-item>
-        <ion-card-title>Tu Carrito</ion-card-title>
-      </ion-item>
+      <!-- Cantidad de productos -->
+      <ion-buttons slot="end" class="cantidad-buttons">
+        <ion-button size="small" color="light" (click)="cambiarCantidad(i, -1)">
+          <ion-icon name="remove-outline"></ion-icon>
+        </ion-button>
+        <ion-label>{{item.cantidad}}</ion-label>
+        <ion-button size="small" color="light" (click)="cambiarCantidad(i, 1)">
+          <ion-icon name="add-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
 
-      <ion-list *ngFor="let c of carrito; let i =index">
+      <!-- Botón de eliminar -->
+      <ion-button slot="end" color="danger" fill="clear" (click)="eliminarProducto(i)">
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
 
-        <ion-item [routerLink]="[c.url]">
-          <ion-thumbnail slot="start">
-            <img class="img-carrito" alt="{{c.nombre}}" src="{{c.img}}" />
-          </ion-thumbnail>
-          <ion-label>{{c.nombre}}<p>{{c.id}}  Tags:{{c.tag}},{{c.marca}}</p><b style="color:red;">{{c.precio | currency:'CLP ':true:'4.0-0'}}</b></ion-label>
-        </ion-item>
+  <!-- Total e IVA -->
+  <ion-item lines="none">
+    <ion-note slot="end" class="total-carrito">
+      <p>IVA (19%): {{ (getTotalPrice() * 0.19) | currency:'CLP':'symbol':'1.0-0' }}</p>
+      <b>Total: {{ (getTotalPrice() + getTotalPrice() * 0.19) | currency:'CLP':'symbol':'1.0-0' }}</b>
+    </ion-note>
+  </ion-item>
+</ion-card-content>
+</ion-card>
 
-      </ion-list>
-      <ion-item>
-
-        <ion-note slot="end">
-          <p >Envio: {{ (getTotalPrice()/10) | currency:'CLP ':true:'4.0-0' }}</p>
-          <b style="font-size: x-large;">Total: {{ getTotalPrice()+getTotalPrice()/10 | currency:'CLP ':true:'4.0-0' }}</b>
-        </ion-note>
-
-      </ion-item>
-    </ion-card-content>
-  </ion-card>
+<!-- Mensaje si el carrito está vacío -->
+<ion-card *ngIf="carrito.length === 0">
+<ion-card-header>
+  <ion-card-title>Tu carrito está vacío</ion-card-title>
+</ion-card-header>
+<ion-card-content>
+  <p>¡Agrega productos a tu carrito para empezar a comprar!</p>
+</ion-card-content>
+</ion-card>
 </ion-content>

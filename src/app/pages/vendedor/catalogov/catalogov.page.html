@@ -7,18 +7,27 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-searchbar></ion-searchbar>
+  <ion-searchbar [(ngModel)]="searchText" (ionInput)="filterProducts()"></ion-searchbar>
+  
   <h2 class="titulo">Bienvenido {{ usuario }}</h2>
+  
   <div class="card-container">
-    <ion-card *ngFor="let producto of productos" class="carta" [routerLink]="['/productov', producto.id_producto]">
+    <ion-card 
+      *ngFor="let producto of productos" 
+      class="carta" 
+      [routerLink]="['/productov', producto.id_producto]">
+      
       <img class="imagen" [src]="producto.imagen" alt="Imagen del producto" />
+      
       <ion-card-header>
         <ion-card-title>{{ producto.nom_producto }}</ion-card-title>
-        <ion-card-subtitle>#{{ producto.id_producto }}</ion-card-subtitle>
+        <ion-card-subtitle>#{{ producto.nom_tipo }}</ion-card-subtitle>
       </ion-card-header>
+      
       <ion-card-content>
         <p>{{ producto.desc_producto }}</p>
-        <p class="dinero">${{ producto.precio }}</p>
+        <p>Stock: {{ producto.stock }}</p>
+        <p class="dinero">{{ producto.precio | currency:'CLP':'symbol':'1.0-0' }}</p>
       </ion-card-content>
     </ion-card>
   </div>

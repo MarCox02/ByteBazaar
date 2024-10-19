@@ -3,23 +3,54 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
+    <ion-title>Detalles del Producto</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-card class="contendedor">
-    <img class="imagen" alt="Imagen del producto" src="assets/computador lenovo.jpg" />
+  <ion-card *ngIf="producto" class="contenedor">
+    <img class="imagen" alt="Imagen del producto" [src]="producto.imagen" />
+
     <ion-card-header>
-      <ion-card-title>Laptop Gamer Lenovo</ion-card-title>
-      <ion-card-subtitle>#2564</ion-card-subtitle>
+      <ion-card-title class="titulo">{{ producto.nom_producto }}</ion-card-title>
+      <ion-card-subtitle class="subtitulo">#{{ producto.id_producto }}</ion-card-subtitle>
     </ion-card-header>
+
     <ion-card-content>
       <p class="descripcion">
-        Esta laptop gamer Lenovo está equipada con un procesador Intel Core i7 de 9ª generación, 16GB de RAM y una tarjeta gráfica NVIDIA GeForce GTX 1660 Ti. Ideal para gaming y trabajo intensivo.
+        <textarea [(ngModel)]="producto.desc_producto" placeholder="Descripción" [disabled]="true" readonly></textarea>
       </p>
-      <p class="dinero">$250.000</p>
+      <p class="dinero">{{ producto.precio | currency }}</p>
 
-      <ion-button expand="full" (click)="aniadirProducto()">Añadir a tu Carrito</ion-button>
+      <ion-item class="cantidad-selector">
+        <ion-label>Selecciona la cantidad:</ion-label>
+        <ion-buttons>
+          <ion-button (click)="disminuirCantidad()">-</ion-button>
+          <ion-input type="number" [(ngModel)]="cantidad" min="1" [max]="producto.stock" placeholder="1"></ion-input>
+          <ion-button (click)="incrementarCantidad()">+</ion-button>
+        </ion-buttons>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Tipo de Producto</ion-label>
+        <ion-select [(ngModel)]="producto.id_tipo" disabled>
+          <ion-select-option *ngFor="let tipo of tiposProducto" [value]="tipo.id_tipo">
+            {{ tipo.nom_tipo }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <p>Publicado por: <strong>{{ producto.usuario_vendedor }}</strong></p>
     </ion-card-content>
   </ion-card>
+
+  <div class="botones">
+    <ion-button expand="block" color="primary" (click)="agregarAlCarrito()">
+      <ion-icon name="cart"></ion-icon> Agregar al Carrito
+    </ion-button>
+    <ion-button expand="block" color="light" routerLink="/catalogoc">
+      Volver al Catálogo
+    </ion-button>
+  </div>
+  <br>
 </ion-content>
