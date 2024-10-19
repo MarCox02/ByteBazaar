@@ -13,7 +13,12 @@ export class UserService {
   public currentUser$ = this.currentUserSubject.asObservable();
   
   constructor( private nativeStorage: NativeStorage,private alertController: AlertController,
-) { }
+) {this.cargarUsuario(); }
+
+private async cargarUsuario() {
+  const usuario = await this.obtenerUsuario();
+  this.currentUserSubject.next(usuario); // Emitir el usuario inicial
+}
 
 async login(usuario: Usuario) {
   // Asegúrate de que todas las propiedades estén definidas
@@ -28,9 +33,6 @@ async login(usuario: Usuario) {
     contrasena: usuario.contrasena,
     id_rol: usuario.id_rol
   };
-
-  this.presentAlert("Usuario a guardar en NativeStorage:", `${usuario.rut}`);
-
   await this.nativeStorage.setItem('usuario', usuarioALogar);
   this.currentUserSubject.next(usuarioALogar);
 }
@@ -47,7 +49,12 @@ async login(usuario: Usuario) {
       }
     }
 
-   
+   // Este método se llamaría después de editar el usuario
+   async editarUsuario(usuario: Usuario) {
+    // Lógica para guardar el usuario editado en la base de datos
+    await this.nativeStorage.setItem('usuario', usuario);
+    this.currentUserSubject.next(usuario); // Actualiza el BehaviorSubject con el usuario editado
+  }
 
   async presentAlert(titulo:string, msj:string) {
     const alert = await this.alertController.create({

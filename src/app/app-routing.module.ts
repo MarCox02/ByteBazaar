@@ -49,7 +49,7 @@ const routes: Routes = [
   },
 
   {
-    path: 'productov',
+    path: 'productov/:id',
     loadChildren: () => import('./pages/vendedor/productov/productov.module').then( m => m.ProductovPageModule)
   },
 
@@ -58,7 +58,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/vendedor/editar-perfilv/editar-perfilv.module').then( m => m.EditarPerfilvPageModule)
   },
   {
-    path: 'productoc',
+    path: 'productoc/:id',
     loadChildren: () => import('./pages/comprador/productoc/productoc.module').then( m => m.ProductocPageModule)
   },
   {

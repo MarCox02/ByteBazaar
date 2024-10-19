@@ -22,7 +22,17 @@ export class PublicarvPage implements OnInit {
   precio: number | null = null;
   productos: Producto[] = [];
   rutVendedor: string | null = null; // Campo para almacenar el RUT del vendedor
+  tiposProducto: { id_tipo: string; nom_tipo: string }[] = []; // Almacena los tipos de producto
+  tipoSeleccionado: string | null = null; // Tipo de producto seleccionado
 
+
+  // Errores
+  mensajeErrorNombre: string | null = null;
+  mensajeErrorDescripcion: string | null = null;
+  mensajeErrorStock: string | null = null;
+  mensajeErrorTipo: string | null = null;
+  mensajeErrorPrecio: string | null = null;
+  mensajeErrorImagen: string | null = null;
 
   constructor(private menuCtrl: MenuController, private alertController: AlertController, private router: Router,
     private bdService: ServicebdService,private storage: NativeStorage,private userService: UserService
@@ -30,18 +40,15 @@ export class PublicarvPage implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.menuCtrl.enable(false, 'comprador');
-    this.menuCtrl.enable(true, 'vendedor');
-
-    // Obtener el usuario y su RUT
     const usuario = await this.userService.obtenerUsuario();
-
+    this.menuCtrl.enable(false,'comprador')
+    this.menuCtrl.enable(true,'vendedor')
     if (usuario) {
         this.rutVendedor = usuario.rut; // Asumiendo que 'rut' es la propiedad correcta en el objeto Usuario
     } else {
         this.alerta('Error', 'No se pudo obtener el RUT del vendedor.');
     }
-
+    await this.cargarTiposProducto(); // Cargar tipos de productos
     this.cargarProductos();
 }
 
@@ -54,7 +61,15 @@ async cargarProductos() {
   }
 }
 
-
+async cargarTiposProducto() {
+  try {
+    // Aquí deberías implementar tu método para obtener los tipos de productos de la base de datos
+    this.tiposProducto = await this.bdService.obtenerTiposProducto();
+  } catch (error) {
+    this.alerta('Error', 'No se pudieron cargar los tipos de producto');
+    console.error('Error al cargar tipos de producto:', error);
+  }
+}
 
 tomarfoto = async () => {
   const image = await Camera.getPhoto({
@@ -73,42 +88,96 @@ tomarfoto = async () => {
   }
 
   async formulario() {
-    if (
-      this.nombreProducto.trim() === '' ||
-      this.descripcionProducto.trim() === '' ||
-      this.cantidad === null ||
-      this.cantidad <= 0 ||
-      this.precio === null ||
-      this.precio <= 0 ||
-      !this.imagen
-    ) {
-      this.alerta('Error', 'Por favor, asegúrate de completar todos los campos correctamente.');
-      return;
-    }
-  
-    const nuevoProducto: Producto = {
-      id_producto: 0, // Este se autoincrementará en la base de datos
-      nom_producto: this.nombreProducto,
-      desc_producto: this.descripcionProducto,
-      precio: this.precio!, // Asegúrate de que sea un número
-      stock: this.cantidad!, // Asegúrate de que sea un número
-      id_tipo: '1', // Este valor debe ser válido
-      imagen: this.imagen, // Asegúrate de que sea una cadena de texto
-      rut_v: this.rutVendedor! // Asegúrate de que no sea null
-  };
-  
-    try {
-      await this.bdService.registrarProducto(nuevoProducto);
-      this.alerta('Éxito', 'Producto registrado correctamente');
-      this.limpiarFormulario();
-      this.cargarProductos(); 
-      this.router.navigate(['/catalogov']);
-    } catch (error) {
-      const errorMessage = typeof error === 'object' ? JSON.stringify(error) : error;
-      this.alerta('Error', `No se pudo registrar el producto: ${errorMessage}`);
-      console.error('Error al registrar producto:', error);
-    }
+    
+  // Reiniciar mensajes de error
+  this.mensajeErrorNombre = null;
+  this.mensajeErrorDescripcion = null;
+  this.mensajeErrorStock = null;
+  this.mensajeErrorTipo = null;
+  this.mensajeErrorPrecio = null;
+  this.mensajeErrorImagen = null;
+
+  // Validación del nombre del producto
+  if (!this.nombreProducto || this.nombreProducto.trim().length < 3) {
+    this.mensajeErrorNombre = 'El nombre del producto debe tener al menos 3 caracteres';
   }
+  if (this.nombreProducto.trim().length > 50) {
+    this.mensajeErrorNombre = 'El nombre del producto no puede superar los 50 caracteres';
+  }
+
+  // Validación de la descripción
+  if (!this.descripcionProducto || this.descripcionProducto.trim().length < 10) {
+    this.mensajeErrorDescripcion = 'La descripción debe tener al menos 10 caracteres';
+  }
+  if (this.descripcionProducto.trim().length > 500) {
+    this.mensajeErrorDescripcion = 'La descripción no puede superar los 500 caracteres';
+  }
+
+  // Validación del stock
+  if (this.cantidad === null || this.cantidad < 0) {
+    this.mensajeErrorStock = 'El stock no puede ser negativo';
+  }
+
+  // Validación del tipo de producto
+  if (!this.tipoSeleccionado) {
+    this.mensajeErrorTipo = 'Debes seleccionar un tipo de producto';
+  }
+
+  // Validación del precio
+  if (this.precio === null || this.precio <= 0) {
+    this.mensajeErrorPrecio = 'El precio no puede ser cero o negativo';
+  }
+
+  if (this.precio !== null && this.precio > 999999) {
+    this.mensajeErrorPrecio = 'El precio no puede ser mayor a 999,999';
+  }
+
+  // Validación de la imagen
+  if (!this.imagen) {
+    this.mensajeErrorImagen = 'Debes agregar una imagen del producto';
+  }
+
+  // Si hay errores de validación, mostramos los mensajes correspondientes
+  if (
+    this.mensajeErrorNombre ||
+    this.mensajeErrorDescripcion ||
+    this.mensajeErrorStock ||
+    this.mensajeErrorTipo ||
+    this.mensajeErrorPrecio ||
+    this.mensajeErrorImagen
+  ) {
+    this.alerta('Error', 'Corrige los errores antes de guardar.');
+    return; // Salir si hay errores
+  }
+
+  // Obtener el nombre del tipo basado en el tipo seleccionado
+  const tipoSeleccionado = this.tiposProducto.find(tipo => tipo.id_tipo === this.tipoSeleccionado);
+  const nombreTipo = tipoSeleccionado ? tipoSeleccionado.nom_tipo : 'Tipo desconocido';
+
+  const nuevoProducto: Producto = {
+    id_producto: 0, // Este se autoincrementará en la base de datos
+    nom_producto: this.nombreProducto,
+    desc_producto: this.descripcionProducto,
+    precio: this.precio!, // Asegúrate de que sea un número
+    stock: this.cantidad!, // Asegúrate de que sea un número
+    id_tipo: this.tipoSeleccionado!, // Usar el tipo seleccionado
+    imagen: this.imagen, // Asegúrate de que sea una cadena de texto
+    rut_v: this.rutVendedor!, // Asegúrate de que no sea null
+    nom_tipo: nombreTipo // Agregar el nombre del tipo
+  };
+
+  try {
+    await this.bdService.registrarProducto(nuevoProducto);
+    this.alerta('Éxito', 'Producto registrado correctamente');
+    this.limpiarFormulario();
+    this.cargarProductos(); 
+    this.router.navigate(['/catalogov']);
+  } catch (error) {
+    const errorMessage = typeof error === 'object' ? JSON.stringify(error) : error;
+    this.alerta('Error', `No se pudo registrar el producto: ${errorMessage}`);
+    console.error('Error al registrar producto:', error);
+  }
+}
   
 
   limpiarFormulario() {

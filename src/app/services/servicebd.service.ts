@@ -5,7 +5,6 @@ import { AlertController, Platform } from '@ionic/angular';
 import { Usuario } from './usuario';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 import { UserService } from './user.service';
-import { firstValueFrom } from 'rxjs';
 import { Producto } from './producto';
 
 @Injectable({
@@ -50,10 +49,9 @@ export class ServicebdService {
   registroUsuario: string = "INSERT OR IGNORE INTO usuario(user, rut, nombre, apellido, correo, telefono, foto_perfil, id_rol, contrasena) VALUES ('usuario1', '12345678-9', 'Juan', 'Pérez', 'juan.perez@mail.com', 912345678, 'path_a_foto', '1', 'Contrasena1');";
 
   registroUsuario2: string = "INSERT OR IGNORE INTO usuario(user, rut, nombre, apellido, correo, telefono, foto_perfil, id_rol, contrasena) VALUES ('usuario2', '22222222-2', 'John', 'Smith', 'John.smith@mail.com', 912345678, 'path_a_foto', '2', 'Contrasena2');";
-  registroTarjeta: string = "INSERT OR IGNORE INTO tarjeta(id_tarjeta, rut_usuario, numero_tarjeta, CVC, FE_mes, FE_anio) VALUES ('1','12345678-9','4567456745674567','666','6','2026')";
-  registroTarjeta2: string = "INSERT OR IGNORE INTO tarjeta(id_tarjeta, rut_usuario, numero_tarjeta, CVC, FE_mes, FE_anio) VALUES ('2','22222222-2','4222222222222222','222','2','2026')";
+  registroTarjeta: string = "INSERT OR IGNORE INTO tarjeta(rut_usuario, numero_tarjeta, CVC, FE_mes, FE_anio) VALUES ('12345678-9','4567456745674567','666','6','2026')";
+  registroTarjeta2: string = "INSERT OR IGNORE INTO tarjeta(rut_usuario, numero_tarjeta, CVC, FE_mes, FE_anio) VALUES ('22222222-2','4222222222222222','222','2','2026')";
 
-  
   //variables de observables para las consultas de base de datos
   listaUsuario = new BehaviorSubject<Usuario[]>([]); // Asegúrate de que tenga el tipo correcto
 
@@ -74,7 +72,6 @@ export class ServicebdService {
         this.crearTablas();
         //modificar el estatus de la base de datos
         this.isDBReady.next(true);
-        this.presentAlert('Éxito', 'La base de datos se creó correctamente.');
       }).catch(e=>{
         this.presentAlert('Crear BD', 'Error en crear la BD: ' + JSON.stringify(e));
       })
@@ -94,8 +91,6 @@ export class ServicebdService {
       await this.database.executeSql(this.tablaVenta, []);
       await this.database.executeSql(this.tablaDetalleVenta, []);
       await this.database.executeSql(this.tablaTarjetas, []);
-
-      this.presentAlert('Éxito', 'Las tablas fueron creadas exitosamente.');
 
       // Insertar tipos de productos
       const registroTiposProductos = `
@@ -119,7 +114,6 @@ export class ServicebdService {
       await this.database.executeSql(this.registroUsuario2, []); // Inserta el usuario por defecto
       await this.database.executeSql(this.registroTarjeta, []);
       await this.database.executeSql(this.registroTarjeta2, []);
-      this.presentAlert('Éxito', 'Los registros por defecto fueron insertados exitosamente.');
     } catch (e) {
       this.presentAlert('Error en la inserción de registros por defecto', 'Error: ' + JSON.stringify(e));
     }
@@ -193,10 +187,6 @@ export class ServicebdService {
         return [];
       });
   }
-        await this.presentAlert('Error en Base de Datos', 'Error al acceder a la base de datos.');
-        return null; // Cambia el retorno en caso de error
-    }
-}
 
   
   async resetearBaseDeDatos() {
@@ -275,14 +265,16 @@ async actualizarUsuario(usuario: Usuario): Promise<void> {
     UPDATE usuario 
     SET correo = ?, 
         user = ?, 
-        foto_perfil = ? -- Aquí se actualiza la columna de la foto de perfil
-    WHERE rut = ?`; // Asegúrate de usar el identificador correcto, en este caso `rut`
+        foto_perfil = ?, 
+        id_rol = ?  -- Actualizando también el rol
+    WHERE rut = ?`;
 
   const valores = [
     usuario.correo,
     usuario.user,
     usuario.foto_perfil, // La imagen en formato Base64
-    usuario.rut // La clave para identificar el usuario a actualizar
+    usuario.id_rol, // Asegúrate de incluir el rol aquí
+    usuario.rut // Clave para identificar al usuario
   ];
 
   try {
@@ -291,6 +283,17 @@ async actualizarUsuario(usuario: Usuario): Promise<void> {
   } catch (error) {
     console.error('Error al actualizar el usuario en la base de datos:', error);
     throw error;
+  }
+}
+
+async eliminarUsuario(rut: string): Promise<void> {
+  try {
+    const query = `DELETE FROM usuario WHERE rut = ?`;
+    await this.database.executeSql(query, [rut]);
+    console.log(`Usuario con RUT ${rut} eliminado exitosamente.`);
+  } catch (error) {
+    console.error(`Error al eliminar el usuario con RUT ${rut}:`, error);
+    throw new Error('Error al eliminar el usuario. Intenta nuevamente.');
   }
 }
 //Producto
@@ -335,13 +338,82 @@ async registrarProducto(producto: Producto): Promise<any> {
   }
 }
 
+async actualizarProducto(producto: Producto): Promise<void> {
+  try {
+    // Verificar que el producto tenga un ID válido
+    if (!producto.id_producto) {
+      await this.presentAlert('Error', 'El ID del producto no está definido.');
+      return Promise.reject('ID no definido');
+    }
+
+    // Actualizar la información del producto en la tabla producto
+    const updateQuery = `
+      UPDATE producto
+      SET nom_producto = ?, desc_producto = ?, precio = ?, stock = ?, id_tipo = ?, rut_v = ?
+      WHERE id_producto = ?
+    `;
+
+    const updateValues = [
+      producto.nom_producto,
+      producto.desc_producto,
+      producto.precio,
+      producto.stock,
+      producto.id_tipo,
+      producto.rut_v, // Asegúrate de incluir el RUT aquí
+      producto.id_producto
+    ];
+
+    await this.database.executeSql(updateQuery, updateValues);
+
+    // Actualizar la imagen en la tabla img_producto
+    if (producto.imagen) {
+      const imagenUpdateQuery = `
+        UPDATE img_producto
+        SET imagen_prod = ?
+        WHERE id_producto = ?
+      `;
+
+      await this.database.executeSql(imagenUpdateQuery, [producto.imagen, producto.id_producto]);
+    }
+
+    return Promise.resolve();
+  } catch (error) {
+    await this.presentAlert('Error al actualizar el producto', `${error}`);
+    console.error('Error en actualizarProducto:', error);
+    return Promise.reject(error);
+  }
+}
+
+async eliminarProducto(idProducto: number): Promise<void> {
+  try {
+    // Primero, eliminar las imágenes asociadas en la tabla img_producto
+    const eliminarImagenQuery = `
+      DELETE FROM img_producto WHERE id_producto = ?
+    `;
+    await this.database.executeSql(eliminarImagenQuery, [idProducto]);
+
+    // Ahora, eliminar el producto de la tabla producto
+    const eliminarProductoQuery = `
+      DELETE FROM producto WHERE id_producto = ?
+    `;
+    await this.database.executeSql(eliminarProductoQuery, [idProducto]);
+
+    return Promise.resolve();
+  } catch (error) {
+    await this.presentAlert('Error al eliminar el producto', `${error}`);
+    console.error('Error en eliminarProducto:', error); // Log detallado
+    return Promise.reject(error);
+  }
+}
 
 async verProductos(): Promise<Producto[]> {
   try {
     const res = await this.database.executeSql(`
-      SELECT p.*, i.imagen_prod 
+      SELECT p.*, i.imagen_prod, t.nom_tipo, u.user 
       FROM producto p 
       LEFT JOIN img_producto i ON p.id_producto = i.id_producto
+      LEFT JOIN tipoproducto t ON p.id_tipo = t.id_tipo
+      LEFT JOIN usuario u ON p.rut_v = u.rut  -- Unión con la tabla de usuarios
     `, []);
     
     const productos: Producto[] = [];
@@ -357,7 +429,9 @@ async verProductos(): Promise<Producto[]> {
         precio: item.precio,
         id_tipo: item.id_tipo,
         rut_v: item.rut_v,
-        imagen: item.imagen_prod // Ahora la imagen se obtiene directamente
+        imagen: item.imagen_prod, // Ahora la imagen se obtiene directamente
+        nom_tipo: item.nom_tipo, // Aquí agregas el nombre del tipo
+        usuario_vendedor: item.user // Agrega el nombre del vendedor aquí
       };
 
       productos.push(producto);
@@ -369,7 +443,6 @@ async verProductos(): Promise<Producto[]> {
     return []; // Retorna un array vacío en caso de error
   }
 }
-
 async obtenerImagen(id_producto: number): Promise<string | null> {
   try {
     const res = await this.database.executeSql('SELECT imagen_prod FROM img_producto WHERE id_producto = ?', [id_producto]);
@@ -389,9 +462,11 @@ async verProductosPorVendedor(rutVendedor: string | null): Promise<Producto[]> {
   }
 
   const query = `
-    SELECT p.*, i.imagen_prod 
+    SELECT p.*, i.imagen_prod, t.nom_tipo, u.user
     FROM producto p
     LEFT JOIN img_producto i ON p.id_producto = i.id_producto
+    LEFT JOIN tipoproducto t ON p.id_tipo = t.id_tipo
+    LEFT JOIN usuario u ON p.rut_v = u.rut  -- Unión con la tabla de usuarios
     WHERE p.rut_v = ?
   `;
 
@@ -410,7 +485,9 @@ async verProductosPorVendedor(rutVendedor: string | null): Promise<Producto[]> {
         precio: item.precio,
         id_tipo: item.id_tipo,
         rut_v: item.rut_v,
-        imagen: item.imagen_prod // Obtiene la imagen desde la tabla img_producto
+        imagen: item.imagen_prod, // Obtiene la imagen desde la tabla img_producto
+        nom_tipo: item.nom_tipo,
+        usuario_vendedor: item.user // Agrega el nombre del vendedor aquí
       };
 
       productos.push(producto);
@@ -421,6 +498,48 @@ async verProductosPorVendedor(rutVendedor: string | null): Promise<Producto[]> {
     throw error; // Lanza el error para manejarlo en el lugar donde se llama
   }
 }
+
+
+async obtenerTiposProducto(): Promise<{ id_tipo: string; nom_tipo: string }[]> {
+  const sql = `SELECT id_tipo, nom_tipo FROM tipoproducto`; // Consulta para obtener tipos de productos
+  const result = await this.database.executeSql(sql, []);
+  const tipos = [];
+  for (let i = 0; i < result.rows.length; i++) {
+    tipos.push(result.rows.item(i));
+  }
+  return tipos;
+}
+
+async obtenerProductoPorId(idProducto: number): Promise<Producto | null> {
+  const query = `
+    SELECT p.*, i.imagen_prod, t.nom_tipo, u.user
+    FROM producto p
+    LEFT JOIN img_producto i ON p.id_producto = i.id_producto
+    LEFT JOIN tipoproducto t ON p.id_tipo = t.id_tipo
+    LEFT JOIN usuario u ON p.rut_v = u.rut  -- Unir con la tabla de usuarios
+    WHERE p.id_producto = ?
+  `;
+  
+  const result = await this.database.executeSql(query, [idProducto]);
+  
+  if (result.rows.length > 0) {
+    const item = result.rows.item(0);
+    return {
+      id_producto: item.id_producto,
+      nom_producto: item.nom_producto,
+      desc_producto: item.desc_producto,
+      precio: item.precio,
+      stock: item.stock,
+      id_tipo: item.id_tipo,
+      imagen: item.imagen_prod, // Asegurar que se obtiene la imagen correcta
+      rut_v: item.rut_v,
+      nom_tipo: item.nom_tipo, // Incluir el nombre del tipo de producto
+      usuario_vendedor: item.user // Agregar el nombre del vendedor aquí
+    };
+  }
+  return null; // Devolver null si no se encuentra el producto
+}
+
 
 
 

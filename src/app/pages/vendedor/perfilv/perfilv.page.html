@@ -66,8 +66,10 @@
         <ion-item>
 
         </ion-item>
-        <ion-item>
-
+        
+        <ion-item button (click)="eliminarCuenta()">
+          <ion-icon name="trash-outline"></ion-icon>
+          <ion-label>Eliminar Cuenta</ion-label>
         </ion-item>
 
         <ion-item [routerLink]="['/']">
