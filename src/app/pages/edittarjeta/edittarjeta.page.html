@@ -1,13 +1,115 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
-    </ion-buttons>
+    <ion-title *ngIf="!isEditMode">Crear Tarjeta</ion-title>
+    <ion-title *ngIf="isEditMode">Modificar Tarjeta</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
+<ion-content>
 
-  </ion-header>
+  <div class="contenedor" *ngIf="isEditMode">
+    <div>
+
+      <Div class="formulario">{{tarjetaId}}</Div>
+
+      <div class="error-message">{{ errorCVC }}</div> 
+      <ion-input
+        class="formulario"
+        helperText=""
+        label="CVC"
+        label-placement="floating"
+        fill="outline"
+        placeholder="XXX"
+        [(ngModel)]="CVC"
+        [errorText]="errorCVC"
+      ></ion-input>
+
+      <div class="error-message">{{ errorFE_mes }}</div> 
+      <ion-input
+        class="formulario"
+        helperText=""
+        label="Mes de Expiracion"
+        label-placement="floating"
+        fill="outline"
+        placeholder=""
+        [(ngModel)]="FE_mes"
+        [errorText]="errorFE_mes"
+      ></ion-input>
+
+      <div class="error-message">{{ errorFE_anio }}</div> 
+      <ion-input
+        class="formulario"
+        helperText="desde 2024 hasta 2080"
+        label="Año de Expiracion"
+        label-placement="floating"
+        fill="outline"
+        placeholder="XXXX"
+        [(ngModel)]="FE_anio"
+        [errorText]="errorFE_anio"
+      ></ion-input>
+
+    </div>
+    <ion-button class="boton" (click)="formulario()">
+      Modificar Tarjeta
+    </ion-button>
+  </div>
+
+
+
+  <div class="contenedor" *ngIf="!isEditMode">
+    <div>
+
+      <div class="error-message">{{ errornum_tarjeta }}</div> 
+      <ion-input
+        class="formulario"
+        helperText=""
+        label="Numero de Tarjeta"
+        label-placement="floating"
+        fill="outline"
+        placeholder="XXXX XXXX XXXX XXXX"
+        [(ngModel)]="numero_tarjeta"
+        [errorText]="errornum_tarjeta"
+      ></ion-input>
+
+      <div class="error-message">{{ errorCVC }}</div> 
+      <ion-input
+        class="formulario"
+        helperText=""
+        label="CVC"
+        label-placement="floating"
+        fill="outline"
+        placeholder="XXX"
+        [(ngModel)]="CVC"
+        [errorText]="errorCVC"
+      ></ion-input>
+
+      <div class="error-message">{{ errorFE_mes }}</div> 
+      <ion-input
+        class="formulario"
+        helperText=""
+        label="Mes de Expiracion"
+        label-placement="floating"
+        fill="outline"
+        placeholder=""
+        [(ngModel)]="FE_mes"
+        [errorText]="errorFE_mes"
+      ></ion-input>
+
+      <div class="error-message">{{ errorFE_anio }}</div> 
+      <ion-input
+        class="formulario"
+        helperText="desde 2024 hasta 2080"
+        label="Año de Expiracion"
+        label-placement="floating"
+        fill="outline"
+        placeholder="XXXX"
+        [(ngModel)]="FE_anio"
+        [errorText]="errorFE_anio"
+      ></ion-input>
+
+    </div>
+    <ion-button class="boton" (click)="formulario()">
+      Crear Nueva Tarjeta
+    </ion-button>
+  </div>
 </ion-content>

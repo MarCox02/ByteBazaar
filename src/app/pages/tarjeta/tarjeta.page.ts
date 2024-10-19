@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -12,17 +13,22 @@ export class TarjetaPage implements OnInit {
 
   tarjetas: any[] = [];
   rutUsuario: string = '';
-  constructor(private servicesbd: ServicebdService, private userService: UserService, private router: Router) { }
+  
+  constructor(private servicesbd: ServicebdService,private alertController: AlertController, private userService: UserService, private router: Router) { }
 
   async ngOnInit() {
     const usuario = await this.userService.obtenerUsuario();
     if (usuario) {
-      this.rutUsuario = usuario.rut; // Asumiendo que 'rut' es la propiedad correcta en el objeto Usuario
-    } else {
-      this.servicesbd.presentAlert('Error', 'No se pudo obtener el RUT del vendedor.');
-    }
+      this.rutUsuario = usuario.rut; 
 
-    this.cargarTarjetas();
+      this.servicesbd.cargarTarjetas(this.rutUsuario);
+
+      this.servicesbd.tarjetas$.subscribe(tarjetas => {
+        this.tarjetas = tarjetas;
+      });
+    } else {
+      this.servicesbd.presentAlert('Error', 'No se pudo obtener el RUT del usuario.');
+    }
   }
     
   
@@ -33,10 +39,36 @@ export class TarjetaPage implements OnInit {
         this.tarjetas = data;
       });
   }
-  eliminar(numero_tarjeta: any){
-    this.servicesbd.presentAlert('Error en eliminacion de datos', 'no se puede eliminar todavia'+numero_tarjeta);
+  crear() {
+    this.router.navigate(['/edittarjeta'], { queryParams: { mode: 'create' } });
   }
-  modificar(numero_tarjeta: any){
-    this.servicesbd.presentAlert('Error en modificion de datos', 'no se puede modificar todavia'+numero_tarjeta);
+
+  modificar(numero_tarjeta: any) {
+    this.router.navigate(['/edittarjeta'], { queryParams: { mode: 'edit', tar: numero_tarjeta } });
   }
+  async confirmarEliminacion(numero_tarjeta: number) {
+    const alert = await this.alertController.create({
+      header: 'Confirmar Eliminación',
+      message: '¿Estás seguro de que deseas eliminar esta tarjeta?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Eliminar',
+          handler: () => {
+            this.servicesbd.eliminarTarjeta(numero_tarjeta, this.rutUsuario); // Llama al método de eliminación
+          },
+        },
+      ],
+    });
+  
+    await alert.present();
+  }
+
+
+
+
 }
+

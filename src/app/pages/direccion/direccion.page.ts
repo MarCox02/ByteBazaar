@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -13,17 +14,21 @@ export class DireccionPage implements OnInit {
   direcciones: any[] = [];
   rutUsuario: string = '';
 
-  constructor(private servicesbd: ServicebdService, private userService: UserService, private router: Router) { }
+  constructor(private servicesbd: ServicebdService,private alertController: AlertController, private userService: UserService, private router: Router) { }
 
   async ngOnInit() {
     const usuario = await this.userService.obtenerUsuario();
     if (usuario) {
-      this.rutUsuario = usuario.rut; // Asumiendo que 'rut' es la propiedad correcta en el objeto Usuario
-    } else {
-      this.servicesbd.presentAlert('Error', 'No se pudo obtener el RUT del vendedor.');
-    }
+      this.rutUsuario = usuario.rut; 
 
-    this.cargarDirecciones();
+      this.servicesbd.cargarDirecciones(this.rutUsuario);
+
+      this.servicesbd.direcciones$.subscribe(direcciones => {
+      this.direcciones = direcciones;
+      });
+    } else {
+      this.servicesbd.presentAlert('Error', 'No se pudo obtener el RUT del usuario.');
+    }
   }
     
   
@@ -34,11 +39,37 @@ export class DireccionPage implements OnInit {
         this.direcciones = data;
       });
   }
-  eliminar(nom_direccion: any){
-    this.servicesbd.presentAlert('Error en eliminacion de datos', 'no se puede eliminar todavia ~'+nom_direccion);
+  crear() {
+    this.router.navigate(['/editdireccion'], { queryParams: { mode: 'create' } });
   }
-  modificar(nom_direccion: any){
-    this.servicesbd.presentAlert('Error en modificion de datos', 'no se puede modificar todavia ~'+nom_direccion);
+
+  modificar(id_direccion: any) {
+    this.router.navigate(['/editdireccion'], { queryParams: { mode: 'edit', dir: id_direccion } });
   }
+  async confirmarEliminacion(id_direccion: any) {
+    const alert = await this.alertController.create({
+      header: 'Confirmar Eliminación',
+      message: '¿Estás seguro de que deseas eliminar esta direccion?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Eliminar',
+          handler: () => {
+            this.servicesbd.eliminarDireccion(id_direccion,this.rutUsuario); // Llama al método de eliminación
+          },
+        },
+      ],
+    });
+  
+    await alert.present();
+  }
+
+
+
+
 }
+
 

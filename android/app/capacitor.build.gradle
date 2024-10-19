@@ -8,7 +8,7 @@ android {
 }
 
 apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
-dependencies {  
+dependencies {
     implementation project(':capacitor-app')
     implementation project(':capacitor-camera')
     implementation project(':capacitor-filesystem')

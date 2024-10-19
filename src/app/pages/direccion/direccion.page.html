@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Mis Tarjetas</ion-title>
+    <ion-title>Mis Direcciones</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -22,19 +22,19 @@
             <p>Comuna: {{ dir.nom_comuna }}</p>
           </ion-item>
           <ion-item-options side="start">
-            <ion-item-option (click)="modificar(dir.nom_direccion)">
+            <ion-item-option (click)="modificar(dir.id_direccion)">
               <ion-icon slot="icon-only" name="pencil"></ion-icon>
             </ion-item-option>
           </ion-item-options>
           <ion-item-options side="end" >
-            <ion-item-option color="danger" (click)="eliminar(dir.nom_direccion)">
+            <ion-item-option color="danger" (click)="confirmarEliminacion(dir.id_direccion)">
               <ion-icon slot="icon-only" name="trash"></ion-icon>
             </ion-item-option>
           </ion-item-options>
         </ion-item-sliding>
       </ion-list>
     </ion-card-content>
-    <ion-button  expand="full">Añadir Nuevo Método de Pago</ion-button>
+    <ion-button expand="full" (click)="crear()">Añadir Nueva Direccion</ion-button>
   </ion-card>
   
   </ion-content>

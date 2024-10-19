@@ -27,14 +27,14 @@
             </ion-item-option>
           </ion-item-options>
           <ion-item-options side="end" >
-            <ion-item-option color="danger" (click)="eliminar(card.numero_tarjeta)">
+            <ion-item-option color="danger" (click)="confirmarEliminacion(card.numero_tarjeta)">
               <ion-icon slot="icon-only" name="trash"></ion-icon>
             </ion-item-option>
           </ion-item-options>
         </ion-item-sliding>
       </ion-list>
     </ion-card-content>
-    <ion-button  expand="full">Añadir Nuevo Método de Pago</ion-button>
+    <ion-button  expand="full" (click)="crear()">Añadir Nuevo Método de Pago</ion-button>
   </ion-card>
   
   </ion-content>

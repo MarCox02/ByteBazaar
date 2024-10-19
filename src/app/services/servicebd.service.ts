@@ -5,7 +5,6 @@ import { AlertController, Platform } from '@ionic/angular';
 import { Usuario } from './usuario';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 import { UserService } from './user.service';
-import { firstValueFrom } from 'rxjs';
 import { Producto } from './producto';
 
 @Injectable({
@@ -14,7 +13,10 @@ import { Producto } from './producto';
 export class ServicebdService {
   //variable de conexion a la BD
   public database!: SQLiteObject;
-
+  private tarjetasSubject = new BehaviorSubject<any[]>([]);
+  tarjetas$ = this.tarjetasSubject.asObservable();
+  private direccionesSubject = new BehaviorSubject<any[]>([]);
+  direcciones$ = this.direccionesSubject.asObservable();
 
   constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController,
     private nativeStorage: NativeStorage,
@@ -46,7 +48,7 @@ export class ServicebdService {
   //variables para insert por defectos en nuestra tabla
 
   registroRoles: string = "INSERT OR IGNORE INTO rol(id_rol, nom_rol) VALUES ('1', 'vendedor'), ('2', 'comprador');";
-  registroComunas: string = "INSERT OR IGNORE INTO comuna(id_comuna, nom_comuna) VALUES ('1', 'Huechuraba'), ('2', 'La Cisterna'), ('3', 'La Reina'), ('4', 'Lo Barnechea'), ('5', 'Maipu'), ('6', 'Providencia') ;";
+  registroComunas: string = "INSERT OR IGNORE INTO comuna(id_comuna, nom_comuna) VALUES ('0', 'Otra'), ('1', 'Huechuraba'), ('2', 'La Cisterna'), ('3', 'La Reina'), ('4', 'Lo Barnechea'), ('5', 'Maipu'), ('6', 'Providencia') ;";
   registroUsuario: string = "INSERT OR IGNORE INTO usuario(user, rut, nombre, apellido, correo, telefono, foto_perfil, id_rol, contrasena) VALUES ('usuario1', '12345678-9', 'Juan', 'Pérez', 'juan.perez@mail.com', 912345678, 'path_a_foto', '1', 'Contrasena1'), ('usuario2', '22222222-2', 'John', 'Smith', 'John.smith@mail.com', 912345678, 'path_a_foto', '2', 'Contrasena2');";
   registroTarjeta: string = "INSERT OR IGNORE INTO tarjeta(id_tarjeta, rut_usuario, numero_tarjeta, CVC, FE_mes, FE_anio) VALUES ('1','12345678-9','4567456745674567','666','6','2026'),('2','22222222-2','4222222222222222','222','2','2026');";
   registroDirecciones: string =  "INSERT OR IGNORE INTO direcciones(id_direccion, nom_direccion, id_comuna, rut_usuario) VALUES ('1','Calle Alabastro 554','1','12345678-9'), ('2','Santo Granito 2373','1','12345678-9'), ('3','Santo Granito 2353','1','22222222-2'), ('4','La Pizarra','4','22222222-2');";
@@ -114,7 +116,7 @@ export class ServicebdService {
       await this.database.executeSql(this.registroComunas, []);
       await this.database.executeSql(this.registroUsuario, []); // Inserta el usuario por defecto
       await this.database.executeSql(this.registroTarjeta, []);
-      await this.database.executeSql(this.registroDirecciones,[])
+      await this.database.executeSql(this.registroDirecciones,[]);
       this.presentAlert('Éxito', 'Los registros por defecto fueron insertados exitosamente.');
     } catch (e) {
       this.presentAlert('Error en la inserción de registros por defecto', 'Error: ' + JSON.stringify(e));
@@ -178,7 +180,7 @@ export class ServicebdService {
   getTarjetasByRUT(rut: string): Promise<any[]> {
     return this.database.executeSql('SELECT * FROM tarjeta WHERE rut_usuario = ?', [rut])
       .then((res) => {
-        let tarjetas = [];
+        let tarjetas: any[] | PromiseLike<any[]> = [];
         for (let i = 0; i < res.rows.length; i++) {
           tarjetas.push(res.rows.item(i));
         }
@@ -204,6 +206,99 @@ export class ServicebdService {
         return [];
       });
   } 
+  getComunas():Promise<any[]>{
+    return this.database.executeSql('SELECT * FROM comuna ORDER BY (comuna_id = 0), id;')
+    .then((res) => {
+      let comunas = [];
+      for (let i = 0; i < res.rows.length; i++) {
+        comunas.push(res.rows.item(i));
+      }
+      return comunas;
+    })
+    .catch(error => {
+      this.presentAlert('Error consultando comunas', 'Error: '+ JSON.stringify(error));
+      return [];
+    });
+  }
+  crearTarjeta(rut:any,tarjeta:any){
+    return this.database.executeSql('INSERT OR IGNORE INTO tarjeta(rut_usuario, numero_tarjeta, CVC, FE_mes, FE_anio) VALUES(?,?,?,?,?)',[rut, tarjeta.numero_tarjeta, tarjeta.CVC, tarjeta.FE_mes, tarjeta.FE_anio]).then(()=>{
+      this.cargarTarjetas(rut);
+    });
+  }
+  modificarTarjeta(tarjeta:any,rutUsuario:any){
+    const sql = 'UPDATE tarjeta SET CVC = ?, FE_mes = ?, FE_anio = ? WHERE numero_tarjeta = ?';
+    const params = [tarjeta.CVC, tarjeta.FE_mes, tarjeta.FE_anio, tarjeta.numero_tarjeta];
+    return this.database.executeSql(sql, params).then(()=>{
+      this.cargarTarjetas(rutUsuario);
+    });
+    
+  }
+
+  eliminarTarjeta(numero_tarjeta: any,rutUsuario:any){
+    return this.database.executeSql('DELETE FROM tarjeta WHERE numero_tarjeta = ?;',[numero_tarjeta])
+    .then(() => {
+      this.cargarTarjetas(rutUsuario);
+      this.presentAlert('Exito', 'La tarjeta fue Eliminada con Exito');
+    })
+    .catch(error => {
+      this.presentAlert('Error consultando direcciones', 'Error: '+ JSON.stringify(error));
+    });
+  }
+
+  cargarTarjetas(rutUsuario: string) {
+    this.database.executeSql('SELECT * FROM tarjeta WHERE rut_usuario = ?', [rutUsuario])
+      .then(data => {
+        const tarjetas = [];
+        for (let i = 0; i < data.rows.length; i++) {
+          tarjetas.push(data.rows.item(i));
+        }
+        this.tarjetasSubject.next(tarjetas); // Emite las tarjetas cargadas
+      })
+      .catch(error => {
+        this.presentAlert('Error', 'Error cargando tarjetas: ' + JSON.stringify(error));
+      });
+  }
+  cargarDirecciones(rutUsuario: string) {
+    this.database.executeSql('SELECT * FROM direcciones LEFT JOIN comuna ON direcciones.id_comuna = comuna.id_comuna WHERE rut_usuario = ?', [rutUsuario])
+      .then(data => {
+        const direcciones = [];
+        for (let i = 0; i < data.rows.length; i++) {
+          direcciones.push(data.rows.item(i));
+        }
+        this.direccionesSubject.next(direcciones); // Emite las direcciones cargadas
+      })
+      .catch(error => {
+        this.presentAlert('Error', 'Error cargando direcciones: ' + JSON.stringify(error));
+      });
+  }
+  crearDireccion(direccion:any,rut:any){
+    return this.database.executeSql('INSERT OR IGNORE INTO direcciones(nom_direccion, id_comuna, rut_usuario) VALUES (?,?,?)',[direccion.nom_direccion,direccion.id_comuna,rut]).then(()=>{
+      this.cargarDirecciones(rut);
+    });
+  }
+  modificarDireccion(direccion:any,rutUsuario:any){
+    const sql = 'UPDATE direcciones SET nom_direccion = ?, id_comuna = ?, rut_usuario = ? WHERE id_direccion = ?';
+    const params = [direccion.nom_direccion, direccion.id_comuna, rutUsuario, direccion.id_direccion];
+    
+    return this.database.executeSql(sql, params).then(()=>{
+      this.cargarDirecciones(rutUsuario);
+    });
+
+  }
+  eliminarDireccion(id_direccion: any,rutUsuario:any){
+    return this.database.executeSql('DELETE FROM direcciones WHERE id_direccion = ?;',[id_direccion])
+    .then(() => {
+      this.cargarDirecciones(rutUsuario);
+      this.presentAlert('Exito', 'La Direccion fue Eliminada con Exito');
+    })
+    .catch(error => {
+      this.presentAlert('Error consultando direcciones', 'Error: '+ JSON.stringify(error));
+    });
+  }
+
+
+
+
 
   
   async resetearBaseDeDatos() {

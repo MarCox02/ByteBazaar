@@ -1,14 +1,80 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
-    </ion-buttons>
+    <ion-title *ngIf="!isEditMode">Crear Tarjeta</ion-title>
+    <ion-title *ngIf="isEditMode">Modificar Tarjeta</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
+<ion-content>
 
-  </ion-header>
+  <div class="contenedor" *ngIf="isEditMode">
+    <div>
+      <div class="error-message">{{ errordireccion }}</div> 
+      <ion-input
+        class="formulario"
+        helperText=""
+        label="Nombre de la Direccion"
+        label-placement="floating"
+        fill="outline"
+        placeholder=""
+        [(ngModel)]="nom_direccion"
+        [errorText]="errordireccion"
+      ></ion-input>
+
+      <div class="error-message">{{ errorcomuna }}</div> <!-- Mensaje de error -->
+      <ion-item class="formulario">
+        <ion-label>Comuna</ion-label>
+        <ion-select [(ngModel)]="id_comuna" placeholder="Selecciona la comuna">
+            <ion-select-option value="1">Huechuraba</ion-select-option> 
+            <ion-select-option value="2">La Cisterna</ion-select-option>
+            <ion-select-option value="3">La Reina</ion-select-option>
+            <ion-select-option value="4">Lo Barnechea</ion-select-option>
+            <ion-select-option value="5">Maipu</ion-select-option>
+            <ion-select-option value="6">Providencia</ion-select-option>
+            <ion-select-option value="0">Otra comuna</ion-select-option>
+        </ion-select>
+    </ion-item>
+
+    </div>
+    <ion-button class="boton" (click)="formulario()">
+      Modificar Direccion
+    </ion-button>
+  </div>
+
+
+
+  <div class="contenedor" *ngIf="!isEditMode">
+    <div>
+
+      <div class="error-message">{{ errordireccion }}</div> 
+      <ion-input
+        class="formulario"
+        helperText=""
+        label="Nombre de la Direccion"
+        label-placement="floating"
+        fill="outline"
+        placeholder=""
+        [(ngModel)]="nom_direccion"
+        [errorText]="errordireccion"
+      ></ion-input>
+
+      <div class="error-message">{{ errorcomuna }}</div> <!-- Mensaje de error -->
+      <ion-item class="formulario">
+        <ion-label>Comuna</ion-label>
+        <ion-select [(ngModel)]="id_comuna" placeholder="Selecciona la comuna">
+            <ion-select-option value="1">Huechuraba</ion-select-option> 
+            <ion-select-option value="2">La Cisterna</ion-select-option>
+            <ion-select-option value="3">La Reina</ion-select-option>
+            <ion-select-option value="4">Lo Barnechea</ion-select-option>
+            <ion-select-option value="5">Maipu</ion-select-option>
+            <ion-select-option value="6">Providencia</ion-select-option>
+            <ion-select-option value="0">Otra comuna</ion-select-option>
+        </ion-select>
+    </ion-item>
+
+    </div>
+    <ion-button class="boton" (click)="formulario()">
+      Añadir Nueva Direccion
+    </ion-button>
+  </div>
 </ion-content>
-
