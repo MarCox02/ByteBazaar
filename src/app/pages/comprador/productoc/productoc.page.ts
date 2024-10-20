@@ -15,7 +15,7 @@ export class ProductocPage implements OnInit {
 
   producto: Producto | undefined; 
   tiposProducto: any[] = []; // Asegúrate de declarar esto
-  public cantidad: number = 1; // Valor predeterminado
+  public cantidad: number = 0; // Valor predeterminado
 
 
   constructor(private menuCtrl: MenuController,private alertController: AlertController,  private router: Router, 
@@ -65,6 +65,7 @@ agregarAlCarrito() {
     // Verifica que todos los campos requeridos estén presentes
     if (item.id_producto && item.nom_producto && item.imagen && item.precio !== undefined && item.stock !== undefined && this.cantidad > 0) {
       this.carritoService.agregarProducto(item);
+      this.bdService.restarStock(item.id_producto,this.cantidad);
       this.presentToast(`${item.nom_producto} ha sido agregado al carrito.`);
     } else {
       console.error('El producto no tiene todos los campos requeridos o la cantidad es cero.');

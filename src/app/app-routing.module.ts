@@ -100,7 +100,11 @@ const routes: Routes = [
   {
     path: '**',
     loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
+  },  {
+    path: 'seleccion',
+    loadChildren: () => import('./pages/seleccion/seleccion.module').then( m => m.SeleccionPageModule)
   },
+
 
 
 
