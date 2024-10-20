@@ -14,7 +14,6 @@
   <div class="card-container">
     <ion-card 
       *ngFor="let producto of productos" 
-      *ngIf="producto.stock > 0"
       class="carta" 
       [routerLink]="['/productoc', producto.id_producto]">
       

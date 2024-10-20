@@ -39,7 +39,7 @@ export class ServicebdService {
 
   tablaDirecciones: string = "CREATE TABLE IF NOT EXISTS direcciones(id_direccion INTEGER PRIMARY KEY autoincrement, nom_direccion TEXT, id_comuna VARCHAR(5), rut_usuario VARCHAR(20), FOREIGN KEY(id_comuna) REFERENCES comuna(id_comuna), FOREIGN KEY(rut_usuario) REFERENCES usuario(rut));";
 
-  tablaVenta: string = "CREATE TABLE IF NOT EXISTS venta (id_venta INTEGER PRIMARY KEY autoincrement, rut_c VARCHAR(10), rut_v VARCHAR(10), fecha_venta DATE,costo_envio number, total REAL,  FOREIGN KEY (rut_c) REFERENCES usuario(rut),FOREIGN KEY (rut_v) REFERENCES usuario(rut));";
+  tablaVenta: string = "CREATE TABLE IF NOT EXISTS venta (id_venta INTEGER PRIMARY KEY autoincrement, rut VARCHAR(10), fecha_venta DATE,costo_envio number, total number,  FOREIGN KEY (rut) REFERENCES usuario(rut));";
 
   tablaDetalleVenta: string = "CREATE TABLE IF NOT EXISTS detalle_venta(id_detalle INTEGER PRIMARY KEY autoincrement, id_producto INTEGER, id_venta INTEGER, cantidad INTEGER, precio_unitario REAL, FOREIGN KEY (id_producto) REFERENCES producto(id_producto),FOREIGN KEY (id_venta) REFERENCES venta(id_venta));";
 
@@ -521,7 +521,8 @@ async verProductos(): Promise<Producto[]> {
       FROM producto p 
       LEFT JOIN img_producto i ON p.id_producto = i.id_producto
       LEFT JOIN tipoproducto t ON p.id_tipo = t.id_tipo
-      LEFT JOIN usuario u ON p.rut_v = u.rut  -- Unión con la tabla de usuarios
+      LEFT JOIN usuario u ON p.rut_v = u.rut
+      WHERE p.stock > 0;
     `, []);
     
     const productos: Producto[] = [];
@@ -625,7 +626,7 @@ async obtenerProductoPorId(idProducto: number): Promise<Producto | null> {
     LEFT JOIN img_producto i ON p.id_producto = i.id_producto
     LEFT JOIN tipoproducto t ON p.id_tipo = t.id_tipo
     LEFT JOIN usuario u ON p.rut_v = u.rut  -- Unir con la tabla de usuarios
-    WHERE p.id_producto = ?
+    WHERE p.id_producto = ?;
   `;
   
   const result = await this.database.executeSql(query, [idProducto]);
@@ -662,8 +663,9 @@ async obtenerProductoPorId(idProducto: number): Promise<Producto | null> {
     const stock = result.rows.item(0).stock;
     const newStock = stock - cnt;
     return this.database.executeSql('UPDATE producto SET stock = ? WHERE id_producto = ?',[newStock,id_producto])
-
   }
+
+
 
 
 
