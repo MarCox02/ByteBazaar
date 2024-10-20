@@ -175,6 +175,25 @@ export class ServicebdService {
     }
   }
 
+  // Función para verificar si un correo existe en la tabla usuario
+  async verificarCorreo(correo: string): Promise<boolean> {
+    const query = `SELECT COUNT(*) AS count FROM usuario WHERE correo = ?`;
+    
+    try {
+      const result = await this.database.executeSql(query, [correo]);
+      
+      // Si hay al menos una coincidencia, el correo existe
+      if (result.rows.item(0).count > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.error('Error verificando el correo:', error);
+      throw new Error('Error al verificar el correo');
+    }
+  }
+
 
   getTarjetasByRUT(rut: string): Promise<any[]> {
     return this.database.executeSql('SELECT * FROM tarjeta WHERE rut_usuario = ?', [rut])

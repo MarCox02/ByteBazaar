@@ -128,8 +128,8 @@ tomarfoto = async () => {
     this.mensajeErrorPrecio = 'El precio no puede ser cero o negativo';
   }
 
-  if (this.precio !== null && this.precio > 999999) {
-    this.mensajeErrorPrecio = 'El precio no puede ser mayor a 999,999';
+  if (this.precio !== null && this.precio > 9999999) {
+    this.mensajeErrorPrecio = 'El precio no puede ser mayor a 9,999,999';
   }
 
   // Validación de la imagen
