@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuController, ToastController } from '@ionic/angular';
 import { CarritoService } from 'src/app/services/carrito.service';
+import { ServicebdService } from 'src/app/services/servicebd.service';
 
 @Component({
   selector: 'app-carrito',
@@ -12,7 +13,7 @@ export class CarritoPage implements OnInit {
 
   
 
-  constructor(private menuCtrl: MenuController,private carritoService: CarritoService,private toastController: ToastController) { }
+  constructor(private servicedb: ServicebdService, private menuCtrl: MenuController,private carritoService: CarritoService,private toastController: ToastController) { }
 
 
   ngOnInit() {
@@ -29,6 +30,7 @@ export class CarritoPage implements OnInit {
     const productoEliminado = this.carrito[index].nom_producto; // Usar nom_producto en lugar de nombre
     this.carrito.splice(index, 1); // Eliminar el producto del carrito
     this.carritoService.actualizarCarrito(this.carrito); // Actualiza el carrito en el servicio
+    this.servicedb.sumarStock(this.carrito[index].id_producto,this.carrito[index].cantidad);
     this.presentToast('Producto eliminado', `${productoEliminado} ha sido eliminado del carrito.`);
   }
 

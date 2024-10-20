@@ -17,9 +17,8 @@
     usuario$: Observable<Usuario | null>; // Observable para el usuario
 
     constructor(private menuCtrl: MenuController, private userService: UserService, private servicesbd: ServicebdService,
-      private router: Router,private alertController: AlertController
-
-    ) { 
+      private router: Router,private alertController: AlertController) 
+      { 
       this.usuario$ = this.userService.currentUser$;
     }
 
@@ -30,6 +29,7 @@
     this.userSubscription = this.userService.currentUser$.subscribe(usuario => {
       this.usuario = usuario; // Actualiza el perfil con el usuario
     });
+    this.usuario = await this.userService.obtenerUsuario();
   }
 
   // perfil.page.ts

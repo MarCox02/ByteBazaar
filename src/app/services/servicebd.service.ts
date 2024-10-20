@@ -6,6 +6,7 @@ import { Usuario } from './usuario';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 import { UserService } from './user.service';
 import { Producto } from './producto';
+import { query } from '@angular/animations';
 
 @Injectable({
   providedIn: 'root'
@@ -50,7 +51,7 @@ export class ServicebdService {
   registroRoles: string = "INSERT OR IGNORE INTO rol(id_rol, nom_rol) VALUES ('1', 'vendedor'), ('2', 'comprador');";
 
   registroComunas: string = "INSERT OR IGNORE INTO comuna(id_comuna, nom_comuna) VALUES ('0', 'Otra'), ('1', 'Huechuraba'), ('2', 'La Cisterna'), ('3', 'La Reina'), ('4', 'Lo Barnechea'), ('5', 'Maipu'), ('6', 'Providencia') ;";
-  registroUsuario: string = "INSERT OR IGNORE INTO usuario(user, rut, nombre, apellido, correo, telefono, foto_perfil, id_rol, contrasena) VALUES ('usuario1', '12345678-9', 'Juan', 'Pérez', 'juan.perez@mail.com', 912345678, 'path_a_foto', '1', 'Contrasena1'), ('usuario2', '22222222-2', 'John', 'Smith', 'John.smith@mail.com', 912345678, 'path_a_foto', '2', 'Contrasena2');";
+  registroUsuario: string = "INSERT OR IGNORE INTO usuario(user, rut, nombre, apellido, correo, telefono, foto_perfil, id_rol, contrasena) VALUES ('usuario1', '12345678-9', 'Juan', 'Pérez', 'juan.perez@mail.com', 912345678, '/assets/icon/ppp.png', '1', 'Contrasena1'), ('usuario2', '22222222-2', 'John', 'Smith', 'John.smith@mail.com', 912345678, '/assets/icon/ppp.png', '2', 'Contrasena2');";
   registroTarjeta: string = "INSERT OR IGNORE INTO tarjeta(id_tarjeta, rut_usuario, numero_tarjeta, CVC, FE_mes, FE_anio) VALUES ('1','12345678-9','4567456745674567','666','6','2026'),('2','22222222-2','4222222222222222','222','2','2026');";
   registroDirecciones: string =  "INSERT OR IGNORE INTO direcciones(id_direccion, nom_direccion, id_comuna, rut_usuario) VALUES ('1','Calle Alabastro 554','1','12345678-9'), ('2','Santo Granito 2373','1','12345678-9'), ('3','Santo Granito 2353','1','22222222-2'), ('4','La Pizarra','4','22222222-2');";
 
@@ -646,7 +647,23 @@ async obtenerProductoPorId(idProducto: number): Promise<Producto | null> {
   }
   return null; // Devolver null si no se encuentra el producto
 }
+  async sumarStock(id_producto:number, cnt:number){
+    const query = 'SELECT * FROM producto where id_producto = ?;';
+    const result = await this.database.executeSql(query, [id_producto]);
+    const stock = result.rows.item(0).stock;
+    const newStock = stock + cnt;
+    return this.database.executeSql('UPDATE producto SET stock = ? WHERE id_producto = ?',[newStock,id_producto])
 
+  }
+
+  async restarStock(id_producto:number, cnt:number){
+    const query = 'SELECT * FROM producto where id_producto = ?;';
+    const result = await this.database.executeSql(query, [id_producto]);
+    const stock = result.rows.item(0).stock;
+    const newStock = stock - cnt;
+    return this.database.executeSql('UPDATE producto SET stock = ? WHERE id_producto = ?',[newStock,id_producto])
+
+  }
 
 
 

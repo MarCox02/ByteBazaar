@@ -9,13 +9,13 @@
 <ion-content [fullscreen]="true">
   <div class="perfil-container">
     <ion-avatar class="perfil">
-      <img [src]="usuario?.foto_perfil || '/assets/foto perfil.jpg'" alt="Foto de perfil">
+      <img [src]="usuario?.foto_perfil || '/assets/icon/ppp.jpg'" alt="Foto de perfil">
     </ion-avatar>
     <div class="detalle-perfil">
 
       <!-- Nombre Completo -->
       <ion-text class="perfil-Nombre">
-        <p>{{ usuario?.nombre }}</p> <!-- Muestra el nombre del usuario -->
+        <p>{{ usuario?.nombre }} {{usuario?.apellido}}</p> <!-- Muestra el nombre del usuario -->
       </ion-text>
 
       <ion-text class="perfil-usuario">
