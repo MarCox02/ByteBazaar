@@ -15,7 +15,7 @@ export class ProductocPage implements OnInit {
 
   producto: Producto | undefined; 
   tiposProducto: any[] = []; // Asegúrate de declarar esto
-  public cantidad: number = 1; // Valor predeterminado
+  public cantidad: number = 0; // Valor predeterminado
 
 
   constructor(private menuCtrl: MenuController,private alertController: AlertController,  private router: Router, 

@@ -28,9 +28,9 @@ export class CarritoPage implements OnInit {
 
   eliminarProducto(index: number) {
     const productoEliminado = this.carrito[index].nom_producto; // Usar nom_producto en lugar de nombre
+    this.servicedb.sumarStock(this.carrito[index].id_producto,this.carrito[index].cantidad);
     this.carrito.splice(index, 1); // Eliminar el producto del carrito
     this.carritoService.actualizarCarrito(this.carrito); // Actualiza el carrito en el servicio
-    this.servicedb.sumarStock(this.carrito[index].id_producto,this.carrito[index].cantidad);
     this.presentToast('Producto eliminado', `${productoEliminado} ha sido eliminado del carrito.`);
   }
 
