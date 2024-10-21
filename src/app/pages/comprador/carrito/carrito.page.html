@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Tu Carrito</ion-title>
+    <ion-title class="titulo">Tu Carrito</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -16,18 +16,18 @@
         </ion-thumbnail>
 
         <ion-label>
-          <h2>{{item.nom_producto}}</h2>
+          <h2 class="nombre-producto">{{item.nom_producto}}</h2>
           <p>ID: {{item.id_producto}} | {{item.nom_tipo}}</p>
           <b class="precio">{{item.precio | currency:'CLP ':true:'4.0-0'}}</b>
         </ion-label>
 
         <!-- Cantidad de productos -->
         <ion-buttons slot="end" class="cantidad-buttons">
-          <ion-button size="small" color="light" (click)="cambiarCantidad(i, -1)">
+          <ion-button size="small" color="color-blanco" (click)="cambiarCantidad(i, -1)" class="btn-cantidad">
             <ion-icon name="remove-outline"></ion-icon>
           </ion-button>
           <ion-label>{{item.cantidad}}</ion-label>
-          <ion-button size="small" color="light" (click)="cambiarCantidad(i, 1)">
+          <ion-button size="small" color="color-blanco" (click)="cambiarCantidad(i, 1)" class="btn-cantidad">
             <ion-icon name="add-outline"></ion-icon>
           </ion-button>
         </ion-buttons>
@@ -37,25 +37,28 @@
           <ion-icon name="trash-outline"></ion-icon>
         </ion-button>
       </ion-item>
-    </ion-list>
 
-    <!-- Total e IVA -->
+       <!-- Total e IVA -->
     <ion-item lines="none">
       <ion-note slot="end" class="total-carrito">
         <p>IVA (19%): {{ (getTotalPrice() * 0.19) | currency:'CLP':'symbol':'1.0-0' }}</p>
         <b>Total: {{ (getTotalPrice() + getTotalPrice() * 0.19) | currency:'CLP':'symbol':'1.0-0' }}</b>
       </ion-note>
     </ion-item>
-  </ion-card-content>
 
+    </ion-list>
+
+   
+  </ion-card-content>
   <!-- Mensaje si el carrito está vacío -->
   <ion-card *ngIf="carrito.length === 0">
-  <ion-card-header>
-    <ion-card-title>Tu carrito está vacío</ion-card-title>
-  </ion-card-header>
-  <ion-card-content>
-    <p>¡Agrega productos a tu carrito para empezar a comprar!</p>
-  </ion-card-content>
+    <ion-card-header>
+      <ion-card-title class="titulo">Tu carrito está vacío</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>¡Agrega productos a tu carrito para empezar a comprar!</p>
+    </ion-card-content>
   </ion-card>
-  <ion-button (click)="iraseleccion()">Ir a Pagar</ion-button>
+  
+  <ion-button (click)="iraseleccion()" expand="full" class="btn-pagar">Ir a Pagar</ion-button>
 </ion-content>

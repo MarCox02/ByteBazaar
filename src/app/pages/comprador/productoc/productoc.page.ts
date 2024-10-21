@@ -52,19 +52,18 @@ export class ProductocPage implements OnInit {
   agregarAlCarrito() {
     if (this.producto) {
       const totalCantidadEnCarrito = this.carritoService.obtenerCarrito()
-      .filter(p => p.id_producto === this.producto?.id_producto) // Cambiado
+      .filter(p => p.id_producto === this.producto?.id_producto) // Uso de optional chaining
       .reduce((total, item) => total + (item.cantidad ?? 0), 0);
 
       const nuevaCantidadTotal = totalCantidadEnCarrito + this.cantidad;
-
-      // Usar el valor predeterminado para stock
+  
       const stockProducto = this.producto.stock ?? 0;
-
-      if (nuevaCantidadTotal > stockProducto) { // Validación de stock
+  
+      if (nuevaCantidadTotal > stockProducto) {
         this.presentToast(`Stock insuficiente. Solo hay ${stockProducto} unidades disponibles.`);
         return; // Evitar agregar al carrito si excede el stock
       }
-
+  
       const item: Producto = {
         id_producto: this.producto.id_producto,
         nom_producto: this.producto.nom_producto,
@@ -78,19 +77,15 @@ export class ProductocPage implements OnInit {
         usuario_vendedor: this.producto.usuario_vendedor,
         cantidad: this.cantidad
       };
-
-      // Verifica que todos los campos requeridos estén presentes
-      if (item.id_producto && item.nom_producto && item.imagen && item.precio !== undefined && item.stock !== undefined && this.cantidad > 0) {
-        this.carritoService.agregarProducto(item);
-        this.bdService.restarStock(item.id_producto, this.cantidad);
-        this.presentToast(`${item.nom_producto} ha sido agregado al carrito.`);
-      } else {
-        console.error('El producto no tiene todos los campos requeridos o la cantidad es cero.');
-      }
+  
+      this.carritoService.agregarProducto(item);
+      this.bdService.restarStock(item.id_producto, this.cantidad);
+      this.presentToast(`${item.nom_producto} ha sido agregado al carrito.`);
     } else {
       this.presentToast('El producto no está disponible.');
     }
   }
+  
 
   // Métodos para incrementar y disminuir la cantidad
   incrementarCantidad() {

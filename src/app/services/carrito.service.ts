@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Producto } from './producto';
+import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -8,26 +9,28 @@ export class CarritoService {
   
   private carrito: Producto[] = []; // Inicializa el carrito como un array vacío
 
-  constructor() { }
+  constructor(private nativeStorage: NativeStorage) { 
+    this.cargarCarrito();}
 
 
    // Método para agregar un producto al carrito
-   agregarProducto(item: Producto) {
-    if (!item.id_producto || !item.nom_producto || item.precio === undefined || item.stock === undefined) {
-        console.error('El producto debe tener un ID, nombre, precio y stock válidos.');
-        return;
+   agregarProducto(producto: Producto) {
+    const existente = this.carrito.find(item => item.id_producto === producto.id_producto);
+    if (existente) {
+      existente.cantidad! += producto.cantidad!; // Aumentar cantidad si ya existe
+    } else {
+      this.carrito.push(producto); // Agregar nuevo producto
     }
-    
-    const index = this.carrito.findIndex(p => p.id_producto === item.id_producto);
-    
-    if (index !== -1) {
-        // Aumentar la cantidad si el producto ya está en el carrito
-        this.carrito[index].cantidad = (this.carrito[index].cantidad ?? 0) + (item.cantidad ?? 0);
-      } else {
-        // Si no está, añadir el producto al carrito con la cantidad especificada
-        this.carrito.push({ ...item, cantidad: item.cantidad });
+    this.guardarCarrito(); // Guardar cambios en NativeStorage
+  }
+
+  private async guardarCarrito() {
+    try {
+      await this.nativeStorage.setItem('carrito', this.carrito);
+    } catch (error) {
+      console.error('Error al guardar el carrito:', error);
     }
-}
+  }
 
   // Método para agregar un producto al carrito
   actualizarCarrito(nuevoCarrito: Producto[]) {
@@ -38,6 +41,14 @@ export class CarritoService {
     this.carrito = nuevoCarrito;
 }
 
+private async cargarCarrito() {
+  try {
+    const storedCarrito = await this.nativeStorage.getItem('carrito');
+    this.carrito = storedCarrito || []; // Cargar carrito o establecer vacío
+  } catch (error) {
+    console.error('Error al cargar el carrito:', error);
+  }
+}
   // Método para obtener los productos en el carrito
   obtenerCarrito(): Producto[] {
     return this.carrito;
@@ -53,5 +64,6 @@ export class CarritoService {
   // Método para limpiar el carrito
   limpiarCarrito() {
     this.carrito = [];
-  }
+    this.guardarCarrito(); // Limpiar el carrito en NativeStorage
+  } 
 }

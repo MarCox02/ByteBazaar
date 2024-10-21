@@ -4,6 +4,8 @@ import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 import { AlertController } from '@ionic/angular';
 import { Usuario } from './usuario';
 import { ServicebdService } from './servicebd.service';
+import { CarritoService } from './carrito.service';
+import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
@@ -12,7 +14,8 @@ export class UserService {
   private currentUserSubject = new BehaviorSubject<Usuario | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
   
-  constructor( private nativeStorage: NativeStorage,private alertController: AlertController, private servicebd : ServicebdService
+  constructor( private nativeStorage: NativeStorage,private alertController: AlertController, private servicebd : ServicebdService,
+    private carritoService: CarritoService,private router: Router
 ) {this.cargarUsuario(); }
 
 private async cargarUsuario() {
@@ -46,6 +49,19 @@ async login(usuario: Usuario) {
         console.error('Error al obtener el usuario:', error);
         throw error; // Lanza el error para manejarlo en el componente
       }
+    }
+
+    async cerrarSesion() {
+      const carrito = this.carritoService.obtenerCarrito();
+      
+      for (const item of carrito) {
+        await this.servicebd.sumarStock(item.id_producto, item.cantidad!); // Asegúrate de que `cantidad` esté definido
+      }
+      
+      this.carritoService.limpiarCarrito(); // Limpiar el carrito después de aumentar el stock
+      
+      // Redirigir al usuario a la página de inicio
+      this.router.navigate(['/']); 
     }
 
     // Método para obtener solo el correo del usuario
