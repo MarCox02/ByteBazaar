@@ -118,6 +118,10 @@ export class EditarPerfilvPage implements OnInit {
     });
   }
 
+  irACambiarContrasena() {
+    this.router.navigate(['/introduzca-contra']);
+  }
+  
   async alerta(titulo: string, mensaje: string) {
     const alert = await this.alertController.create({
       header: titulo,

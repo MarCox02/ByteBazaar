@@ -16,10 +16,13 @@ export class CambioContraPage implements OnInit {
     private alertController: AlertController,
     private router: Router,
     private toastController: ToastController,
-    private servicesbd : ServicebdService
+    private servicesbd : ServicebdService,
+    private userService : ServicebdService,
   ) { }
 
-  ngOnInit() { }
+  async ngOnInit() {
+    
+   }
 
   async cambiarContrasena() {
     // Validar si las contraseñas coinciden

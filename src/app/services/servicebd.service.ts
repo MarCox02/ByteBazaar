@@ -206,6 +206,16 @@ export class ServicebdService {
     }
   }
 
+  async cambiarContrasena(rut: string, nuevaContrasena: string): Promise<void> {
+    try {
+        // Actualiza la contraseña en la tabla de usuarios
+        await this.database.executeSql('UPDATE usuario SET contrasena = ? WHERE rut = ?', [nuevaContrasena, rut]);
+    } catch (error) {
+        console.error('Error al cambiar la contraseña:', error);
+        throw error; // Lanza el error para manejarlo más tarde
+    }
+}
+
   getTarjetasByRUT(rut: string): Promise<any[]> {
     return this.database.executeSql('SELECT * FROM tarjeta WHERE rut_usuario = ?', [rut])
       .then((res) => {
