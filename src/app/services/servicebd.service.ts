@@ -29,7 +29,7 @@ export class ServicebdService {
   //variables de las tablas
   tablaRol: string = "CREATE TABLE IF NOT EXISTS rol(id_rol VARCHAR(5) PRIMARY KEY, nom_rol VARCHAR(20) NOT NULL);";
   tablaTipoProducto: string = "CREATE TABLE IF NOT EXISTS tipoproducto(id_tipo VARCHAR(5) PRIMARY KEY, nom_tipo VARCHAR(20) NOT NULL);";
-  tablaComuna: string = "CREATE TABLE IF NOT EXISTS comuna(id_comuna VARCHAR(5) PRIMARY KEY, nom_comuna VARCHAR(20) NOT NULL);";
+  tablaComuna: string = "CREATE TABLE IF NOT EXISTS comuna(id_comuna VARCHAR(5) PRIMARY KEY, nom_comuna VARCHAR(20) NOT NULL, costo_envio INTEGER NOT NULL);";
 
   tablaUsuario: string = "CREATE TABLE IF NOT EXISTS usuario(user VARCHAR (20) UNIQUE NOT NULL, rut VARCHAR(20) PRIMARY KEY, nombre VARCHAR(40), apellido VARCHAR(40), correo VARCHAR(40) UNIQUE, telefono NUMBER, foto_perfil BLOB NOT NULL, contrasena TEXT NOT NULL, id_rol VARCHAR(5), FOREIGN KEY (id_rol) REFERENCES rol(id_rol));";
 
@@ -39,9 +39,9 @@ export class ServicebdService {
 
   tablaDirecciones: string = "CREATE TABLE IF NOT EXISTS direcciones(id_direccion INTEGER PRIMARY KEY autoincrement, nom_direccion TEXT, id_comuna VARCHAR(5), rut_usuario VARCHAR(20), FOREIGN KEY(id_comuna) REFERENCES comuna(id_comuna), FOREIGN KEY(rut_usuario) REFERENCES usuario(rut));";
 
-  tablaVenta: string = "CREATE TABLE IF NOT EXISTS venta (id_venta INTEGER PRIMARY KEY autoincrement, rut VARCHAR(10), fecha_venta DATE,costo_envio number, total number,  FOREIGN KEY (rut) REFERENCES usuario(rut));";
+  tablaVenta: string = "CREATE TABLE IF NOT EXISTS venta (id_venta INTEGER PRIMARY KEY autoincrement, rut VARCHAR(10), fecha_venta TEXT,costo_envio NUMBER, total NUMBER,  FOREIGN KEY (rut) REFERENCES usuario(rut));";
 
-  tablaDetalleVenta: string = "CREATE TABLE IF NOT EXISTS detalle_venta(id_detalle INTEGER PRIMARY KEY autoincrement, id_producto INTEGER, id_venta INTEGER, cantidad INTEGER, precio_unitario REAL, FOREIGN KEY (id_producto) REFERENCES producto(id_producto),FOREIGN KEY (id_venta) REFERENCES venta(id_venta));";
+  tablaDetalleVenta: string = "CREATE TABLE IF NOT EXISTS detalle_venta(id_detalle INTEGER PRIMARY KEY autoincrement, id_producto INTEGER, id_venta INTEGER, cantidad NUMBER, precio_unitario NUMBER, FOREIGN KEY (id_producto) REFERENCES producto(id_producto),FOREIGN KEY (id_venta) REFERENCES venta(id_venta));";
 
   tablaTarjetas: string = "CREATE TABLE IF NOT EXISTS tarjeta(id_tarjeta INTEGER PRIMARY KEY autoincrement, rut_usuario VARCHAR(20), numero_tarjeta NUMBER UNIQUE NOT NULL, CVC NUMBER, FE_mes NUMBER,FE_anio NUMBER, FOREIGN KEY(rut_usuario) REFERENCES usuario(rut));";
 
@@ -50,7 +50,7 @@ export class ServicebdService {
 
   registroRoles: string = "INSERT OR IGNORE INTO rol(id_rol, nom_rol) VALUES ('1', 'vendedor'), ('2', 'comprador');";
 
-  registroComunas: string = "INSERT OR IGNORE INTO comuna(id_comuna, nom_comuna) VALUES ('0', 'Otra'), ('1', 'Huechuraba'), ('2', 'La Cisterna'), ('3', 'La Reina'), ('4', 'Lo Barnechea'), ('5', 'Maipu'), ('6', 'Providencia') ;";
+  registroComunas: string = "INSERT OR IGNORE INTO comuna(id_comuna, nom_comuna,costo_envio) VALUES ('0', 'Otra','14000'), ('1', 'Huechuraba','5000'), ('2', 'La Cisterna','10000'), ('3', 'La Reina','6000'), ('4', 'Lo Barnechea','12000'), ('5', 'Maipu','8000'), ('6', 'Providencia','9000') ;";
   registroUsuario: string = "INSERT OR IGNORE INTO usuario(user, rut, nombre, apellido, correo, telefono, foto_perfil, id_rol, contrasena) VALUES ('usuario1', '12345678-9', 'Juan', 'Pérez', 'juan.perez@mail.com', 912345678, '/assets/icon/ppp.png', '1', 'Contrasena1'), ('usuario2', '22222222-2', 'John', 'Smith', 'John.smith@mail.com', 912345678, '/assets/icon/ppp.png', '2', 'Contrasena2');";
   registroTarjeta: string = "INSERT OR IGNORE INTO tarjeta(id_tarjeta, rut_usuario, numero_tarjeta, CVC, FE_mes, FE_anio) VALUES ('1','12345678-9','4567456745674567','666','6','2026'),('2','22222222-2','4222222222222222','222','2','2026');";
   registroDirecciones: string =  "INSERT OR IGNORE INTO direcciones(id_direccion, nom_direccion, id_comuna, rut_usuario) VALUES ('1','Calle Alabastro 554','1','12345678-9'), ('2','Santo Granito 2373','1','12345678-9'), ('3','Santo Granito 2353','1','22222222-2'), ('4','La Pizarra','4','22222222-2');";
@@ -224,7 +224,7 @@ export class ServicebdService {
   getDireccionesByRUT(rut: string): Promise<any[]> {
     return this.database.executeSql('SELECT * FROM direcciones LEFT JOIN comuna ON direcciones.id_comuna = comuna.id_comuna WHERE rut_usuario = ?', [rut])
       .then((res) => {
-        let direcciones = [];
+        let direcciones: any[] = [];
         for (let i = 0; i < res.rows.length; i++) {
           direcciones.push(res.rows.item(i));
         }
@@ -235,6 +235,12 @@ export class ServicebdService {
         return [];
       });
   } 
+  getComunaById(id_comuna: number) {
+    return this.database.executeSql('SELECT * FROM comuna WHERE id_comuna = ?', [id_comuna])
+      .then(res => {
+        return res.rows.item(0); // Retorna la comuna
+      });
+  }
   getComunas():Promise<any[]>{
     return this.database.executeSql('SELECT * FROM comuna ORDER BY (comuna_id = 0), id;')
     .then((res) => {
@@ -659,7 +665,33 @@ async verProductosPorVendedor(rutVendedor: string | null): Promise<Producto[]> {
     throw error; // Lanza el error para manejarlo en el lugar donde se llama
   }
 }
+async crearVenta(rut: string,fecha: string,costo_envio:number, total: number) {
+  const sql = `
+    INSERT INTO venta (rut, fecha_venta,costo_envio,total) 
+    VALUES (?, ?, ?, ?);
+  `;
+  return this.database.executeSql(sql, [rut, fecha,costo_envio,total])
+    .then((result: any) => {
+      return result.insertId; // Devuelve el ID de la boleta recién creada
+    })
+    .catch(error => {
+      this.presentAlert('Error al crear boleta', 'Error: ' + JSON.stringify(error));
+    });
+}
 
+async agregarDetalleVenta(id_venta: number, productos: any[]) {
+  const sql = `
+    INSERT INTO detalle_venta (id_venta, id_producto, cantidad, precio_unitario) 
+    VALUES (?, ?, ?, ?);
+  `;
+  
+  productos.forEach(producto => {
+    this.database.executeSql(sql, [id_venta, producto.id_producto, producto.cantidad, producto.precio_unitario])
+      .catch(error => {
+        this.presentAlert('Error al agregar detalle', 'Error: ' + JSON.stringify(error));
+      });
+  });
+}
 
 async obtenerTiposProducto(): Promise<{ id_tipo: string; nom_tipo: string }[]> {
   const sql = `SELECT id_tipo, nom_tipo FROM tipoproducto`; // Consulta para obtener tipos de productos
@@ -715,6 +747,14 @@ async obtenerProductoPorId(idProducto: number): Promise<Producto | null> {
     const stock = result.rows.item(0).stock;
     const newStock = stock - cnt;
     return this.database.executeSql('UPDATE producto SET stock = ? WHERE id_producto = ?',[newStock,id_producto])
+  }
+  obtenerFecha(){
+    const fecha = new Date();
+    const anio = fecha.getFullYear();
+    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0'); // Los meses van de 0 a 11
+    const dia = fecha.getDate().toString().padStart(2, '0');
+    const newfecha = `${anio}-${mes}-${dia}`;
+    return (newfecha);
   }
 
 
