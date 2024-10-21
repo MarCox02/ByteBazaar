@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { MenuController, ToastController } from '@ionic/angular';
 import { CarritoService } from 'src/app/services/carrito.service';
 import { ServicebdService } from 'src/app/services/servicebd.service';
@@ -13,7 +14,7 @@ export class CarritoPage implements OnInit {
 
   
 
-  constructor(private servicedb: ServicebdService, private menuCtrl: MenuController,private carritoService: CarritoService,private toastController: ToastController) { }
+  constructor(private router: Router,private servicedb: ServicebdService, private menuCtrl: MenuController,private carritoService: CarritoService,private toastController: ToastController) { }
 
 
   ngOnInit() {
@@ -55,7 +56,9 @@ export class CarritoPage implements OnInit {
       this.carritoService.actualizarCarrito(this.carrito); // Actualiza el carrito en el servicio
     }
   }
-
+  iraseleccion(){
+    this.router.navigate(['/seleccion']);
+  }
   limpiarCarrito() {
     this.carrito = [];
     this.carritoService.actualizarCarrito(this.carrito); // Actualizar el carrito en el servicio
