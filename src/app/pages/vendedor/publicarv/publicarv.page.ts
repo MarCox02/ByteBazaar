@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, MenuController } from '@ionic/angular';
+import { ActionSheetController, AlertController, MenuController } from '@ionic/angular';
 import { Producto } from 'src/app/services/producto';
 import { ServicebdService } from 'src/app/services/servicebd.service';
-import { Camera, CameraResultType } from '@capacitor/camera';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 import { UserService } from 'src/app/services/user.service';
 
@@ -35,7 +35,8 @@ export class PublicarvPage implements OnInit {
   mensajeErrorImagen: string | null = null;
 
   constructor(private menuCtrl: MenuController, private alertController: AlertController, private router: Router,
-    private bdService: ServicebdService,private storage: NativeStorage,private userService: UserService
+    private bdService: ServicebdService,private storage: NativeStorage,private userService: UserService,private actionSheetController: ActionSheetController, 
+
 
   ) {}
 
@@ -71,21 +72,61 @@ async cargarTiposProducto() {
   }
 }
 
-tomarfoto = async () => {
+async presentActionSheet() {
+  const actionSheet = await this.actionSheetController.create({
+    header: 'Seleccionar una opción',
+    buttons: [
+      {
+        text: 'Tomar Foto',
+        handler: () => {
+          this.tomarFoto(); // Llama a la función tomarFoto()
+        }
+      },
+      {
+        text: 'Seleccionar de la Galería',
+        handler: () => {
+          this.seleccionarDeGaleria(); // Llama a la función seleccionarDeGaleria()
+        }
+      },
+      {
+        text: 'Cancelar',
+        role: 'cancel'
+      }
+    ]
+  });
+  await actionSheet.present();
+}
+
+async tomarFoto() {
   const image = await Camera.getPhoto({
     quality: 90,
     allowEditing: false,
-    resultType: CameraResultType.Uri
+    resultType: CameraResultType.DataUrl, // Obtener como base64
+    source: CameraSource.Camera // Tomar desde la cámara
   });
-    
-  
-    if (image.webPath) {
-      this.imagen = image.webPath;
-    } else {
-      this.alerta('Error', 'No se pudo obtener la imagen.');
-    }
-    
+
+  if (image.dataUrl) {
+    this.imagen = image.dataUrl; // Guardar la imagen
+  } else {
+    this.alerta('Error', 'No se pudo obtener la imagen.');
   }
+}
+
+async seleccionarDeGaleria() {
+  const image = await Camera.getPhoto({
+    quality: 90,
+    allowEditing: false,
+    resultType: CameraResultType.DataUrl, // Obtener como base64
+    source: CameraSource.Photos // Seleccionar de la galería
+  });
+
+  if (image.dataUrl) {
+    this.imagen = image.dataUrl; // Guardar la imagen
+  } else {
+    this.alerta('Error', 'No se pudo obtener la imagen.');
+  
+  }
+}
 
   async formulario() {
     

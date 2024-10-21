@@ -1,119 +1,61 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-menu-button></ion-menu-button>
     </ion-buttons>
+    <ion-title>Publicar Producto</ion-title>
   </ion-toolbar>
 </ion-header>
+
 
 <ion-content [fullscreen]="true">
   <div class="contenedor">
     <div>
-      <div class="error-message">{{ errorRut }}</div> 
-      <ion-input
-        class="formulario"
-        helperText="con guión y sin puntos"
-        label="Rut"
-        label-placement="floating"
-        fill="outline"
-        placeholder="XXXXXXXX-X"
-        [(ngModel)]="rut"
-        [errorText]="errorRut"
-      ></ion-input>
-      
+      <div class="error-message">{{ errorRut }}</div>
+      <ion-input class="formulario" helperText="con guión y sin puntos" label="Rut" label-placement="floating"
+        fill="outline" placeholder="XXXXXXXX-X" [(ngModel)]="rut" [errorText]="errorRut"></ion-input>
+
       <div class="error-message">{{ errorUsuario }}</div> <!-- Mensaje de error -->
-      <ion-input
-        class="formulario"
-        label="Usuario"
-        label-placement="floating"
-        fill="outline"
-        placeholder="Ingrese el nombre de su Usuario"
-        [(ngModel)]="user"
-        [errorText]="errorUsuario"
-      ></ion-input>
-      
+      <ion-input class="formulario" label="Usuario" label-placement="floating" fill="outline"
+        placeholder="Ingrese el nombre de su Usuario" [(ngModel)]="user" [errorText]="errorUsuario"></ion-input>
+
       <div class="error-message">{{ errorNombre }}</div> <!-- Mensaje de error -->
-      <ion-input
-        class="formulario"
-        label="Nombre"
-        label-placement="floating"
-        fill="outline"
-        placeholder="Ingrese sus nombres"
-        [(ngModel)]="nombre"
-        [errorText]="errorNombre"
-      ></ion-input>
-      
+      <ion-input class="formulario" label="Nombre" label-placement="floating" fill="outline"
+        placeholder="Ingrese sus nombres" [(ngModel)]="nombre" [errorText]="errorNombre"></ion-input>
+
       <div class="error-message">{{ errorApellido }}</div> <!-- Mensaje de error -->
-      <ion-input
-        class="formulario"
-        label="Apellido"
-        label-placement="floating"
-        fill="outline"
-        placeholder="Ingrese sus apellidos"
-        [(ngModel)]="apellido"
-        [errorText]="errorApellido"
-      ></ion-input>
-      
+      <ion-input class="formulario" label="Apellido" label-placement="floating" fill="outline"
+        placeholder="Ingrese sus apellidos" [(ngModel)]="apellido" [errorText]="errorApellido"></ion-input>
+
       <div class="error-message">{{ errorCorreo }}</div> <!-- Mensaje de error -->
-      <ion-input
-        class="formulario"
-        helperText="Ingrese un Email Valido"
-        errorText="Email invalido"
-        type="email"
-        label="E-Mail"
-        label-placement="floating"
-        fill="outline"
-        placeholder="email@dominio.com"
-        [(ngModel)]="correo"
-        [errorText]="errorCorreo"
-      ></ion-input>
-      
+      <ion-input class="formulario" helperText="Ingrese un Email Valido" errorText="Email invalido" type="email"
+        label="E-Mail" label-placement="floating" fill="outline" placeholder="email@dominio.com" [(ngModel)]="correo"
+        [errorText]="errorCorreo"></ion-input>
+
       <div class="error-message">{{ errorTelefono }}</div> <!-- Mensaje de error -->
-      <ion-input
-        class="formulario"
-        label="Teléfono"
-        label-placement="floating"
-        fill="outline"
-        placeholder="Ingrese su teléfono"
-        [(ngModel)]="telefono"
-        [errorText]="errorTelefono"
-      ></ion-input>
+      <ion-input class="formulario" label="Teléfono" label-placement="floating" fill="outline"
+        placeholder="Ingrese su teléfono" [(ngModel)]="telefono" [errorText]="errorTelefono"></ion-input>
 
       <div class="error-message">{{ errorRol }}</div> <!-- Mensaje de error -->
       <ion-item class="formulario">
         <ion-label>Rol</ion-label>
         <ion-select [(ngModel)]="rol" placeholder="Selecciona tu rol">
-            <ion-select-option value="1">Vendedor</ion-select-option>  <!-- Asigna el id 1 -->
-            <ion-select-option value="2">Comprador</ion-select-option> <!-- Asigna el id 2 -->
+          <ion-select-option value="1">Vendedor</ion-select-option> <!-- Asigna el id 1 -->
+          <ion-select-option value="2">Comprador</ion-select-option> <!-- Asigna el id 2 -->
         </ion-select>
-    </ion-item>
-      
+      </ion-item>
+
       <div class="error-message">{{ errorContrasena }}</div> <!-- Mensaje de error -->
-      <ion-input
-        class="formulario"
-        type="password"
-        label="Contraseña"
-        label-placement="floating"
+      <ion-input class="formulario" type="password" label="Contraseña" label-placement="floating"
         helperText="*la contraseña debe tener entre 6 y 20 caracteres, *la contraseña debe tener por lo menos una mayúscula, una minúscula y un dígito"
-        fill="outline"
-        placeholder="Ingrese su contraseña"
-        [(ngModel)]="contrasena"
-        [errorText]="errorContrasena"
-      ></ion-input>
-      
+        fill="outline" placeholder="Ingrese su contraseña" [(ngModel)]="contrasena"
+        [errorText]="errorContrasena"></ion-input>
+
       <div class="error-message">{{ errorConfirmarContrasena }}</div> <!-- Mensaje de error -->
-      <ion-input
-        class="formulario"
-        type="password"
-        label="Confirmar Contraseña"
-        label-placement="floating"
-        helperText="Las contraseñas deben coincidir"
-        fill="outline"
-        placeholder="Confirme su contraseña"
-        [(ngModel)]="confirmarContrasena"
-        [errorText]="errorConfirmarContrasena"
-      ></ion-input>
-      
+      <ion-input class="formulario" type="password" label="Confirmar Contraseña" label-placement="floating"
+        helperText="Las contraseñas deben coincidir" fill="outline" placeholder="Confirme su contraseña"
+        [(ngModel)]="confirmarContrasena" [errorText]="errorConfirmarContrasena"></ion-input>
+
     </div>
 
     <ion-button class="boton" (click)="formulario()">

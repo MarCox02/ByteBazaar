@@ -1,5 +1,52 @@
-.img-carrito{
+.img-carrito {
   height: auto; /* Ancho de la imagen */
   aspect-ratio: 1/1;
   object-fit: cover; /* Ajustar la imagen al tamaño del contenedor */
+}
+
+.titulo {
+  font-size: 20px;
+  font-weight: bold;
+  color: white; /* Color del título */
+}
+
+.nombre-producto {
+  font-size: 16px;
+  font-weight: bold; /* Asegura que el nombre del producto sea visible */
+}
+
+.btn-cantidad {
+  background-color: transparent; /* Mantener el fondo transparente */
+  color: white; /* Botones blancos */
+}
+
+.total-carrito {
+  color: white; /* Color del texto total */
+}
+
+.btn-pagar {
+  background-color: white; /* Fondo blanco para el botón de pagar */
+  color: black; /* Texto negro */
+}
+
+.color-blanco {
+  color: white;
+}
+
+/* Precio en verde */
+.precio-verde {
+  color: green;
+  font-weight: bold;
+}
+
+/* IVA en rojo */
+.iva-rojo {
+  color: red;
+}
+
+/* Total en verde y grande */
+.total-verde-grande {
+  color: green;
+  font-size: 1.2em;
+  font-weight: bold;
 }

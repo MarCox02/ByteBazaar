@@ -11,8 +11,8 @@ import { ServicebdService } from 'src/app/services/servicebd.service';
 })
 export class CarritoPage implements OnInit {
   public carrito: any[] = [];
+  private enProcesoDeCompra: boolean = false; // Bandera para indicar si se está en proceso de compra
 
-  
 
   constructor(private router: Router,private servicedb: ServicebdService, private menuCtrl: MenuController,private carritoService: CarritoService,private toastController: ToastController) { }
 
@@ -28,42 +28,59 @@ export class CarritoPage implements OnInit {
   }
 
   eliminarProducto(index: number) {
-    const productoEliminado = this.carrito[index].nom_producto; // Usar nom_producto en lugar de nombre
-    this.servicedb.sumarStock(this.carrito[index].id_producto,this.carrito[index].cantidad);
-    this.carrito.splice(index, 1); // Eliminar el producto del carrito
-    this.carritoService.actualizarCarrito(this.carrito); // Actualiza el carrito en el servicio
+    const productoEliminado = this.carrito[index].nom_producto;
+    this.servicedb.sumarStock(this.carrito[index].id_producto, this.carrito[index].cantidad);
+    this.carrito.splice(index, 1);
+    this.carritoService.actualizarCarrito(this.carrito);
     this.presentToast('Producto eliminado', `${productoEliminado} ha sido eliminado del carrito.`);
   }
 
   cambiarCantidad(index: number, incremento: number) {
-    const nuevoCantidad = this.carrito[index].cantidad + incremento; // Ajustar la cantidad
-    const stockDisponible = this.carrito[index].stock; // Obtener el stock disponible del producto
+    const nuevoCantidad = this.carrito[index].cantidad + incremento;
+    const stockDisponible = this.carrito[index].stock;
 
     if (nuevoCantidad < 0) {
       this.presentToast('Cantidad no válida', 'La cantidad no puede ser menor a 0.');
-      return; // No permitir que la cantidad sea menor a 0
+      return;
     }
 
     if (nuevoCantidad > stockDisponible) {
       this.presentToast('Stock insuficiente', `Solo hay ${stockDisponible} unidades disponibles.`);
-      return; // No permitir que la cantidad supere el stock
+      return;
     }
 
     if (nuevoCantidad === 0) {
-      this.eliminarProducto(index); // Eliminar el producto si la cantidad llega a 0
+      this.eliminarProducto(index);
     } else {
-      this.carrito[index].cantidad = nuevoCantidad; // Actualizar la cantidad en el carrito
-      this.carritoService.actualizarCarrito(this.carrito); // Actualiza el carrito en el servicio
+      this.carrito[index].cantidad = nuevoCantidad;
+      this.carritoService.actualizarCarrito(this.carrito);
     }
   }
-  iraseleccion(){
+
+
+  iraseleccion() {
+    // Cambiar la bandera para indicar que se está en proceso de compra
+    this.enProcesoDeCompra = true; 
     this.router.navigate(['/seleccion']);
   }
+
   limpiarCarrito() {
+    this.carrito.forEach(item => {
+      this.servicedb.sumarStock(item.id_producto, item.cantidad); // Restaurar stock
+    });
     this.carrito = [];
-    this.carritoService.actualizarCarrito(this.carrito); // Actualizar el carrito en el servicio
+    this.carritoService.actualizarCarrito(this.carrito);
     this.presentToast('Carrito limpiado', 'Todos los productos han sido eliminados del carrito.');
   }
+
+  finalizarCompra() {
+    // Aquí puedes manejar la lógica de la compra
+    // Al finalizar la compra, puedes marcar que se completó
+    this.enProcesoDeCompra = false; // Resetear la bandera
+    this.presentToast('Compra realizada', 'Gracias por tu compra!');
+  }
+
+  
 
   async presentToast(titulo: string, mensaje: string) {
     const toast = await this.toastController.create({

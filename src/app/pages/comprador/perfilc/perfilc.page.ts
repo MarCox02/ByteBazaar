@@ -38,6 +38,8 @@ async eliminarCuenta() {
     return;
   }
 
+  
+
   if (!this.usuario.rut) {
     await this.alerta("Error", "No se pudo obtener el RUT del usuario.");
     return;
@@ -71,6 +73,11 @@ async eliminarCuenta() {
   });
 
   await confirm.present();
+}
+
+async cerrarSesion() {
+  await this.userService.cerrarSesion(); // Incrementa el stock y limpia el carrito
+  this.router.navigate(['/']); // Redirige a la página de inicio
 }
 ngOnDestroy() {
   // Asegúrate de cancelar la suscripción al destruir el componente
