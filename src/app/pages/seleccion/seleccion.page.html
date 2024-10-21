@@ -1,13 +1,40 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>seleccion</ion-title>
+    <ion-title>Seleccionar Dirección y Tarjeta</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">seleccion</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <ion-list>
+    <!-- Lista de Direcciones -->
+    <ion-item-divider>
+      <ion-label>Dirección de Envío</ion-label>
+    </ion-item-divider>
+    
+    <ion-radio-group [(ngModel)]="direccionSeleccionada">
+      <ion-item *ngFor="let direccion of direcciones">
+        <ion-label>
+          Dirección: {{ direccion.direccion_detalle }}<br>
+          Comuna ID: {{ direccion.id_comuna }}
+        </ion-label>
+        <ion-radio slot="start" [value]="direccion.id_direccion"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </ion-list>
+
+  <ion-list>
+    <!-- Lista de Tarjetas -->
+    <ion-item-divider>
+      <ion-label>Tarjeta de Pago</ion-label>
+    </ion-item-divider>
+
+    <ion-radio-group [(ngModel)]="tarjetaSeleccionada">
+      <ion-item *ngFor="let tarjeta of tarjetas">
+        <ion-label>**** **** **** {{ tarjeta.numero_tarjeta.toString().slice(-4) }}</ion-label>
+        <ion-radio slot="start" [value]="tarjeta.numero_tarjeta"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </ion-list>
+
+  <ion-button expand="block" (click)="confirmarCompra()">Confirmar Compra</ion-button>
 </ion-content>

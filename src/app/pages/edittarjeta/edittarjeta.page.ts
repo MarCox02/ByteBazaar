@@ -60,7 +60,7 @@ export class EdittarjetaPage implements OnInit {
      let hayErrores = false; // Bandera para verificar si hay errores
 
   // Validaciones de campos
-  if (!this.numero_tarjeta || !this.isEditMode) {
+  if (!this.numero_tarjeta && !this.isEditMode) {
     this.errornum_tarjeta = "El numero de Tarjeta es Obligatorio";
     hayErrores = true;
   }
@@ -152,6 +152,7 @@ export class EdittarjetaPage implements OnInit {
     this.errorCVC = '';
     this.errorFE_anio= '';
     this.errorFE_mes = '';
+    
   }
 
   /* Alertas */
