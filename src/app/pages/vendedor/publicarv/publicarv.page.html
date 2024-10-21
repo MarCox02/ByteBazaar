@@ -25,10 +25,10 @@
       placeholder="Ingrese la descripcion del Producto" [(ngModel)]="descripcionProducto">
       </ion-input>
       <br>
-      <ion-item>
+      <ion-item class="border-color">
         <ion-label>Tipo de Producto</ion-label>
-        <ion-select [(ngModel)]="tipoSeleccionado">
-          <ion-select-option *ngFor="let tipo of tiposProducto" [value]="tipo.id_tipo">
+        <ion-select class="border-color" [(ngModel)]="tipoSeleccionado">
+          <ion-select-option class="border-color" *ngFor="let tipo of tiposProducto" [value]="tipo.id_tipo">
             {{ tipo.nom_tipo }}
           </ion-select-option>
         </ion-select>

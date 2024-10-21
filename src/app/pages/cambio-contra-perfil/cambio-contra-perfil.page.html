@@ -4,22 +4,16 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Cambio de contraseña</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div class="ion-padding">
-    <ion-item class="contra">
+<ion-content [fullscreen]="true"  >
+  <div class=" border-color ion-padding">
+    <ion-item class="border-color">
       <ion-label position="stacked">Introduzca su contraseña nueva </ion-label>
-      <ion-input type="password" class="contra" [(ngModel)]="ContrasenaNueva" required></ion-input>
+      <ion-input type="password" class="border-color" [(ngModel)]="ContrasenaNueva" required></ion-input>
     </ion-item>
 
-    <ion-item class="contra">
+    <ion-item class=" border-color">
       <ion-label position="stacked">Confirme su contraseña nueva </ion-label>
-      <ion-input type="password" class="contra" [(ngModel)]="confirmarContrasena" required></ion-input>
+      <ion-input type="password" class="border-color" [(ngModel)]="confirmarContrasena" required></ion-input>
     </ion-item>
 
     <ion-button expand="full" (click)="cambiarContrasena()">

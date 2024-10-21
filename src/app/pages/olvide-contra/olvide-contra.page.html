@@ -12,12 +12,12 @@
       </ion-card-header>
       <ion-card-content>
         <!-- Ingreso del correo electrónico -->
-        <ion-input type="email" placeholder="Correo electrónico" [(ngModel)]="correo"></ion-input>
+        <ion-input class="border-color" type="email" placeholder="Correo electrónico" [(ngModel)]="correo"></ion-input>
         <ion-button expand="full" (click)="enviarCodigo()">Enviar Código de Verificación</ion-button>
         
         <!-- Mostrar el campo de código de verificación solo si se ha enviado el código -->
         <div *ngIf="codigoEnviado">
-          <ion-input type="text" placeholder="Ingresa el código de verificación" [(ngModel)]="codigo"></ion-input>
+          <ion-input class="border-color" type="text" placeholder="Ingresa el código de verificación" [(ngModel)]="codigo"></ion-input>
           <ion-button expand="full" (click)="verificarCodigo()">Verificar Código</ion-button>
         </div>
       </ion-card-content>

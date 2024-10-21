@@ -1,0 +1,27 @@
+.border-color{
+    border-color: rgba(0, 0, 0, 0);
+}
+
+.contenedor {
+    display: flex;
+    flex-direction: column; /* Coloca los elementos en una columna */
+    align-items: center; /* Centra horizontalmente los elementos */
+    padding: 20px; /* Espaciado interno */
+    margin: 10px; /* Espaciado externo */
+  }
+  
+  .error-message {
+    color: red; /* Color rojo para los mensajes de error */
+    margin-bottom: 10px; /* Espacio entre el mensaje de error y el input */
+  }
+  
+  .formulario {
+    width: 100%; /* Asegura que los inputs ocupen el ancho completo del contenedor */
+    margin-bottom: 15px; /* Espacio entre los inputs */
+  }
+  
+  .boton {
+    width: 100%; /* Asegura que el botón ocupe el ancho completo */
+    margin-top: 15px; /* Espacio entre el último input y el botón */
+  }
+  

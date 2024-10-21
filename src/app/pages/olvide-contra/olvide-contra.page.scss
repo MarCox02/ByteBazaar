@@ -1,19 +1,21 @@
 .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-  }
-  
-  .titulo{
-    text-align: center;
-    margin-bottom: 10px; /* Espacio entre el título y la imagen */
-  }
-  
-  .titulo{
-    margin-bottom: 10px; /* Espacio entre el título y la imagen */
-  }
-  
-  ion-input{
-    border-color: rgba(0, 0, 0, 0);
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.titulo {
+  text-align: center;
+  margin-bottom: 10px; /* Espacio entre el título y los inputs */
+}
+
+.border-color {
+  border-color: rgba(0, 0, 0, 0);
+  margin: 10px 0; /* Espacio entre inputs */
+  width: 100%; /* Asegura que ocupen el ancho del contenedor */
+}
+
+ion-input {
+  border-color: rgba(0, 0, 0, 0);
+}

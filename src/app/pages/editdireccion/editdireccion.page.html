@@ -7,11 +7,11 @@
 
 <ion-content>
 
-  <div class="contenedor" *ngIf="isEditMode">
+  <div class="contenedor border-color" *ngIf="isEditMode">
     <div>
-      <div class="error-message">{{ errordireccion }}</div> 
+      <div class="error-message ">{{ errordireccion }}</div> 
       <ion-input
-        class="formulario"
+        class="formulario border-color"
         helperText=""
         label="Nombre de la Direccion"
         label-placement="floating"
@@ -22,7 +22,7 @@
       ></ion-input>
 
       <div class="error-message">{{ errorcomuna }}</div> <!-- Mensaje de error -->
-      <ion-item class="formulario">
+      <ion-item class="formulario border-color">
         <ion-label>Comuna</ion-label>
         <ion-select [(ngModel)]="id_comuna" placeholder="Selecciona la comuna">
             <ion-select-option value="1">Huechuraba</ion-select-option> 
@@ -36,19 +36,19 @@
     </ion-item>
 
     </div>
-    <ion-button class="boton" (click)="formulario()">
+    <ion-button class="boton border-color" (click)="formulario()">
       Modificar Direccion
     </ion-button>
   </div>
 
 
 
-  <div class="contenedor" *ngIf="!isEditMode">
+  <div class="contenedor border-color" *ngIf="!isEditMode">
     <div>
 
       <div class="error-message">{{ errordireccion }}</div> 
       <ion-input
-        class="formulario"
+        class="formulario border-color"
         helperText=""
         label="Nombre de la Direccion"
         label-placement="floating"
@@ -59,9 +59,9 @@
       ></ion-input>
 
       <div class="error-message">{{ errorcomuna }}</div> <!-- Mensaje de error -->
-      <ion-item class="formulario">
+      <ion-item class="formulario border-color">
         <ion-label>Comuna</ion-label>
-        <ion-select [(ngModel)]="id_comuna" placeholder="Selecciona la comuna">
+        <ion-select class="border-color" [(ngModel)]="id_comuna" placeholder="Selecciona la comuna">
             <ion-select-option value="1">Huechuraba</ion-select-option> 
             <ion-select-option value="2">La Cisterna</ion-select-option>
             <ion-select-option value="3">La Reina</ion-select-option>

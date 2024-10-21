@@ -26,6 +26,10 @@
   margin-top: 2%;
 }
 
+.border-color{
+  border-color: rgba(0, 0, 0, 0);
+}
+
 .titulo{
 text-align: center;
 color: rgb(5, 197, 255);
@@ -34,6 +38,10 @@ color: rgb(5, 197, 255);
 .img{
   width: auto; /* Ancho de la imagen */
   aspect-ratio: 1/1;
+}
+
+.border-color{
+  border-color: rgba(0, 0, 0, 0);
 }
 
 ion-input{

@@ -6,24 +6,24 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-card *ngIf="producto" class="contenedor">
+<ion-content [fullscreen]="true" >
+  <ion-card *ngIf="producto" class="contenedor border-color">
     <img class="imagen" alt="Imagen del producto" [src]="producto.imagen" />
     
     <ion-card-header>
       <ion-card-title>
-        <input [(ngModel)]="producto.nom_producto" placeholder="Nombre del producto" [disabled]="!isEditing" />
+        <input class="border-color" [(ngModel)]="producto.nom_producto" placeholder="Nombre del producto" [disabled]="!isEditing" />
       </ion-card-title>
       <ion-card-subtitle>#{{ producto.id_producto }}</ion-card-subtitle>
     </ion-card-header>
     
     <ion-card-content>
-      <p class="descripcion">
+      <p class="descripcion border-color">
         <textarea [(ngModel)]="producto.desc_producto" placeholder="Descripción" [disabled]="!isEditing"></textarea>
       </p>
-          <ion-item *ngIf="isEditing">
-            <ion-label position="floating">Stock</ion-label>
-              <ion-input 
+          <ion-item *ngIf="isEditing" class="border-color">
+            <ion-label class="border-color" position="floating">Stock</ion-label>
+              <ion-input  class="border-color"
               type="number" 
               [(ngModel)]="producto.stock" 
               placeholder="Cantidad en stock" 
@@ -35,18 +35,18 @@
 
            
 
-      <ion-item *ngIf="isEditing">
+      <ion-item *ngIf="isEditing" class="border-color">
         <ion-label>Tipo de Producto</ion-label>
-        <ion-select [(ngModel)]="producto.id_tipo" [disabled]="!isEditing">
-          <ion-select-option *ngFor="let tipo of tiposProducto" [value]="tipo.id_tipo">
+        <ion-select class="border-color" [(ngModel)]="producto.id_tipo" [disabled]="!isEditing">
+          <ion-select-option class="border-color" *ngFor="let tipo of tiposProducto" [value]="tipo.id_tipo">
             {{ tipo.nom_tipo }}
           </ion-select-option>
         </ion-select>
       </ion-item>
 
-      <ion-item *ngIf="isEditing">
+      <ion-item *ngIf="isEditing" class="border-color">
         <ion-label position="floating">Precio</ion-label>
-        <ion-input 
+        <ion-input  class="border-color"
           type="number" 
           [(ngModel)]="producto.precio" 
           placeholder="Precio del producto" 
