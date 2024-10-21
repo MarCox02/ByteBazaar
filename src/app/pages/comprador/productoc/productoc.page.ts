@@ -60,7 +60,7 @@ export class ProductocPage implements OnInit {
       const stockProducto = this.producto.stock ?? 0;
   
       if (nuevaCantidadTotal > stockProducto) {
-        this.presentToast(`Stock insuficiente. Solo hay ${stockProducto} unidades disponibles.`);
+        this.presentToast(`Stock insuficiente. Tienes ${totalCantidadEnCarrito} unidades en tu carrito y el stock máximo disponible es ${stockProducto}.`);
         return; // Evitar agregar al carrito si excede el stock
       }
   
