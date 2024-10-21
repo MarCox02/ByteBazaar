@@ -69,6 +69,7 @@ export class OlvideContraPage implements OnInit {
   verificarCodigo() {
     if (this.codigo === this.codigoGenerado) {
       this.mostrarToast('Código verificado correctamente');
+      localStorage.setItem('correoUsuario', this.correo);
       this.router.navigate(['/cambio-contra']); // Redirigir a la página de cambio de contraseña
     } else {
       this.mostrarAlerta('Error', 'Código incorrecto, intenta nuevamente');

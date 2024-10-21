@@ -170,9 +170,20 @@ export class RegistrarPage implements OnInit {
     this.router.navigate(['/home']);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : JSON.stringify(error);
+    
+    // Mostrar alertas para cada error específico
     if (errorMessage.includes('El RUT ya está registrado.')) {
       this.alerta("Error", "El RUT ingresado ya está registrado en el sistema.");
-    } else {
+    }
+    if (errorMessage.includes('El correo ya está registrado.')) {
+      this.alerta("Error", "El correo ingresado ya está registrado en el sistema.");
+    }
+    if (errorMessage.includes('El nombre de usuario ya está registrado.')) {
+      this.alerta("Error", "El nombre de usuario ingresado ya está registrado en el sistema.");
+    }
+    
+    // Manejar cualquier otro error
+    else {
       console.error('Error al registrar usuario: ', errorMessage);
       this.alerta("Error", "No se pudo registrar el usuario. Intenta nuevamente.");
     }
