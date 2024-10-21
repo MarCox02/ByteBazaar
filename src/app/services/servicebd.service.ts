@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, from, Observable } from 'rxjs';
 import { AlertController, Platform } from '@ionic/angular';
 import { Usuario } from './usuario';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
@@ -175,6 +175,36 @@ export class ServicebdService {
     }
   }
 
+  // Función para verificar si un correo existe en la tabla usuario
+  verificarCorreo(correo: string): Observable<boolean> {
+    const query = `SELECT COUNT(*) AS count FROM usuario WHERE correo = ?`;
+    
+    // Convierte la promesa en un observable usando 'from'
+    return from(this.database.executeSql(query, [correo])
+      .then((result) => {
+        // Si hay al menos una coincidencia, el correo existe
+        return result.rows.item(0).count > 0;
+      })
+      .catch((error) => {
+        console.error('Error verificando el correo:', error);
+        throw new Error('Error al verificar el correo');
+      })
+    );
+  }
+
+  async cambiarContrasenaPorCorreo(correo: string, nuevaContrasena: string): Promise<void> {
+    const sql = 'UPDATE usuario SET contrasena = ? WHERE correo = ?';
+    try {
+      const result = await this.database.executeSql(sql, [nuevaContrasena, correo]);
+      
+      if (result.rowsAffected === 0) {
+        throw new Error('No se encontró el usuario con ese correo');
+      }
+    } catch (error) {
+      console.error('Error al cambiar la contraseña:', error);
+      throw error; // Propaga el error para manejarlo en el componente
+    }
+  }
 
   getTarjetasByRUT(rut: string): Promise<any[]> {
     return this.database.executeSql('SELECT * FROM tarjeta WHERE rut_usuario = ?', [rut])
@@ -333,14 +363,36 @@ export class ServicebdService {
 
 async registrarUsuario(usuario: Usuario): Promise<any> {
   try {
-    const query = 'SELECT COUNT(*) as count FROM usuario WHERE rut = ?';
-    const result = await this.database.executeSql(query, [usuario.rut]);
+    // Inicializar un array para almacenar mensajes de error
+    const errores: string[] = [];
 
-    if (result.rows.item(0).count > 0) {
-      throw new Error('El RUT ya está registrado.');
+    // Verificar si el RUT ya está registrado
+    const queryRut = 'SELECT COUNT(*) as count FROM usuario WHERE rut = ?';
+    const resultRut = await this.database.executeSql(queryRut, [usuario.rut]);
+    if (resultRut.rows.item(0).count > 0) {
+      errores.push('El RUT ya está registrado.');
     }
 
-    // Si el RUT no está registrado, inserta el nuevo usuario
+    // Verificar si el correo ya está registrado
+    const queryCorreo = 'SELECT COUNT(*) as count FROM usuario WHERE correo = ?';
+    const resultCorreo = await this.database.executeSql(queryCorreo, [usuario.correo]);
+    if (resultCorreo.rows.item(0).count > 0) {
+      errores.push('El correo ya está registrado.');
+    }
+
+    // Verificar si el nombre de usuario ya está registrado
+    const queryUser = 'SELECT COUNT(*) as count FROM usuario WHERE user = ?';
+    const resultUser = await this.database.executeSql(queryUser, [usuario.user]);
+    if (resultUser.rows.item(0).count > 0) {
+      errores.push('El nombre de usuario ya está registrado.');
+    }
+
+    // Si hay errores, lanzar un error que contenga todos los mensajes
+    if (errores.length > 0) {
+      throw new Error(errores.join(' ')); // Unir mensajes con un espacio
+    }
+
+    // Si no está registrado, inserta el nuevo usuario
     const insertQuery = `
       INSERT INTO usuario (user, rut, nombre, apellido, correo, telefono, foto_perfil, contrasena, id_rol)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -357,16 +409,16 @@ async registrarUsuario(usuario: Usuario): Promise<any> {
       usuario.id_rol
     ]);
 
-    
-
     // Después de registrar, llama a verUsuario para actualizar la lista
     await this.verUsuario();
 
     return Promise.resolve();
-  }catch (error) {
+  } catch (error) {
     return Promise.reject(error);
   }
 }
+
+
 
 async actualizarUsuario(usuario: Usuario): Promise<void> {
   const query = `
