@@ -15,17 +15,21 @@
           <img *ngIf="imagen" [src]="imagen" alt="Sin imagen" style="height: 250px;width: 250px;"/>
         </ion-item>
 
-        <ion-button (click)="tomarfoto()">Tomar Foto</ion-button>
+        <ion-button (click)="presentActionSheet()">Seleccionar Imagen</ion-button>
       </ion-list>
-    
+      <div class="error-message">{{ mensajeErrorImagen }}</div>
+      <br>
+      <div class="error-message">{{ mensajeErrorNombre }}</div>
     <ion-input class="formulario" helperText="" color="dark" label="Nombre del Producto" label-placement="floating" fill="outline"
       placeholder="Ingrese el Nombre del Producto" [(ngModel)]="nombreProducto">
       </ion-input>
       <br>
+      <div class="error-message">{{ mensajeErrorDescripcion }}</div>
       <ion-input class="formulario" color="dark" label="Descripción" label-placement="floating" fill="outline"
       placeholder="Ingrese la descripcion del Producto" [(ngModel)]="descripcionProducto">
       </ion-input>
       <br>
+      <div class="error-message">{{ mensajeErrorTipo }}</div>
       <ion-item class="border-color">
         <ion-label>Tipo de Producto</ion-label>
         <ion-select class="border-color" [(ngModel)]="tipoSeleccionado">
@@ -35,10 +39,12 @@
         </ion-select>
       </ion-item>
       <br>
+      <div class="error-message">{{ mensajeErrorStock }}</div>
       <ion-input class="formulario" color="dark" type="number" label="Cantidad" label-placement="floating" fill="outline"
       placeholder="Ingrese la Cantidad" [(ngModel)]="cantidad">
       </ion-input>
       <br>
+      <div class="error-message">{{ mensajeErrorPrecio }}</div>
       <ion-input class="formulario" color="dark" type="number" label="Precio" label-placement="floating" fill="outline"
       placeholder="Ingrese el Precio Unitario" [(ngModel)]="precio">
     </ion-input>
