@@ -97,14 +97,24 @@ const routes: Routes = [
     path: 'cambio-contra',
     loadChildren: () => import('./pages/cambio-contra/cambio-contra.module').then( m => m.CambioContraPageModule)
   },
+  
   {
-    path: '**',
-    loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
-  },  {
     path: 'seleccion',
     loadChildren: () => import('./pages/seleccion/seleccion.module').then( m => m.SeleccionPageModule)
   },
-
+  {
+    path: 'introduzca-contra',
+    loadChildren: () => import('./pages/introduzca-contra/introduzca-contra.module').then( m => m.IntroduzcaContraPageModule)
+  },
+  
+  {
+    path: 'cambio-contra-perfil',
+    loadChildren: () => import('./pages/cambio-contra-perfil/cambio-contra-perfil.module').then( m => m.CambioContraPerfilPageModule)
+  },
+  {
+    path: '**',
+    loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
+  },
 
 
 
