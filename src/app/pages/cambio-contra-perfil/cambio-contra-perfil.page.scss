@@ -1,0 +1,17 @@
+
+  .ion-padding {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; /* Centrar horizontalmente */
+  }
+  
+  .border-color {
+    width: 100%; /* Asegura que los inputs ocupen el ancho completo */
+    margin-bottom: 10px; /* Espacio entre inputs */
+    border-color: rgba(0, 0, 0, 0);
+  }
+  
+  ion-button {
+    margin-top: 20px; /* Espacio entre inputs y botón */
+  }

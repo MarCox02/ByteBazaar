@@ -1,21 +1,25 @@
 .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-  }
-  
-  .titulo{
-    text-align: center;
-    margin-bottom: 10px; /* Espacio entre el título y la imagen */
-  }
-  
-  .label{
-    margin-bottom: 10px; /* Espacio entre los labels */
-    font-size: 16px; /* Tamaño del texto */
-    
-  }
-  
-  ion-input{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.titulo {
+  text-align: center;
+}
+
+.border-color {
+  margin: 10px 0; /* Espaciado entre los inputs */
+  width: 100%; /* Asegurarte de que ocupen el ancho del contenedor */
+}
+
+ion-card {
+  width: 90%; /* O el ancho que desees */
+  max-width: 500px; /* Límite de ancho */
+}
+
+.border-color{
     border-color: rgba(0, 0, 0, 0);
   }
+  

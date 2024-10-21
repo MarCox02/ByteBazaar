@@ -22,11 +22,11 @@
       </p>
       <p class="dinero">{{ producto.precio | currency:'CLP ':true:'4.0-0'}}</p>
 
-      <ion-item class="cantidad-selector">
+      <ion-item class="cantidad-selector border-color">
         <ion-label>Selecciona la cantidad:</ion-label>
         <ion-buttons>
           <ion-button (click)="disminuirCantidad()">-</ion-button>
-          <ion-input type="number" [(ngModel)]="cantidad" min="1" [max]="producto.stock" placeholder="1"></ion-input>
+          <ion-input type="number" class="border-color" [(ngModel)]="cantidad" min="1" [max]="producto.stock" placeholder="1"></ion-input>
           <ion-button (click)="incrementarCantidad()">+</ion-button>
         </ion-buttons>
       </ion-item>

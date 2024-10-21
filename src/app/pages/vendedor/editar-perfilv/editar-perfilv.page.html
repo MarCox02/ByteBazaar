@@ -3,6 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
+    <ion-title >Editar Perfil</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -16,31 +17,35 @@
       <ion-label>Foto de Perfil</ion-label>
 
       <!-- Botón para seleccionar una nueva imagen -->
-      <ion-icon name="camera" *ngIf="editMode" (click)="fileInput.click()" style="cursor: pointer;"></ion-icon>
-      <input type="file" accept="image/*" (change)="onFileSelected($event)" #fileInput hidden>
+      <ion-icon name="camera" *ngIf="editMode" (click)="presentActionSheet()" style="cursor: pointer;"></ion-icon>
     </ion-item>
 
     <!-- Otros campos -->
 
-    <ion-item class="item-personalizado">
+    <ion-item class="item-personalizado border-color">
       <ion-label>Rol</ion-label>
-      <ion-select [(ngModel)]="id_rol" [disabled]="!editMode">
-        <ion-select-option value="1">Vendedor</ion-select-option>
-        <ion-select-option value="2">Comprador</ion-select-option>
+      <ion-select class="border-color" [(ngModel)]="id_rol" [disabled]="!editMode">
+        <ion-select-option class="border-color" value="1">Vendedor</ion-select-option>
+        <ion-select-option class="border-color" value="2">Comprador</ion-select-option>
       </ion-select>
     </ion-item>
 
-    <ion-item class="item-personalizado">
-      <ion-input type="email" fill="solid" label="Correo Electrónico" labelPlacement="floating"
+    <ion-item class="item-personalizado border-color">
+      <ion-input class="border-color" type="email" fill="solid" label="Correo Electrónico" labelPlacement="floating"
         [(ngModel)]="correo" [disabled]="!editMode"></ion-input>
     </ion-item>
-    <ion-item class="item-personalizado">
-      <ion-input type="text" fill="solid" label="Nombre de Usuario" labelPlacement="floating"
+    <ion-item class="item-personalizado border-color">
+      <ion-input class="border-color" type="text" fill="solid" label="Nombre de Usuario" labelPlacement="floating"
         [(ngModel)]="nombreUsuario" [disabled]="!editMode"></ion-input>
     </ion-item>
   </ion-list>
 
   <ion-button expand="block" color="primary" (click)="toggleEdit()">
     {{ editMode ? 'Guardar Cambios' : 'Editar Datos Personales' }}
+  </ion-button>
+
+   <!-- Nuevo botón para cambiar contraseña -->
+   <ion-button class="boton-guardar" expand="block" color="secondary" (click)="irACambiarContrasena()">
+    Cambiar Contraseña
   </ion-button>
 </ion-content>

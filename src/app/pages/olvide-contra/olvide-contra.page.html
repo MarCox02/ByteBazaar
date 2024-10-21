@@ -1,24 +1,26 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
+    <ion-title>Recuperar Contraseña</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-
   <div class="container">
     <ion-card>
-      <ion-card-header class="titutlo">
-        <ion-card-title>Recuperar Contraseña</ion-card-title>
+      <ion-card-header>
+        <ion-card-title>Ingresa tu correo electrónico</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-            <ion-input type="email" fill="solid" label="Email" labelPlacement="floating"
-              helperText="Enter a valid email" errorText="Invalid email" [(ngModel)]="correo"></ion-input>
-          <ion-button expand="full" (click)="olvideContrasena()">Enviar Solicitud</ion-button>
+        <!-- Ingreso del correo electrónico -->
+        <ion-input class="border-color" type="email" placeholder="Correo electrónico" [(ngModel)]="correo"></ion-input>
+        <ion-button expand="full" (click)="enviarCodigo()">Enviar Código de Verificación</ion-button>
+        
+        <!-- Mostrar el campo de código de verificación solo si se ha enviado el código -->
+        <div *ngIf="codigoEnviado">
+          <ion-input class="border-color" type="text" placeholder="Ingresa el código de verificación" [(ngModel)]="codigo"></ion-input>
+          <ion-button expand="full" (click)="verificarCodigo()">Verificar Código</ion-button>
+        </div>
       </ion-card-content>
     </ion-card>
   </div>
-
 </ion-content>
