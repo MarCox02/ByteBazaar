@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, ToastController } from '@ionic/angular';
+import { OlvideContraService } from 'src/app/services/olvidecontra.service';
 import { ServicebdService } from 'src/app/services/servicebd.service'; // Asegúrate de importar tu servicio para consultas a la BD
 
 @Component({
@@ -9,59 +10,66 @@ import { ServicebdService } from 'src/app/services/servicebd.service'; // Asegú
   styleUrls: ['./olvide-contra.page.scss'],
 })
 export class OlvideContraPage implements OnInit {
-  correo: string = ''; // Asegúrate de inicializar la variable
-  codigo: string = '';
-  codigoGenerado: string = '';
-  codigoEnviado: boolean = false;
+  codigo: string = ''; // Código ingresado por el usuario
+  correo: string = ''; // Correo ingresado por el usuario
+  codigoGenerado: string | undefined; // Código de verificación generado
+  codigoEnviado: boolean = false; // Bandera para saber si el código ha sido enviado
+
 
   constructor(
     private alertController: AlertController,
     private toastController: ToastController,
     private router: Router,
-    private servicebd: ServicebdService // Usa tu servicebd para la consulta de correos
-  ) {}
+    private servicebd: ServicebdService, // Usa tu servicebd para la consulta de correos
+    private olvideContraService: OlvideContraService // Usa tu service para el envío de correos
+  ) {this.codigoEnviado = false;}
 
   ngOnInit() {}
 
   // Función para enviar el código de verificación si el correo está en la base de datos
-  async enviarCodigo() {
-    if (!this.correo) {
-      this.mostrarAlerta('Error', 'Por favor, ingresa un correo válido');
+  // Función para verificar si el correo está registrado en la base de datos
+  enviarCodigo() {
+    if (this.correo.trim() === '') {
+      this.mostrarAlerta('Error', 'Por favor, ingrese un correo válido.');
       return;
     }
-
-    try {
-      // Verificar si el correo existe en la base de datos
-      const existe = await this.servicebd.verificarCorreo(this.correo);
-
-      if (existe) {
-        // Generar un código de verificación (por ejemplo, un número aleatorio de 6 dígitos)
-        this.codigoGenerado = Math.floor(100000 + Math.random() * 900000).toString();
-
-        // Enviar el código al correo del usuario (simulando el envío)
-        // Aquí deberías implementar un servicio que realmente envíe el correo
-        const envioExitoso = await this.simularEnvioCorreo(this.correo, this.codigoGenerado);
-
-        if (envioExitoso) {
-          this.codigoEnviado = true;
-          this.mostrarToast('Se ha enviado un código de verificación a tu correo');
+  
+    this.servicebd.verificarCorreo(this.correo).subscribe({
+      next: (existe: boolean) => {
+        if (existe) {
+          // Generar el código de verificación
+          this.codigoGenerado = Math.floor(100000 + Math.random() * 900000).toString();
+  
+          // Enviar el código de verificación al correo
+          this.olvideContraService.enviarCorreo(this.correo, this.codigoGenerado).subscribe({
+            next: () => {
+              this.codigoEnviado = true; // Actualiza a true solo si se envió con éxito
+              this.mostrarToast('Se ha enviado un código de verificación a tu correo');
+            },
+            error: (err) => {
+              console.error('Error en el envío de correo:', err); // Loguea el error
+              this.mostrarAlerta('Error', 'Error al enviar el código. Inténtalo de nuevo.');
+              this.codigoEnviado = false; // Asegúrate de que no se muestre el input
+            }
+          });
         } else {
-          this.mostrarAlerta('Error', 'Error al enviar el código de verificación. Inténtalo de nuevo.');
+          this.mostrarAlerta('Error', 'El correo ingresado no está registrado.');
+          this.codigoEnviado = false; // Asegúrate de que no se muestre el input
         }
-      } else {
-        this.mostrarAlerta('Error', 'El correo ingresado no está registrado.');
+      },
+      error: (error: string) => {
+        this.mostrarAlerta('Error', 'Error al verificar el correo: ' + error);
+        this.codigoEnviado = false; // Asegúrate de que no se muestre el input
       }
-    } catch (error) {
-      this.mostrarAlerta('Error', 'Error al verificar el correo: ' + error);
-    }
+    });
   }
+  
 
   // Función para verificar si el código ingresado es correcto
   verificarCodigo() {
     if (this.codigo === this.codigoGenerado) {
       this.mostrarToast('Código verificado correctamente');
-      // Redirigir al siguiente paso (ej. cambiar contraseña)
-      this.router.navigate(['/cambio-contra']);
+      this.router.navigate(['/cambio-contra']); // Redirigir a la página de cambio de contraseña
     } else {
       this.mostrarAlerta('Error', 'Código incorrecto, intenta nuevamente');
     }
@@ -85,11 +93,5 @@ export class OlvideContraPage implements OnInit {
       position: 'bottom',
     });
     await toast.present();
-  }
-
-  // Simular el envío de un correo (deberías reemplazar esto con un servicio real)
-  async simularEnvioCorreo(correo: string, codigo: string): Promise<boolean> {
-    this.mostrarAlerta(`codigo `,`Enviando código ${codigo} a ${correo}`);
-    return new Promise((resolve) => setTimeout(() => resolve(true), 1000)); // Simula un delay y retorna éxito
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, from, Observable } from 'rxjs';
 import { AlertController, Platform } from '@ionic/angular';
 import { Usuario } from './usuario';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
@@ -176,22 +176,20 @@ export class ServicebdService {
   }
 
   // Función para verificar si un correo existe en la tabla usuario
-  async verificarCorreo(correo: string): Promise<boolean> {
+  verificarCorreo(correo: string): Observable<boolean> {
     const query = `SELECT COUNT(*) AS count FROM usuario WHERE correo = ?`;
     
-    try {
-      const result = await this.database.executeSql(query, [correo]);
-      
-      // Si hay al menos una coincidencia, el correo existe
-      if (result.rows.item(0).count > 0) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (error) {
-      console.error('Error verificando el correo:', error);
-      throw new Error('Error al verificar el correo');
-    }
+    // Convierte la promesa en un observable usando 'from'
+    return from(this.database.executeSql(query, [correo])
+      .then((result) => {
+        // Si hay al menos una coincidencia, el correo existe
+        return result.rows.item(0).count > 0;
+      })
+      .catch((error) => {
+        console.error('Error verificando el correo:', error);
+        throw new Error('Error al verificar el correo');
+      })
+    );
   }
 
 
