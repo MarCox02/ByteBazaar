@@ -38,17 +38,17 @@ export class CarritoPage implements OnInit {
   cambiarCantidad(index: number, incremento: number) {
     const nuevoCantidad = this.carrito[index].cantidad + incremento; // Ajustar la cantidad
     const stockDisponible = this.carrito[index].stock; // Obtener el stock disponible del producto
-
+  
     if (nuevoCantidad < 0) {
       this.presentToast('Cantidad no válida', 'La cantidad no puede ser menor a 0.');
       return; // No permitir que la cantidad sea menor a 0
     }
-
+  
     if (nuevoCantidad > stockDisponible) {
       this.presentToast('Stock insuficiente', `Solo hay ${stockDisponible} unidades disponibles.`);
       return; // No permitir que la cantidad supere el stock
     }
-
+  
     if (nuevoCantidad === 0) {
       this.eliminarProducto(index); // Eliminar el producto si la cantidad llega a 0
     } else {
