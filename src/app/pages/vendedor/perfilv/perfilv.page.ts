@@ -22,6 +22,11 @@
       this.usuario$ = this.userService.currentUser$;
     }
 
+    async cerrarSesion() {
+      await this.userService.cerrarSesion(); // Incrementa el stock y limpia el carrito
+      this.router.navigate(['/']); // Redirige a la página de inicio
+    }
+    
     async ngOnInit() {
       this.menuCtrl.enable(false,'comprador')
       this.menuCtrl.enable(true,'vendedor')
