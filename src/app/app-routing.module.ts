@@ -102,9 +102,15 @@ const routes: Routes = [
     loadChildren: () => import('./pages/seleccion/seleccion.module').then( m => m.SeleccionPageModule)
   },
   {
+    path: 'detalle-venta',
+    loadChildren: () => import('./pages/detalle-venta/detalle-venta.module').then( m => m.DetalleVentaPageModule)
+  },
+  {
     path: '**',
     loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
   },
+  
+
   
 
 
