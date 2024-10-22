@@ -15,7 +15,7 @@ export class CarritoPage implements OnInit {
 
 
   constructor(private router: Router,private servicedb: ServicebdService, private menuCtrl: MenuController,private carritoService: CarritoService,private toastController: ToastController) { }
-
+  msjerror: string =''
 
   ngOnInit() {
     this.menuCtrl.enable(true,'comprador')
@@ -59,9 +59,14 @@ export class CarritoPage implements OnInit {
 
 
   iraseleccion() {
-    // Cambiar la bandera para indicar que se está en proceso de compra
-    this.enProcesoDeCompra = true; 
-    this.router.navigate(['/seleccion']);
+    if(this.carrito.length > 0){
+      this.msjerror = ''
+      this.enProcesoDeCompra = true; 
+      this.router.navigate(['/seleccion']);
+    }else{
+      this.msjerror = 'no hay nada que pagar';
+    }
+      
   }
 
   limpiarCarrito() {

@@ -32,13 +32,13 @@ export class ServicebdService {
   tablaComuna: string = "CREATE TABLE IF NOT EXISTS comuna(id_comuna VARCHAR(5) PRIMARY KEY, nom_comuna VARCHAR(20) NOT NULL, costo_envio INTEGER NOT NULL);";
 
   tablaUsuario: string = "CREATE TABLE IF NOT EXISTS usuario(user VARCHAR(20) UNIQUE NOT NULL, rut VARCHAR(20) PRIMARY KEY, nombre VARCHAR(40), apellido VARCHAR(40), correo VARCHAR(40) UNIQUE, telefono INTEGER, foto_perfil BLOB NOT NULL, contrasena TEXT NOT NULL, id_rol VARCHAR(5), FOREIGN KEY (id_rol) REFERENCES rol(id_rol));";
-  tablaProducto: string = "CREATE TABLE IF NOT EXISTS producto(id_producto INTEGER PRIMARY KEY AUTOINCREMENT, nom_producto VARCHAR(20) NOT NULL, desc_producto TEXT, rut_v VARCHAR(20), precio REAL, stock INTEGER, id_tipo VARCHAR(5), FOREIGN KEY(rut_v) REFERENCES usuario(rut), FOREIGN KEY(id_tipo) REFERENCES tipoproducto(id_tipo));";
+  tablaProducto: string = "CREATE TABLE IF NOT EXISTS producto(id_producto INTEGER PRIMARY KEY AUTOINCREMENT, nom_producto VARCHAR(20) NOT NULL, desc_producto TEXT, rut_v VARCHAR(20), precio NUMBER, stock INTEGER, id_tipo VARCHAR(5), FOREIGN KEY(rut_v) REFERENCES usuario(rut), FOREIGN KEY(id_tipo) REFERENCES tipoproducto(id_tipo));";
 
   tablaImagenProducto: string = "CREATE TABLE IF NOT EXISTS img_producto(id_producto INTEGER, imagen_prod BLOB, FOREIGN KEY (id_producto) REFERENCES producto(id_producto));";
 
   tablaDirecciones: string = "CREATE TABLE IF NOT EXISTS direcciones(id_direccion INTEGER PRIMARY KEY autoincrement, nom_direccion TEXT, id_comuna VARCHAR(5), rut_usuario VARCHAR(20), FOREIGN KEY(id_comuna) REFERENCES comuna(id_comuna), FOREIGN KEY(rut_usuario) REFERENCES usuario(rut));";
 
-  tablaVenta: string = "CREATE TABLE IF NOT EXISTS venta(id_venta INTEGER PRIMARY KEY AUTOINCREMENT, rut VARCHAR(10), fecha_venta TEXT, costo_envio REAL, total REAL, FOREIGN KEY (rut) REFERENCES usuario(rut));";
+  tablaVenta: string = "CREATE TABLE IF NOT EXISTS venta(id_venta INTEGER PRIMARY KEY AUTOINCREMENT, rut VARCHAR(10), fecha_venta TEXT, costo_envio REAL, total number, FOREIGN KEY (rut) REFERENCES usuario(rut));";
 
   tablaDetalleVenta: string = "CREATE TABLE IF NOT EXISTS detalle_venta(id_detalle INTEGER PRIMARY KEY AUTOINCREMENT, id_producto INTEGER, id_venta INTEGER, cantidad INTEGER, precio_unitario REAL, FOREIGN KEY (id_producto) REFERENCES producto(id_producto), FOREIGN KEY (id_venta) REFERENCES venta(id_venta));";
 
@@ -53,7 +53,6 @@ export class ServicebdService {
   registroUsuario: string = "INSERT OR IGNORE INTO usuario(user, rut, nombre, apellido, correo, telefono, foto_perfil, id_rol, contrasena) VALUES ('usuario1', '12345678-9', 'Juan', 'Pérez', 'juan.perez@mail.com', 912345678, '/assets/icon/ppp.png', '1', 'Contrasena1'), ('usuario2', '22222222-2', 'John', 'Smith', 'John.smith@mail.com', 912345678, '/assets/icon/ppp.png', '2', 'Contrasena2');";
   registroTarjeta: string = "INSERT OR IGNORE INTO tarjeta(rut_usuario, numero_tarjeta, CVC, FE_mes, FE_anio) VALUES ('12345678-9','4567456745674567',666,6,2026),('22222222-2','4222222222222222',222,2,2026);";
   registroDirecciones: string =  "INSERT OR IGNORE INTO direcciones(nom_direccion, id_comuna, rut_usuario) VALUES ('Calle Alabastro 554','1','12345678-9'), ('Santo Granito 2373','1','12345678-9'), ('Santo Granito 2353','1','22222222-2'), ('La Pizarra','4','22222222-2');";
-
   //variables de observables para las consultas de base de datos
   listaUsuario = new BehaviorSubject<Usuario[]>([]); // Asegúrate de que tenga el tipo correcto
 

@@ -12,8 +12,8 @@
     <ion-item *ngFor="let venta of ventas" (click)="verDetalleVenta(venta.id_venta)">
       <ion-label>
         <h2>ID de Venta #{{ venta.id_venta }}</h2>
-        <p>Fecha: {{ venta.fecha }}</p>
-        <p>Total: ${{ venta.total }}</p>
+        <p>Fecha: {{ venta.fecha_venta }}</p>
+        <p>Total: ${{ venta.total | currency:'CLP':'symbol':'1.0-0'  }}</p>
       </ion-label>
     </ion-item>
   </ion-list>

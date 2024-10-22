@@ -54,18 +54,4 @@
     </ion-button>
   </div>
 
-  <ion-list>
-    <ion-item *ngFor="let producto of productos">
-      <ion-avatar slot="start" style="width: 64px; height: 64px;">
-        <img [src]="producto.imagen" alt="{{ producto.nom_producto }}" style="height: 250px;width: 250px;">
-      </ion-avatar>
-      <ion-label>
-        <h2>{{ producto.nom_producto }}</h2>
-        <p>{{ producto.desc_producto }}</p>
-        <p>Stock: {{ producto.stock }}</p>
-        <p>Precio: ${{ producto.precio }}</p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
-
 </ion-content>
