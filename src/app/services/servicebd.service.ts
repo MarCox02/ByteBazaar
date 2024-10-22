@@ -743,7 +743,7 @@ async obtenerProductoPorId(idProducto: number): Promise<Producto | null> {
   }
 
   async obtenerDetalleBoleta(id_venta: number) {
-    const query = `SELECT * FROM detalle_venta JOIN producto ON producto.id_producto = detalle_venta.id_producto WHERE id_venta = ?`;
+    const query = `SELECT * FROM detalle_venta LEFT JOIN producto ON producto.id_producto = detalle_venta.id_producto, LEFT JOIN img_producto ON img_producto.id_producto = producto.id_producto WHERE id_venta = ?`;
     const res = await this.database.executeSql(query, [id_venta]);
     let detalles = [];
     for (let i = 0; i < res.rows.length; i++) {
