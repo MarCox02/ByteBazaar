@@ -155,8 +155,8 @@ async seleccionarDeGaleria() {
   }
 
   // Validación del stock
-  if (this.cantidad === null || this.cantidad < 0) {
-    this.mensajeErrorStock = 'El stock no puede ser negativo';
+  if (this.cantidad === null || this.cantidad < 1) {
+    this.mensajeErrorStock = 'El stock no puede ser menor a 1';
   }
 
   // Validación del tipo de producto
@@ -165,8 +165,8 @@ async seleccionarDeGaleria() {
   }
 
   // Validación del precio
-  if (this.precio === null || this.precio <= 0) {
-    this.mensajeErrorPrecio = 'El precio no puede ser cero o negativo';
+  if (this.precio === null || this.precio <= 1000) {
+    this.mensajeErrorPrecio = 'El precio no puede ser menor a 1000 o negativo';
   }
 
   if (this.precio !== null && this.precio > 9999999) {
