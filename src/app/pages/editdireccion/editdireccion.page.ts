@@ -24,7 +24,7 @@ export class EditdireccionPage implements OnInit{
     if (usuario) {
       this.rutUsuario = usuario.rut;
     } else {
-      this.servicesbd.presentAlert('Error', 'No se pudo obtener el RUT del usuario.');
+      console.error('Error: ', '');
     }
     this.route.queryParams.subscribe(params => {
       if (params['mode'] === 'edit' && params['dir']) {
@@ -82,16 +82,14 @@ export class EditdireccionPage implements OnInit{
   
    try {
     if(this.isEditMode){
-      this.servicesbd.presentAlert('Datos de la direccion a modificar:', MDireccion);
       this.servicesbd.modificarDireccion(MDireccion,this.rutUsuario);
       this.router.navigate(['/direccion']);
     }else{
-      this.servicesbd.presentAlert('Datos de la direccion a crear:', CDireccion);
       await this.servicesbd.crearDireccion(CDireccion,this.rutUsuario);
       this.router.navigate(['/direccion']);
     }
   } catch (error) {
-      this.servicesbd.presentAlert('Error ', 'Error:'+ JSON.stringify(error));
+    console.error('Error: ', error);
     }
   }
 

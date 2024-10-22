@@ -27,7 +27,7 @@ export class DireccionPage implements OnInit {
       this.direcciones = direcciones;
       });
     } else {
-      this.servicesbd.presentAlert('Error', 'No se pudo obtener el RUT del usuario.');
+      console.error('Error: ', '');
     }
   }
     

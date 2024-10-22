@@ -24,7 +24,7 @@ export class EdittarjetaPage implements OnInit {
     if (usuario) {
       this.rutUsuario = usuario.rut;
     } else {
-      this.servicesbd.presentAlert('Error', 'No se pudo obtener el RUT del usuario.');
+      console.error('Error: ', '');
     }
     this.route.queryParams.subscribe(params => {
       if (params['mode'] === 'edit' && params['tar']) {

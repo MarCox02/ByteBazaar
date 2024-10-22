@@ -26,8 +26,6 @@ export class TarjetaPage implements OnInit {
       this.servicesbd.tarjetas$.subscribe(tarjetas => {
         this.tarjetas = tarjetas;
       });
-    } else {
-      this.servicesbd.presentAlert('Error', 'No se pudo obtener el RUT del usuario.');
     }
   }
     

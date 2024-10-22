@@ -21,7 +21,7 @@ export class DetalleVentaPage implements OnInit {
     if (usuario) {
       this.rutUsuario = usuario.rut;
     } else {
-      this.servicesbd.presentAlert('Error', 'No se pudo obtener el RUT del usuario.');
+      console.error('Error: ', '');
     }
     this.route.queryParams.subscribe(params => {
       this.id_venta = params['id_venta'];
@@ -33,7 +33,7 @@ export class DetalleVentaPage implements OnInit {
     try {
       this.detallesVenta = await this.servicesbd.obtenerDetalleBoleta(this.id_venta);
     } catch (error) {
-      this.servicesbd.presentAlert('Error', 'Error cargando detalles de la boleta: ' + JSON.stringify(error));
+      console.error('Error: ', error);
     }
   }
 }

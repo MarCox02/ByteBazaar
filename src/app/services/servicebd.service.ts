@@ -32,13 +32,13 @@ export class ServicebdService {
   tablaComuna: string = "CREATE TABLE IF NOT EXISTS comuna(id_comuna VARCHAR(5) PRIMARY KEY, nom_comuna VARCHAR(20) NOT NULL, costo_envio INTEGER NOT NULL);";
 
   tablaUsuario: string = "CREATE TABLE IF NOT EXISTS usuario(user VARCHAR(20) UNIQUE NOT NULL, rut VARCHAR(20) PRIMARY KEY, nombre VARCHAR(40), apellido VARCHAR(40), correo VARCHAR(40) UNIQUE, telefono INTEGER, foto_perfil BLOB NOT NULL, contrasena TEXT NOT NULL, id_rol VARCHAR(5), FOREIGN KEY (id_rol) REFERENCES rol(id_rol));";
-  tablaProducto: string = "CREATE TABLE IF NOT EXISTS producto(id_producto INTEGER PRIMARY KEY AUTOINCREMENT, nom_producto VARCHAR(20) NOT NULL, desc_producto TEXT, rut_v VARCHAR(20), precio REAL, stock INTEGER, id_tipo VARCHAR(5), FOREIGN KEY(rut_v) REFERENCES usuario(rut), FOREIGN KEY(id_tipo) REFERENCES tipoproducto(id_tipo));";
+  tablaProducto: string = "CREATE TABLE IF NOT EXISTS producto(id_producto INTEGER PRIMARY KEY AUTOINCREMENT, nom_producto VARCHAR(20) NOT NULL, desc_producto TEXT, rut_v VARCHAR(20), precio NUMBER, stock INTEGER, id_tipo VARCHAR(5), FOREIGN KEY(rut_v) REFERENCES usuario(rut), FOREIGN KEY(id_tipo) REFERENCES tipoproducto(id_tipo));";
 
   tablaImagenProducto: string = "CREATE TABLE IF NOT EXISTS img_producto(id_producto INTEGER, imagen_prod BLOB, FOREIGN KEY (id_producto) REFERENCES producto(id_producto));";
 
   tablaDirecciones: string = "CREATE TABLE IF NOT EXISTS direcciones(id_direccion INTEGER PRIMARY KEY autoincrement, nom_direccion TEXT, id_comuna VARCHAR(5), rut_usuario VARCHAR(20), FOREIGN KEY(id_comuna) REFERENCES comuna(id_comuna), FOREIGN KEY(rut_usuario) REFERENCES usuario(rut));";
 
-  tablaVenta: string = "CREATE TABLE IF NOT EXISTS venta(id_venta INTEGER PRIMARY KEY AUTOINCREMENT, rut VARCHAR(10), fecha_venta TEXT, costo_envio REAL, total REAL, FOREIGN KEY (rut) REFERENCES usuario(rut));";
+  tablaVenta: string = "CREATE TABLE IF NOT EXISTS venta(id_venta INTEGER PRIMARY KEY AUTOINCREMENT, rut VARCHAR(10), fecha_venta TEXT, costo_envio REAL, total number, FOREIGN KEY (rut) REFERENCES usuario(rut));";
 
   tablaDetalleVenta: string = "CREATE TABLE IF NOT EXISTS detalle_venta(id_detalle INTEGER PRIMARY KEY AUTOINCREMENT, id_producto INTEGER, id_venta INTEGER, cantidad INTEGER, precio_unitario REAL, FOREIGN KEY (id_producto) REFERENCES producto(id_producto), FOREIGN KEY (id_venta) REFERENCES venta(id_venta));";
 
@@ -53,7 +53,6 @@ export class ServicebdService {
   registroUsuario: string = "INSERT OR IGNORE INTO usuario(user, rut, nombre, apellido, correo, telefono, foto_perfil, id_rol, contrasena) VALUES ('usuario1', '12345678-9', 'Juan', 'Pérez', 'juan.perez@mail.com', 912345678, '/assets/icon/ppp.png', '1', 'Contrasena1'), ('usuario2', '22222222-2', 'John', 'Smith', 'John.smith@mail.com', 912345678, '/assets/icon/ppp.png', '2', 'Contrasena2');";
   registroTarjeta: string = "INSERT OR IGNORE INTO tarjeta(rut_usuario, numero_tarjeta, CVC, FE_mes, FE_anio) VALUES ('12345678-9','4567456745674567',666,6,2026),('22222222-2','4222222222222222',222,2,2026);";
   registroDirecciones: string =  "INSERT OR IGNORE INTO direcciones(nom_direccion, id_comuna, rut_usuario) VALUES ('Calle Alabastro 554','1','12345678-9'), ('Santo Granito 2373','1','12345678-9'), ('Santo Granito 2353','1','22222222-2'), ('La Pizarra','4','22222222-2');";
-
   //variables de observables para las consultas de base de datos
   listaUsuario = new BehaviorSubject<Usuario[]>([]); // Asegúrate de que tenga el tipo correcto
 
@@ -75,7 +74,7 @@ export class ServicebdService {
         //modificar el estatus de la base de datos
         this.isDBReady.next(true);
       }).catch(e=>{
-        this.presentAlert('Crear BD', 'Error en crear la BD: ' + JSON.stringify(e));
+        console.error('Error:', e);
       })
     })
   }
@@ -105,7 +104,7 @@ export class ServicebdService {
     `;
     await this.database.executeSql(registroTiposProductos, []);
     } catch (e) {
-      this.presentAlert('Error en la creación de tablas', 'Error: ' + JSON.stringify(e));
+      console.error('Error:', e);
       return; // Si falla la creación de tablas, detener el flujo
     }
     try {
@@ -115,9 +114,7 @@ export class ServicebdService {
       await this.database.executeSql(this.registroUsuario, []); // Inserta el usuario por defecto
       await this.database.executeSql(this.registroTarjeta, []);
       await this.database.executeSql(this.registroDirecciones,[]);
-      this.presentAlert('Éxito', 'Los registros por defecto fueron insertados exitosamente.');
     } catch (e) {
-      this.presentAlert('Error en la inserción de registros por defecto', 'Error: ' + JSON.stringify(e));
     }
      // Verificar usuarios insertados
       this.verUsuario();
@@ -165,11 +162,10 @@ export class ServicebdService {
             };
             return usuarioEncontrado; // Retorna el objeto Usuario completo
         } else {
-            await this.presentAlert('Login Fallido', 'Usuario o contraseña incorrectos.');
             return null; // Cambia el retorno en caso de error
         }
     } catch (error) {
-      this.presentAlert('Error consultando usuarios', 'Error: ' + JSON.stringify(error));
+      console.error('Error:', error);
       throw new Error('Error al acceder a la base de datos.'); // Mensaje genérico para la UI
     }
   }
@@ -225,7 +221,7 @@ export class ServicebdService {
         return tarjetas;
       })
       .catch(error => {
-        this.presentAlert('Error consultando tarjetas', 'Error: '+ JSON.stringify(error));
+        console.error('Error:', error);
         return [];
       });
   } 
@@ -240,7 +236,7 @@ export class ServicebdService {
         return direcciones;
       })
       .catch(error => {
-        this.presentAlert('Error consultando direcciones', 'Error: '+ JSON.stringify(error));
+        console.error('Error:', error);
         return [];
       });
   } 
@@ -260,7 +256,7 @@ export class ServicebdService {
       return comunas;
     })
     .catch(error => {
-      this.presentAlert('Error consultando comunas', 'Error: '+ JSON.stringify(error));
+      console.error('Error:', error);
       return [];
     });
   }
@@ -282,10 +278,9 @@ export class ServicebdService {
     return this.database.executeSql('DELETE FROM tarjeta WHERE numero_tarjeta = ?;',[numero_tarjeta])
     .then(() => {
       this.cargarTarjetas(rutUsuario);
-      this.presentAlert('Exito', 'La tarjeta fue Eliminada con Exito');
     })
     .catch(error => {
-      this.presentAlert('Error consultando direcciones', 'Error: '+ JSON.stringify(error));
+      console.error('Error:', error);
     });
   }
 
@@ -300,7 +295,7 @@ export class ServicebdService {
         this.tarjetasSubject.next(tarjetas); // Emite las tarjetas cargadas
       })
       .catch(error => {
-        this.presentAlert('Error', 'Error cargando tarjetas: ' + JSON.stringify(error));
+        console.error('Error:', error);
       });
   }
   cargarDirecciones(rutUsuario: string) {
@@ -313,7 +308,7 @@ export class ServicebdService {
         this.direccionesSubject.next(direcciones); // Emite las direcciones cargadas
       })
       .catch(error => {
-        this.presentAlert('Error', 'Error cargando direcciones: ' + JSON.stringify(error));
+        console.error('Error:', error);
       });
   }
   crearDireccion(direccion:any,rut:any){
@@ -334,10 +329,9 @@ export class ServicebdService {
     return this.database.executeSql('DELETE FROM direcciones WHERE id_direccion = ?;',[id_direccion])
     .then(() => {
       this.cargarDirecciones(rutUsuario);
-      this.presentAlert('Exito', 'La Direccion fue Eliminada con Exito');
     })
     .catch(error => {
-      this.presentAlert('Error consultando direcciones', 'Error: '+ JSON.stringify(error));
+      console.error('Error:', error);
     });
   }
 
@@ -372,7 +366,7 @@ export class ServicebdService {
             this.listaUsuario.next(usuarios); // Enviar la lista de usuarios a BehaviorSubject
         }
     } catch (error) {
-      this.presentAlert('Error al verificar usuarios', 'Error: ' + JSON.stringify(error));
+      console.error('Error:', error);
     }
 }
 
@@ -476,7 +470,6 @@ async eliminarUsuario(rut: string): Promise<void> {
 async registrarProducto(producto: Producto): Promise<any> {
   try {
     if (!producto.rut_v) {
-      await this.presentAlert('Error', 'El RUT del vendedor no está definido.');
       return Promise.reject('RUT no definido');
     }
 
@@ -507,8 +500,7 @@ async registrarProducto(producto: Producto): Promise<any> {
 
     return Promise.resolve();
   } catch (error) {
-    await this.presentAlert('Error al registrar el producto', `${error}`);    
-    console.error('Error en registrarProducto:', error); // Log detallado
+    console.error('Error:', error); // Log detallado
     return Promise.reject(error);
   }
 }
@@ -517,7 +509,6 @@ async actualizarProducto(producto: Producto): Promise<void> {
   try {
     // Verificar que el producto tenga un ID válido
     if (!producto.id_producto) {
-      await this.presentAlert('Error', 'El ID del producto no está definido.');
       return Promise.reject('ID no definido');
     }
 
@@ -553,7 +544,6 @@ async actualizarProducto(producto: Producto): Promise<void> {
 
     return Promise.resolve();
   } catch (error) {
-    await this.presentAlert('Error al actualizar el producto', `${error}`);
     console.error('Error en actualizarProducto:', error);
     return Promise.reject(error);
   }
@@ -575,7 +565,6 @@ async eliminarProducto(idProducto: number): Promise<void> {
 
     return Promise.resolve();
   } catch (error) {
-    await this.presentAlert('Error al eliminar el producto', `${error}`);
     console.error('Error en eliminarProducto:', error); // Log detallado
     return Promise.reject(error);
   }
@@ -615,7 +604,6 @@ async verProductos(): Promise<Producto[]> {
     return productos;
   } catch (error) {
     console.error('Error al ver productos:', error);
-    await this.presentAlert('Error al ver productos', `${error}`);
     return []; // Retorna un array vacío en caso de error
   }
 }
@@ -670,7 +658,7 @@ async verProductosPorVendedor(rutVendedor: string | null): Promise<Producto[]> {
     }
     return productos;
   } catch (error) {
-    console.error('Error al obtener productos por vendedor: ', error);
+    console.error('Error: ', error);
     throw error; // Lanza el error para manejarlo en el lugar donde se llama
   }
 }
@@ -683,9 +671,6 @@ async crearVenta(rut: string,fecha: string,costo_envio:number, total: number) {
     .then((result: any) => {
       return result.insertId; // Devuelve el ID de la boleta recién creada
     })
-    .catch(error => {
-      this.presentAlert('Error al crear boleta', 'Error: ' + JSON.stringify(error));
-    });
 }
 
 async agregarDetalleVenta(id_venta: number, productos: any[]) {
@@ -696,9 +681,6 @@ async agregarDetalleVenta(id_venta: number, productos: any[]) {
   
   productos.forEach(producto => {
     this.database.executeSql(sql, [id_venta, producto.id_producto, producto.cantidad, producto.precio_unitario])
-      .catch(error => {
-        this.presentAlert('Error al agregar detalle', 'Error: ' + JSON.stringify(error));
-      });
   });
 }
 
@@ -815,6 +797,8 @@ async obtenerProductoPorId(idProducto: number): Promise<Producto | null> {
       message: msj,
       buttons: ['OK'],
     });
+
     await alert.present();
   }
+
 }

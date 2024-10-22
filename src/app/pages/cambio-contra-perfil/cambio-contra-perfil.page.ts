@@ -34,11 +34,11 @@ export class CambioContraPerfilPage implements OnInit {
       if (this.usuario) {
         console.log('Usuario cargado:', this.usuario);
       } else {
-        this.presentAlert('Error', 'No se pudo cargar el usuario.'); // Manejo de error si no se carga el usuario
+        console.error('Error: ', ''); // Manejo de error si no se carga el usuario
       }
     } catch (error) {
       console.error('Error al cargar el usuario:', error);
-      this.presentAlert('Error', 'Error al cargar el usuario.');
+      console.error('Error: ', '');
     }
   }
   
@@ -58,14 +58,14 @@ export class CambioContraPerfilPage implements OnInit {
                 // Redirige a la página anterior
                 this.volver();
             } else {
-                this.presentAlert('Error', 'El usuario no está cargado.');
+              console.error('Error: ', '');
             }
         } catch (error) {
             console.error('Error al cambiar la contraseña:', error);
-            this.presentAlert('Error', 'No se pudo cambiar la contraseña.'); // Manejo de error
+            console.error('Error: ', '');// Manejo de error
         }
     } else {
-        this.presentAlert('Error', 'Las contraseñas no coinciden.'); // Si no coinciden
+      console.error('Error: ', '');// Si no coinciden
     }
 }
 
