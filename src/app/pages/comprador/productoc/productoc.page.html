@@ -22,6 +22,8 @@
       </p>
       <p class="dinero">{{ producto.precio | currency:'CLP ':true:'4.0-0'}}</p>
 
+      <p class="stock-disponible">Stock disponible: <strong>{{ producto.stock }}</strong></p>
+
       <ion-item class="cantidad-selector border-color">
         <ion-label>Selecciona la cantidad:</ion-label>
         <ion-buttons>
