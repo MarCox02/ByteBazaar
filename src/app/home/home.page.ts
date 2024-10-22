@@ -90,8 +90,6 @@ async login() {
     } else {
       this.alerta("Error de login", "Usuario o contraseña incorrectos.");
     }
-
-    this.usuario = '';
       this.contrasena = '';
       
   } catch (error) {
