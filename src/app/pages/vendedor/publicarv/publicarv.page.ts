@@ -165,7 +165,7 @@ async seleccionarDeGaleria() {
   }
 
   // Validación del precio
-  if (this.precio === null || this.precio <= 1000) {
+  if (this.precio === null || this.precio <= 999) {
     this.mensajeErrorPrecio = 'El precio no puede ser menor a 1000 o negativo';
   }
 
