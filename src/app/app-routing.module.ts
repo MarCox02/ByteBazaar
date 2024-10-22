@@ -102,6 +102,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/seleccion/seleccion.module').then( m => m.SeleccionPageModule)
   },
   {
+
+    path: 'detalle-venta',
+    loadChildren: () => import('./pages/detalle-venta/detalle-venta.module').then( m => m.DetalleVentaPageModule)
+
     path: 'introduzca-contra',
     loadChildren: () => import('./pages/introduzca-contra/introduzca-contra.module').then( m => m.IntroduzcaContraPageModule)
   },
@@ -109,13 +113,13 @@ const routes: Routes = [
   {
     path: 'cambio-contra-perfil',
     loadChildren: () => import('./pages/cambio-contra-perfil/cambio-contra-perfil.module').then( m => m.CambioContraPerfilPageModule)
+
   },
   {
     path: '**',
     loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
   },
 
-];
 
 @NgModule({
   imports: [

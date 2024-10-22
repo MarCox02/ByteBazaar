@@ -750,6 +750,26 @@ async obtenerProductoPorId(idProducto: number): Promise<Producto | null> {
 
   }
 
+  async obtenerVentas(rut_usuario:any) {
+    const query = 'SELECT id_venta, fecha_venta, total FROM venta WHERE rut = ?';
+    const res = await this.database.executeSql(query, [rut_usuario]);
+    let ventas = [];
+    for (let i = 0; i < res.rows.length; i++) {
+      ventas.push(res.rows.item(i));
+    }
+    return ventas;
+  }
+
+  async obtenerDetalleBoleta(id_venta: number) {
+    const query = `SELECT * FROM detalle_venta JOIN producto ON producto.id_producto = detalle_venta.id_producto WHERE id_venta = ?`;
+    const res = await this.database.executeSql(query, [id_venta]);
+    let detalles = [];
+    for (let i = 0; i < res.rows.length; i++) {
+      detalles.push(res.rows.item(i));
+    }
+    return detalles;
+  }
+
   async restarStock(id_producto:number, cnt:number){
     const query = 'SELECT * FROM producto where id_producto = ?;';
     const result = await this.database.executeSql(query, [id_producto]);
