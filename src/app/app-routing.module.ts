@@ -52,7 +52,6 @@ const routes: Routes = [
     path: 'productov/:id',
     loadChildren: () => import('./pages/vendedor/productov/productov.module').then( m => m.ProductovPageModule)
   },
-
   {
     path: 'editar-perfilv',
     loadChildren: () => import('./pages/vendedor/editar-perfilv/editar-perfilv.module').then( m => m.EditarPerfilvPageModule)
@@ -105,26 +104,26 @@ const routes: Routes = [
 
     path: 'detalle-venta',
     loadChildren: () => import('./pages/detalle-venta/detalle-venta.module').then( m => m.DetalleVentaPageModule)
-
+  },
+  {
     path: 'introduzca-contra',
     loadChildren: () => import('./pages/introduzca-contra/introduzca-contra.module').then( m => m.IntroduzcaContraPageModule)
   },
-  
   {
     path: 'cambio-contra-perfil',
     loadChildren: () => import('./pages/cambio-contra-perfil/cambio-contra-perfil.module').then( m => m.CambioContraPerfilPageModule)
-
   },
   {
     path: '**',
     loadChildren: () => import('./pages/not-found/not-found.module').then( m => m.NotFoundPageModule)
   },
 
+  ];
 
-@NgModule({
-  imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
-  ],
-  exports: [RouterModule]
-})
-export class AppRoutingModule { }
+  @NgModule({
+    imports: [
+      RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+    ],
+    exports: [RouterModule]
+  })
+  export class AppRoutingModule { }
