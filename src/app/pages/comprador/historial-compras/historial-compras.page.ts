@@ -18,7 +18,7 @@ export class HistorialComprasPage implements OnInit {
     if (usuario) {
       this.rutUsuario = usuario.rut;
     } else {
-      this.servicesbd.presentAlert('Error', 'No se pudo obtener el RUT del usuario.');
+      console.error('Error: ', '');
     }
     this.cargarVentas();
   }
@@ -27,7 +27,7 @@ export class HistorialComprasPage implements OnInit {
     try {
       this.ventas = await this.servicesbd.obtenerVentas(this.rutUsuario);
     } catch (error) {
-      this.servicesbd.presentAlert('Error', 'Error cargando Ventas: ' + JSON.stringify(error));
+      console.error('Error: ', error);
     }
   }
 

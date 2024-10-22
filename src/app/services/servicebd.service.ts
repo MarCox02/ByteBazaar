@@ -75,7 +75,7 @@ export class ServicebdService {
         //modificar el estatus de la base de datos
         this.isDBReady.next(true);
       }).catch(e=>{
-        this.presentAlert('Crear BD', 'Error en crear la BD: ' + JSON.stringify(e));
+        console.error('Error:', e);
       })
     })
   }
@@ -105,7 +105,7 @@ export class ServicebdService {
     `;
     await this.database.executeSql(registroTiposProductos, []);
     } catch (e) {
-      this.presentAlert('Error en la creación de tablas', 'Error: ' + JSON.stringify(e));
+      console.error('Error:', e);
       return; // Si falla la creación de tablas, detener el flujo
     }
     try {
@@ -115,9 +115,7 @@ export class ServicebdService {
       await this.database.executeSql(this.registroUsuario, []); // Inserta el usuario por defecto
       await this.database.executeSql(this.registroTarjeta, []);
       await this.database.executeSql(this.registroDirecciones,[]);
-      this.presentAlert('Éxito', 'Los registros por defecto fueron insertados exitosamente.');
     } catch (e) {
-      this.presentAlert('Error en la inserción de registros por defecto', 'Error: ' + JSON.stringify(e));
     }
      // Verificar usuarios insertados
       this.verUsuario();
@@ -165,11 +163,10 @@ export class ServicebdService {
             };
             return usuarioEncontrado; // Retorna el objeto Usuario completo
         } else {
-            await this.presentAlert('Login Fallido', 'Usuario o contraseña incorrectos.');
             return null; // Cambia el retorno en caso de error
         }
     } catch (error) {
-      this.presentAlert('Error consultando usuarios', 'Error: ' + JSON.stringify(error));
+      console.error('Error:', error);
       throw new Error('Error al acceder a la base de datos.'); // Mensaje genérico para la UI
     }
   }
@@ -225,7 +222,7 @@ export class ServicebdService {
         return tarjetas;
       })
       .catch(error => {
-        this.presentAlert('Error consultando tarjetas', 'Error: '+ JSON.stringify(error));
+        console.error('Error:', error);
         return [];
       });
   } 
@@ -240,7 +237,7 @@ export class ServicebdService {
         return direcciones;
       })
       .catch(error => {
-        this.presentAlert('Error consultando direcciones', 'Error: '+ JSON.stringify(error));
+        console.error('Error:', error);
         return [];
       });
   } 
@@ -260,7 +257,7 @@ export class ServicebdService {
       return comunas;
     })
     .catch(error => {
-      this.presentAlert('Error consultando comunas', 'Error: '+ JSON.stringify(error));
+      console.error('Error:', error);
       return [];
     });
   }
@@ -282,10 +279,9 @@ export class ServicebdService {
     return this.database.executeSql('DELETE FROM tarjeta WHERE numero_tarjeta = ?;',[numero_tarjeta])
     .then(() => {
       this.cargarTarjetas(rutUsuario);
-      this.presentAlert('Exito', 'La tarjeta fue Eliminada con Exito');
     })
     .catch(error => {
-      this.presentAlert('Error consultando direcciones', 'Error: '+ JSON.stringify(error));
+      console.error('Error:', error);
     });
   }
 
@@ -300,7 +296,7 @@ export class ServicebdService {
         this.tarjetasSubject.next(tarjetas); // Emite las tarjetas cargadas
       })
       .catch(error => {
-        this.presentAlert('Error', 'Error cargando tarjetas: ' + JSON.stringify(error));
+        console.error('Error:', error);
       });
   }
   cargarDirecciones(rutUsuario: string) {
@@ -313,7 +309,7 @@ export class ServicebdService {
         this.direccionesSubject.next(direcciones); // Emite las direcciones cargadas
       })
       .catch(error => {
-        this.presentAlert('Error', 'Error cargando direcciones: ' + JSON.stringify(error));
+        console.error('Error:', error);
       });
   }
   crearDireccion(direccion:any,rut:any){
@@ -334,10 +330,9 @@ export class ServicebdService {
     return this.database.executeSql('DELETE FROM direcciones WHERE id_direccion = ?;',[id_direccion])
     .then(() => {
       this.cargarDirecciones(rutUsuario);
-      this.presentAlert('Exito', 'La Direccion fue Eliminada con Exito');
     })
     .catch(error => {
-      this.presentAlert('Error consultando direcciones', 'Error: '+ JSON.stringify(error));
+      console.error('Error:', error);
     });
   }
 
@@ -372,7 +367,7 @@ export class ServicebdService {
             this.listaUsuario.next(usuarios); // Enviar la lista de usuarios a BehaviorSubject
         }
     } catch (error) {
-      this.presentAlert('Error al verificar usuarios', 'Error: ' + JSON.stringify(error));
+      console.error('Error:', error);
     }
 }
 
@@ -476,7 +471,6 @@ async eliminarUsuario(rut: string): Promise<void> {
 async registrarProducto(producto: Producto): Promise<any> {
   try {
     if (!producto.rut_v) {
-      await this.presentAlert('Error', 'El RUT del vendedor no está definido.');
       return Promise.reject('RUT no definido');
     }
 
@@ -507,8 +501,7 @@ async registrarProducto(producto: Producto): Promise<any> {
 
     return Promise.resolve();
   } catch (error) {
-    await this.presentAlert('Error al registrar el producto', `${error}`);    
-    console.error('Error en registrarProducto:', error); // Log detallado
+    console.error('Error:', error); // Log detallado
     return Promise.reject(error);
   }
 }
@@ -517,7 +510,6 @@ async actualizarProducto(producto: Producto): Promise<void> {
   try {
     // Verificar que el producto tenga un ID válido
     if (!producto.id_producto) {
-      await this.presentAlert('Error', 'El ID del producto no está definido.');
       return Promise.reject('ID no definido');
     }
 
@@ -553,7 +545,6 @@ async actualizarProducto(producto: Producto): Promise<void> {
 
     return Promise.resolve();
   } catch (error) {
-    await this.presentAlert('Error al actualizar el producto', `${error}`);
     console.error('Error en actualizarProducto:', error);
     return Promise.reject(error);
   }
@@ -575,7 +566,6 @@ async eliminarProducto(idProducto: number): Promise<void> {
 
     return Promise.resolve();
   } catch (error) {
-    await this.presentAlert('Error al eliminar el producto', `${error}`);
     console.error('Error en eliminarProducto:', error); // Log detallado
     return Promise.reject(error);
   }
@@ -615,7 +605,6 @@ async verProductos(): Promise<Producto[]> {
     return productos;
   } catch (error) {
     console.error('Error al ver productos:', error);
-    await this.presentAlert('Error al ver productos', `${error}`);
     return []; // Retorna un array vacío en caso de error
   }
 }
@@ -670,7 +659,7 @@ async verProductosPorVendedor(rutVendedor: string | null): Promise<Producto[]> {
     }
     return productos;
   } catch (error) {
-    console.error('Error al obtener productos por vendedor: ', error);
+    console.error('Error: ', error);
     throw error; // Lanza el error para manejarlo en el lugar donde se llama
   }
 }
@@ -683,9 +672,6 @@ async crearVenta(rut: string,fecha: string,costo_envio:number, total: number) {
     .then((result: any) => {
       return result.insertId; // Devuelve el ID de la boleta recién creada
     })
-    .catch(error => {
-      this.presentAlert('Error al crear boleta', 'Error: ' + JSON.stringify(error));
-    });
 }
 
 async agregarDetalleVenta(id_venta: number, productos: any[]) {
@@ -696,9 +682,6 @@ async agregarDetalleVenta(id_venta: number, productos: any[]) {
   
   productos.forEach(producto => {
     this.database.executeSql(sql, [id_venta, producto.id_producto, producto.cantidad, producto.precio_unitario])
-      .catch(error => {
-        this.presentAlert('Error al agregar detalle', 'Error: ' + JSON.stringify(error));
-      });
   });
 }
 
@@ -815,6 +798,8 @@ async obtenerProductoPorId(idProducto: number): Promise<Producto | null> {
       message: msj,
       buttons: ['OK'],
     });
+
     await alert.present();
   }
+
 }

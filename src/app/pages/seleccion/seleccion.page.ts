@@ -27,8 +27,6 @@ export class SeleccionPage implements OnInit {
         this.rutUsuario = usuario.rut;
         await this.cargarDirecciones();
         await this.cargarTarjetas();
-      } else {
-        this.servicebd.presentAlert('Error', 'No se pudo obtener el RUT del usuario.');
       }
     }
 
@@ -36,7 +34,7 @@ export class SeleccionPage implements OnInit {
       try {
         this.direcciones = await this.servicebd.getDireccionesByRUT(this.rutUsuario);
       } catch (error) {
-        this.servicebd.presentAlert('Error', 'Error al cargar direcciones: ' + JSON.stringify(error));
+        console.error('Error:', error);
       }
     }
 
@@ -44,13 +42,12 @@ export class SeleccionPage implements OnInit {
       try {
         this.tarjetas = await this.servicebd.getTarjetasByRUT(this.rutUsuario);
       } catch (error) {
-        this.servicebd.presentAlert('Error', 'Error al cargar tarjetas: ' + JSON.stringify(error));
+        console.error('Error:', error);
       }
     }
 
     async confirmarCompra() {
       if (!this.direccionSeleccionada || !this.tarjetaSeleccionada) {
-        this.servicebd.presentAlert('Error', 'Debe seleccionar una dirección y una tarjeta.');
         return;
       }
   
@@ -67,7 +64,7 @@ export class SeleccionPage implements OnInit {
           this.router.navigate(['/catalogoc']);
         }
       } catch (error) {
-        this.servicebd.presentAlert('Error', 'Error al procesar la compra: ' + JSON.stringify(error));
+        
       }
     }
 
