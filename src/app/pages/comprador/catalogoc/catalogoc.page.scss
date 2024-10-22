@@ -5,6 +5,9 @@
   padding: 16px; /* Espacio interno del contenedor */
 }
 
+.border-color{
+  border-color: #00000000;
+}
 .carta{
   flex: 1 1 calc(50% - 30px); /* Toma aproximadamente el 50% del ancho del contenedor menos el espacio entre cartas */
   box-sizing: border-box;

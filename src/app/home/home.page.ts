@@ -34,6 +34,10 @@ export class HomePage implements OnInit {
     this.menuCtrl.enable(false, 'comprador');
     this.menuCtrl.enable(false, 'vendedor');
     this.bd.crearBD();
+
+    this.usuario = '';
+    this.contrasena = '';
+
     this.servicesbd.fetchUsuarios().subscribe((data: Usuario[]) => {
     this.usuarios = data;
     
@@ -86,6 +90,10 @@ async login() {
     } else {
       this.alerta("Error de login", "Usuario o contraseña incorrectos.");
     }
+
+    this.usuario = '';
+      this.contrasena = '';
+      
   } catch (error) {
     // Reemplazar el console.error con una alerta
     await this.alerta("Error de login", "Hubo un problema al intentar iniciar sesión.");
