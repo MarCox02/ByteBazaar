@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AlertController, ActionSheetController, MenuController } from '@ionic/angular';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { UserService } from 'src/app/services/user.service';
-import { Usuario } from 'src/app/services/usuario';
+import { Usuario } from 'src/app/services/Modelo/usuario';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'; // Importa Camera y CameraSource
 
 @Component({

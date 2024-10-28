@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Producto } from './producto';
+import { Producto } from './Modelo/producto';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 
 @Injectable({

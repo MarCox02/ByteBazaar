@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AlertController, MenuController, ToastController } from '@ionic/angular';
 import { ServicebdService } from 'src/app/services/servicebd.service';
-import { Usuario } from 'src/app/services/usuario';
+import { Usuario } from 'src/app/services/Modelo/usuario';
 
 @Component({
   selector: 'app-registrar',

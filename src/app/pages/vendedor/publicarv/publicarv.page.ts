@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActionSheetController, AlertController, MenuController } from '@ionic/angular';
-import { Producto } from 'src/app/services/producto';
+import { Producto } from 'src/app/services/Modelo/producto';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
