@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, MenuController } from '@ionic/angular';
-import { Producto } from 'src/app/services/producto';
+import { Producto } from 'src/app/services/Modelo/producto';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { UserService } from 'src/app/services/user.service';
 import { Camera, CameraResultType } from '@capacitor/camera';

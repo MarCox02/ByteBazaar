@@ -4,7 +4,7 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { ActionSheetController, AlertController, MenuController } from '@ionic/angular';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { UserService } from 'src/app/services/user.service';
-import { Usuario } from 'src/app/services/usuario';
+import { Usuario } from 'src/app/services/Modelo/usuario';
 
 @Component({
   selector: 'app-editar-perfilv',

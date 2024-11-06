@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, MenuController, ToastController } from '@ionic/angular';
 import { CarritoService } from 'src/app/services/carrito.service';
-import { Producto } from 'src/app/services/producto';
+import { Producto } from 'src/app/services/Modelo/producto';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { UserService } from 'src/app/services/user.service';
 

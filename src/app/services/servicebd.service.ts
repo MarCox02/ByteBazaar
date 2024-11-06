@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { BehaviorSubject, from, Observable } from 'rxjs';
 import { AlertController, Platform } from '@ionic/angular';
-import { Usuario } from './usuario';
+import { Usuario } from './Modelo/usuario';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 import { UserService } from './user.service';
-import { Producto } from './producto';
+import { Producto } from './Modelo/producto';
 import { query } from '@angular/animations';
 
 @Injectable({

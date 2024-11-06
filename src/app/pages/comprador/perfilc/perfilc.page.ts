@@ -4,7 +4,7 @@ import { AlertController, MenuController } from '@ionic/angular';
 import { Observable, Subscription } from 'rxjs';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { UserService } from 'src/app/services/user.service';
-import { Usuario } from 'src/app/services/usuario';
+import { Usuario } from 'src/app/services/Modelo/usuario';
 
 @Component({
   selector: 'app-perfilc',

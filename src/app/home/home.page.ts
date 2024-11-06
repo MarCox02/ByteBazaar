@@ -3,7 +3,7 @@ import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { MenuController, AlertController, ToastController } from '@ionic/angular';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 import { ServicebdService } from 'src/app/services/servicebd.service';
-import { Usuario } from 'src/app/services/usuario';
+import { Usuario } from 'src/app/services/Modelo/usuario';
 import { Platform } from '@ionic/angular';
 import { UserService } from '../services/user.service';
 

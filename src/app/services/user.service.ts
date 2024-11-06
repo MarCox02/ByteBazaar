@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 import { AlertController } from '@ionic/angular';
-import { Usuario } from './usuario';
+import { Usuario } from './Modelo/usuario';
 import { ServicebdService } from './servicebd.service';
 import { CarritoService } from './carrito.service';
 import { Router } from '@angular/router';

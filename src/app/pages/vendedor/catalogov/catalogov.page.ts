@@ -3,7 +3,7 @@ import { AlertController, MenuController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { UserService } from 'src/app/services/user.service';
-import { Producto } from 'src/app/services/producto';
+import { Producto } from 'src/app/services/Modelo/producto';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 
 @Component({
