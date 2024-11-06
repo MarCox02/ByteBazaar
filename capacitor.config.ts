@@ -10,6 +10,21 @@ const config: CapacitorConfig = {
       iconColor: "#488AFF",
       sound: "beep.wav", // Asegúrate de que este sonido esté en el directorio adecuado
     },
+    SplashScreen: {
+      launchShowDuration: 0,
+      launchAutoHide: true,
+      backgroundColor: "linear-gradient(to bottom,#2F085F, #4425D1, #2F085F);",
+      androidSplashResourceName: "splash",
+      androidScaleType: "CENTER_CROP",
+      showSpinner: false,
+      androidSpinnerStyle: "large",
+      iosSpinnerStyle: "small",
+      spinnerColor: "#999999",
+      splashFullScreen: false,
+      splashImmersive: false,
+      layoutName: "launch_screen",
+      useDialog: false,
+    },
   },
 };
 
