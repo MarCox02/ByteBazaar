@@ -20,6 +20,10 @@ export class EditarPerfilcPage implements OnInit {
   nuevaFoto: File | null = null; // Archivo de la nueva foto de perfil
   usuario: Usuario | null = null;
   id_rol: string = ''; // Para manejar el cambio de rol
+  correoValido: boolean = true;
+  nombreUsuarioValido: boolean = true;
+
+  patronEmail: string = '^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$';
 
   constructor(private userService: UserService, private alertController: AlertController,
               private actionSheetController: ActionSheetController, private menuCtrl: MenuController,
@@ -38,6 +42,15 @@ export class EditarPerfilcPage implements OnInit {
       this.fotoPerfil = usuario.foto_perfil || 'ruta/default_avatar.jpg';
       this.id_rol = usuario.id_rol;
     }
+  }
+
+  validarCorreo() {
+    const patron = new RegExp(this.patronEmail);
+    this.correoValido = patron.test(this.correo);
+  }
+
+  validarNombreUsuario() {
+    this.nombreUsuarioValido = this.nombreUsuario.length >= 3;
   }
 
   async presentActionSheet() {
@@ -105,9 +118,22 @@ export class EditarPerfilcPage implements OnInit {
 
   async toggleEdit() {
     if (this.editMode) {
-      await this.actualizarUsuario();
+        // Ejecuta las validaciones antes de actualizar el usuario
+        if (!this.validarFormulario()) {
+            this.alerta('Error', 'Por favor, corrige los errores en el formulario antes de guardar.');
+            return; // Si alguna validación falla, se sale del método y no guarda
+        }
+        // Solo se llama a actualizarUsuario si todas las validaciones son exitosas
+        await this.actualizarUsuario();
     }
-    this.editMode = !this.editMode; // Alternar el modo de edición
+    // Alterna el modo de edición solo si todas las validaciones fueron exitosas
+    this.editMode = !this.editMode;
+}
+
+  validarFormulario() {
+    this.validarCorreo();
+    this.validarNombreUsuario();
+    return this.correoValido && this.nombreUsuarioValido;
   }
 
   async actualizarUsuario() {
