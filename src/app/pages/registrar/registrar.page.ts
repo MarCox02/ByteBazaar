@@ -84,8 +84,8 @@ export class RegistrarPage implements OnInit {
     this.errorApellido = "Apellido es obligatorio";
     hayErrores = true;
   }
-  if (!this.user) {
-    this.errorUsuario = "Usuario es obligatorio";
+  if (!this.user || this.user.length < 3) {
+    this.errorUsuario = "El nombre de usuario debe tener al menos 3 letras";
     hayErrores = true;
   }
   if (!this.telefono) {
@@ -165,7 +165,6 @@ export class RegistrarPage implements OnInit {
    // Llamar al servicio para registrar el usuario en la base de datos
    try {
     await this.servicesbd.registrarUsuario(nuevoUsuario);
-    await this.mostrarUsuarioRegistrado(nuevoUsuario); // Mostrar el usuario registrado
     this.alerta_t("Registro exitoso", "Te has registrado correctamente, ahora puedes iniciar sesión");
     this.router.navigate(['/home']);
   } catch (error) {
@@ -173,13 +172,13 @@ export class RegistrarPage implements OnInit {
     
     // Mostrar alertas para cada error específico
     if (errorMessage.includes('El RUT ya está registrado.')) {
-      this.alerta("Error", "El RUT ingresado ya está registrado en el sistema.");
+      this.alerta("Registro Fallido", "El RUT ingresado ya está registrado en el sistema.");
     }
     if (errorMessage.includes('El correo ya está registrado.')) {
-      this.alerta("Error", "El correo ingresado ya está registrado en el sistema.");
+      this.alerta("Registro Fallido", "El correo ingresado ya está registrado en el sistema.");
     }
     if (errorMessage.includes('El nombre de usuario ya está registrado.')) {
-      this.alerta("Error", "El nombre de usuario ingresado ya está registrado en el sistema.");
+      this.alerta("Registro Fallido", "El nombre de usuario ingresado ya está registrado en el sistema.");
     }
     
     // Manejar cualquier otro error
@@ -252,24 +251,6 @@ export class RegistrarPage implements OnInit {
     });
 
     await alert_t.present();
-  }
-
-
-  async mostrarUsuarioRegistrado(usuario: Usuario) {
-    const alert = await this.alertController.create({
-      header: 'Nuevo Usuario Registrado',
-      message: `
-        <strong>Usuario:</strong> ${usuario.user}<br>
-        <strong>RUT:</strong> ${usuario.rut}<br>
-        <strong>Nombre:</strong> ${usuario.nombre}<br>
-        <strong>Apellido:</strong> ${usuario.apellido}<br>
-        <strong>Correo:</strong> ${usuario.correo}<br>
-        <strong>Teléfono:</strong> ${usuario.telefono}<br>
-      `,
-      buttons: ['OK']
-    });
-
-    await alert.present();
   }
 
 }

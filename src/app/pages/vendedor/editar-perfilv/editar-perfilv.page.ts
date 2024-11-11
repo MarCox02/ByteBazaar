@@ -135,12 +135,12 @@ export class EditarPerfilvPage implements OnInit {
     return this.correoValido && this.nombreUsuarioValido;
   }
 
-  async actualizarUsuario() {
+  async actualizarUsuario(): Promise<boolean> {
     if (this.usuario) {
       this.usuario.correo = this.correo;
       this.usuario.user = this.nombreUsuario;
       this.usuario.id_rol = this.id_rol;
-
+  
       if (this.nuevaFoto) {
         const base64Foto = await this.convertirArchivoABase64(this.nuevaFoto);
         if (typeof base64Foto === 'string') {
@@ -149,20 +149,25 @@ export class EditarPerfilvPage implements OnInit {
           console.error('Error al convertir la imagen a base64');
         }
       }
-
+  
       try {
         await this.servicebd.actualizarUsuario(this.usuario);
         await this.userService.login(this.usuario);
         await this.alerta('Éxito', 'Datos actualizados correctamente');
-
-        // Redirigir según el rol después de guardar los cambios
-        this.router.navigate([this.usuario.id_rol === '1' ? '/perfilv' : '/perfilc']);
+        return true; // Actualización exitosa
       } catch (error) {
-        console.error('Error al actualizar el usuario:', error);
-        await this.alerta('Error', 'No se pudo actualizar los datos. Intenta nuevamente.');
+        // Verifica si error es una instancia de Error y contiene un mensaje específico
+        if (error instanceof Error && error.message === 'El nombre de usuario ya existe') {
+          await this.alerta('Error', 'El nombre de usuario ya existe. Por favor, elige otro.');
+        } else {
+          await this.alerta('Error', 'No se pudo actualizar los datos. Intenta nuevamente.');
+        }
+        return false; // La actualización falló
       }
     }
+    return false; // Devuelve false si no se puede realizar la actualización
   }
+  
 
   convertirArchivoABase64(file: File): Promise<string | ArrayBuffer | null> {
     return new Promise((resolve, reject) => {

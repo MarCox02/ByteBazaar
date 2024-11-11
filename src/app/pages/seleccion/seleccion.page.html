@@ -14,8 +14,8 @@
     <ion-radio-group [(ngModel)]="direccionSeleccionada">
       <ion-item *ngFor="let direccion of direcciones">
         <ion-label>
-          Dirección: {{ direccion.direccion_detalle }}<br>
-          Comuna ID: {{ direccion.id_comuna }}
+          Dirección: {{ direccion.nom_direccion }}<br>
+        Comuna: {{ direccion.nom_comuna }}
         </ion-label>
         <ion-radio slot="start" [value]="direccion.id_direccion"></ion-radio>
       </ion-item>

@@ -29,7 +29,7 @@ export class ServicebdService {
   //variables de las tablas
   tablaRol: string = "CREATE TABLE IF NOT EXISTS rol(id_rol VARCHAR(5) PRIMARY KEY, nom_rol VARCHAR(20) NOT NULL);";
   tablaTipoProducto: string = "CREATE TABLE IF NOT EXISTS tipoproducto(id_tipo VARCHAR(5) PRIMARY KEY, nom_tipo VARCHAR(20) NOT NULL);";
-  tablaComuna: string = "CREATE TABLE IF NOT EXISTS comuna(id_comuna VARCHAR(5) PRIMARY KEY, nom_comuna VARCHAR(20) NOT NULL, costo_envio INTEGER NOT NULL);";
+    tablaComuna: string = "CREATE TABLE IF NOT EXISTS comuna(id_comuna VARCHAR(5) PRIMARY KEY, nom_comuna VARCHAR(20) NOT NULL, costo_envio INTEGER NOT NULL);";
 
   tablaUsuario: string = "CREATE TABLE IF NOT EXISTS usuario(user VARCHAR(20) UNIQUE NOT NULL, rut VARCHAR(20) PRIMARY KEY, nombre VARCHAR(40), apellido VARCHAR(40), correo VARCHAR(40) UNIQUE, telefono INTEGER, foto_perfil BLOB NOT NULL, contrasena TEXT NOT NULL, id_rol VARCHAR(5), FOREIGN KEY (id_rol) REFERENCES rol(id_rol));";
   tablaProducto: string = "CREATE TABLE IF NOT EXISTS producto(id_producto INTEGER PRIMARY KEY AUTOINCREMENT, nom_producto VARCHAR(20) NOT NULL, desc_producto TEXT, rut_v VARCHAR(20), precio NUMBER, stock INTEGER, id_tipo VARCHAR(5), FOREIGN KEY(rut_v) REFERENCES usuario(rut), FOREIGN KEY(id_tipo) REFERENCES tipoproducto(id_tipo));";
@@ -429,21 +429,38 @@ async registrarUsuario(usuario: Usuario): Promise<any> {
 
 
 
+async verificarNombreUsuario(nombreUsuario: string, rut: string): Promise<boolean> {
+  const query = `SELECT COUNT(*) AS count FROM usuario WHERE user = ? AND rut != ?`;
+  const valores = [nombreUsuario, rut];
+
+  const res = await this.database.executeSql(query, valores);
+  const count = res.rows.item(0).count;
+
+  return count > 0; // Retorna true si el nombre de usuario ya está en uso
+}
+
 async actualizarUsuario(usuario: Usuario): Promise<void> {
+  const nombreUsuarioExiste = await this.verificarNombreUsuario(usuario.user, usuario.rut);
+  
+  if (nombreUsuarioExiste) {
+    // Lanza un error específico si el nombre de usuario ya está en uso
+    throw new Error('El nombre de usuario ya existe');
+  }
+
   const query = `
     UPDATE usuario 
     SET correo = ?, 
         user = ?, 
         foto_perfil = ?, 
-        id_rol = ?  -- Actualizando también el rol
+        id_rol = ?
     WHERE rut = ?`;
 
   const valores = [
     usuario.correo,
     usuario.user,
-    usuario.foto_perfil, // La imagen en formato Base64
-    usuario.id_rol, // Asegúrate de incluir el rol aquí
-    usuario.rut // Clave para identificar al usuario
+    usuario.foto_perfil,
+    usuario.id_rol,
+    usuario.rut
   ];
 
   try {

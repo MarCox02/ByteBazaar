@@ -118,17 +118,20 @@ export class EditarPerfilcPage implements OnInit {
 
   async toggleEdit() {
     if (this.editMode) {
-        // Ejecuta las validaciones antes de actualizar el usuario
-        if (!this.validarFormulario()) {
-            this.alerta('Error', 'Por favor, corrige los errores en el formulario antes de guardar.');
-            return; // Si alguna validación falla, se sale del método y no guarda
-        }
-        // Solo se llama a actualizarUsuario si todas las validaciones son exitosas
-        await this.actualizarUsuario();
+      // Ejecuta las validaciones antes de actualizar el usuario
+      if (!this.validarFormulario()) {
+        this.alerta('Error', 'Por favor, corrige los errores en el formulario antes de guardar.');
+        return; // Si alguna validación falla, se sale del método y no guarda
+      }
+      // Intenta actualizar el usuario solo si todas las validaciones son exitosas
+      const exito = await this.actualizarUsuario();
+      if (exito) {
+        this.editMode = !this.editMode; // Cambia el modo solo si la actualización fue exitosa
+      }
+    } else {
+      this.editMode = !this.editMode; // Cambia al modo de edición
     }
-    // Alterna el modo de edición solo si todas las validaciones fueron exitosas
-    this.editMode = !this.editMode;
-}
+  }
 
   validarFormulario() {
     this.validarCorreo();
@@ -136,12 +139,12 @@ export class EditarPerfilcPage implements OnInit {
     return this.correoValido && this.nombreUsuarioValido;
   }
 
-  async actualizarUsuario() {
+  async actualizarUsuario(): Promise<boolean> {
     if (this.usuario) {
       this.usuario.correo = this.correo;
       this.usuario.user = this.nombreUsuario;
       this.usuario.id_rol = this.id_rol;
-
+  
       if (this.nuevaFoto) {
         const base64Foto = await this.convertirArchivoABase64(this.nuevaFoto);
         if (typeof base64Foto === 'string') {
@@ -150,20 +153,27 @@ export class EditarPerfilcPage implements OnInit {
           console.error('Error al convertir la imagen a base64');
         }
       }
-
+  
       try {
         await this.servicebd.actualizarUsuario(this.usuario);
         await this.userService.login(this.usuario);
         await this.alerta('Éxito', 'Datos actualizados correctamente');
-
-        // Redirigir según el rol después de guardar los cambios
-        this.router.navigate([this.usuario.id_rol === '1' ? '/perfilv' : '/perfilc']);
+        return true; // Actualización exitosa
       } catch (error) {
-        console.error('Error al actualizar el usuario:', error);
-        await this.alerta('Error', 'No se pudo actualizar los datos. Intenta nuevamente.');
+        // Verifica si error es una instancia de Error y contiene un mensaje específico
+        if (error instanceof Error && error.message === 'El nombre de usuario ya existe') {
+          await this.alerta('Error', 'El nombre de usuario ya existe. Por favor, elige otro.');
+        } else {
+          await this.alerta('Error', 'No se pudo actualizar los datos. Intenta nuevamente.');
+        }
+        return false; // La actualización falló
       }
     }
+    return false; // Devuelve false si no se puede realizar la actualización
   }
+  
+  
+
 
   convertirArchivoABase64(file: File): Promise<string | ArrayBuffer | null> {
     return new Promise((resolve, reject) => {
