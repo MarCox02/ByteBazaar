@@ -1,0 +1,10 @@
+.direccion-comuna {
+    display: flex;
+    flex-direction: column; /* Las hace aparecer en columnas, una debajo de la otra */
+    margin-left: 10px; /* Se agrega un margen para separar la comuna de la dirección */
+  }
+  
+  .comuna {
+    margin-bottom: 5px; /* Añade un espacio inferior para separar la comuna del resto */
+  }
+  

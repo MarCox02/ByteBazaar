@@ -11,7 +11,7 @@
   <ion-card>
     <ion-card-header>
       <ion-card-title>Tus Direcciones</ion-card-title>
-      <ion-note *ngIf="direcciones.length === 0">No tienes tarjetas guardadas.</ion-note>
+      <ion-note *ngIf="direcciones.length === 0">No tienes direcciones guardadas.</ion-note>
     </ion-card-header>
   
     <ion-card-content>
@@ -19,14 +19,17 @@
         <ion-item-sliding *ngFor="let dir of direcciones">
           <ion-item>
             <h2>{{ dir.nom_direccion }}</h2>
-            <p>Comuna: {{ dir.nom_comuna }}</p>
+            <!-- Contenedor para la comuna -->
+            <div class="direccion-comuna">
+              <p class="comuna">Comuna: {{ dir.nom_comuna }}</p>
+            </div>
           </ion-item>
           <ion-item-options side="start">
             <ion-item-option (click)="modificar(dir.id_direccion)">
               <ion-icon slot="icon-only" name="pencil"></ion-icon>
             </ion-item-option>
           </ion-item-options>
-          <ion-item-options side="end" >
+          <ion-item-options side="end">
             <ion-item-option color="danger" (click)="confirmarEliminacion(dir.id_direccion)">
               <ion-icon slot="icon-only" name="trash"></ion-icon>
             </ion-item-option>
@@ -34,10 +37,6 @@
         </ion-item-sliding>
       </ion-list>
     </ion-card-content>
-    <ion-button expand="full" (click)="crear()">Añadir Nueva Direccion</ion-button>
+    <ion-button expand="full" (click)="crear()">Añadir Nueva Dirección</ion-button>
   </ion-card>
-  
-  </ion-content>
-  
-    
-
+</ion-content>

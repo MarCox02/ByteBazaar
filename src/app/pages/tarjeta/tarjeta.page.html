@@ -19,14 +19,17 @@
         <ion-item-sliding *ngFor="let card of tarjetas">
           <ion-item>
             <h2>{{ card.numero_tarjeta }}</h2>
-            <p>Expira: {{ card.FE_mes }}/{{ card.FE_anio }}</p>
+            <!-- Contenedor para la fecha de expiración -->
+            <div class="fecha-expiracion">
+              <p class="expiracion">Expira: {{ card.FE_mes }}/{{ card.FE_anio }}</p>
+            </div>
           </ion-item>
           <ion-item-options side="start">
             <ion-item-option (click)="modificar(card.numero_tarjeta)">
               <ion-icon slot="icon-only" name="pencil"></ion-icon>
             </ion-item-option>
           </ion-item-options>
-          <ion-item-options side="end" >
+          <ion-item-options side="end">
             <ion-item-option color="danger" (click)="confirmarEliminacion(card.numero_tarjeta)">
               <ion-icon slot="icon-only" name="trash"></ion-icon>
             </ion-item-option>
@@ -34,10 +37,6 @@
         </ion-item-sliding>
       </ion-list>
     </ion-card-content>
-    <ion-button  expand="full" (click)="crear()">Añadir Nuevo Método de Pago</ion-button>
+    <ion-button expand="full" (click)="crear()">Añadir Nuevo Método de Pago</ion-button>
   </ion-card>
-  
-  </ion-content>
-  
-    
-
+</ion-content>

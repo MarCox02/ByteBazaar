@@ -52,7 +52,6 @@ export class EdittarjetaPage implements OnInit {
 
 
   async formulario() {
-
     // Resetear mensajes de error
     this.resetearErrores();
 
@@ -133,11 +132,9 @@ export class EdittarjetaPage implements OnInit {
    // tiene que tener rut, tarjeta.numero_tarjeta, tarjeta.CVC, tarjeta.FE_mes, tarjeta.FE_anio para crear la tarjeta
    try {
     if(this.isEditMode){
-      this.servicesbd.presentAlert('Datos de la tarjeta a modificar:', Mtarjeta);
       this.servicesbd.modificarTarjeta(Mtarjeta,this.rutUsuario);
       this.router.navigate(['/tarjeta']);
     }else{
-      this.servicesbd.presentAlert('Datos de la tarjeta a modificar:', Ctarjeta);
       await this.servicesbd.crearTarjeta(this.rutUsuario,Ctarjeta);
       this.router.navigate(['/tarjeta']);
     }
@@ -158,6 +155,7 @@ export class EdittarjetaPage implements OnInit {
   /* Alertas */
   // Cargar tarjeta para edición
   cargarTarjetas() {
+
     this.servicesbd.getTarjetasByRUT(this.rutUsuario)
       .then(data => {
         this.tarjetas = data;

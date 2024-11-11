@@ -61,6 +61,11 @@ export class RegistrarPage implements OnInit {
 
   async formulario() {
 
+    this.user = this.user.trim();
+    this.nombre = this.nombre.trim();
+    this.apellido = this.apellido.trim();
+    this.telefono = this.telefono.trim();
+    this.correo = this.correo.trim();
     // Resetear mensajes de error
     this.resetearErrores();
 

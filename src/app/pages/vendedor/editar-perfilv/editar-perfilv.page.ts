@@ -117,6 +117,8 @@ export class EditarPerfilvPage implements OnInit {
 
   async toggleEdit() {
     if (this.editMode) {
+      this.nombreUsuario = this.nombreUsuario.trim();
+      this.correo = this.correo.trim();
         // Ejecuta las validaciones antes de actualizar el usuario
         if (!this.validarFormulario()) {
             this.alerta('Error', 'Por favor, corrige los errores en el formulario antes de guardar.');

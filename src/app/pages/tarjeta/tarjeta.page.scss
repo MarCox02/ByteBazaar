@@ -1,0 +1,10 @@
+.fecha-expiracion {
+    display: flex;
+    flex-direction: column; /* Las organiza en columnas, una debajo de la otra */
+    margin-left: 10px; /* Añade margen para separar la fecha de la tarjeta */
+  }
+  
+  .expiracion {
+    margin-bottom: 5px; /* Separación entre la fecha de expiración y otros elementos */
+  }
+  
