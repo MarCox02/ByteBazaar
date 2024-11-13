@@ -679,15 +679,15 @@ async verProductosPorVendedor(rutVendedor: string | null): Promise<Producto[]> {
     throw error; // Lanza el error para manejarlo en el lugar donde se llama
   }
 }
-async crearVenta(rut: string,fecha: string,costo_envio:number, total: number) {
+async crearVenta(rut: string, fecha: string, costo_envio: number, total: number) {
   const sql = `
-    INSERT INTO venta (rut, fecha_venta,costo_envio,total) 
+    INSERT INTO venta (rut, fecha_venta, costo_envio, total) 
     VALUES (?, ?, ?, ?);
   `;
-  return this.database.executeSql(sql, [rut, fecha,costo_envio,total])
+  return this.database.executeSql(sql, [rut, fecha, costo_envio, total])
     .then((result: any) => {
       return result.insertId; // Devuelve el ID de la boleta recién creada
-    })
+    });
 }
 
 async agregarDetalleVenta(id_venta: number, productos: any[]) {
@@ -696,10 +696,115 @@ async agregarDetalleVenta(id_venta: number, productos: any[]) {
     VALUES (?, ?, ?, ?);
   `;
   
-  productos.forEach(producto => {
-    this.database.executeSql(sql, [id_venta, producto.id_producto, producto.cantidad, producto.precio_unitario])
-  });
+  for (const producto of productos) {
+    await this.database.executeSql(sql, [id_venta, producto.id_producto, producto.cantidad, producto.precio]);
+  }
 }
+
+
+async obtenerHistorialComprasPaginado(rut: string, limite: number, offset: number): Promise<any[]> {
+  const sql = `SELECT v.id_venta, v.fecha_venta, v.total, 
+                      dv.id_producto, dv.cantidad, dv.precio_unitario, 
+                      p.nom_producto, p.id_tipo, 
+                      ip.imagen_prod 
+             FROM venta v
+             INNER JOIN detalle_venta dv ON v.id_venta = dv.id_venta
+             INNER JOIN producto p ON dv.id_producto = p.id_producto
+             LEFT JOIN img_producto ip ON p.id_producto = ip.id_producto
+             WHERE v.rut = ?
+             ORDER BY v.id_venta ASC, dv.id_producto ASC
+             LIMIT ? OFFSET ?`;
+
+  try {
+    const result = await this.database.executeSql(sql, [rut, limite, offset]);
+    const historial: any[] = [];
+
+    for (let i = 0; i < result.rows.length; i++) {
+      const compra = result.rows.item(i);
+
+      // Busca si la venta ya existe en el historial
+      let venta = historial.find(v => v.id_venta === compra.id_venta);
+
+      // Si la venta no existe, la crea y la añade al historial
+      if (!venta) {
+        venta = {
+          id_venta: compra.id_venta,
+          fecha_venta: compra.fecha_venta,
+          total: compra.total,
+          detalles: []
+        };
+        historial.push(venta);
+      }
+
+      // Añade el detalle del producto a la venta correspondiente
+      venta.detalles.push({
+        id_producto: compra.id_producto,
+        nom_producto: compra.nom_producto,
+        cantidad: compra.cantidad,
+        precio_unitario: compra.precio_unitario,
+        imagen_producto: compra.imagen_prod || 'url_default_image'
+      });
+    }
+
+    return historial; // Retorna las ventas agrupadas con sus productos
+  } catch (error) {
+    console.error('Error: ', error);
+    throw error; // Lanza el error para manejarlo en el lugar donde se llama
+  }
+}
+async obtenerHistorialVentasPaginado(rut: string, limite: number, offset: number): Promise<any[]> {
+  const sql = `SELECT v.id_venta, v.fecha_venta, v.total, 
+                      dv.id_producto, dv.cantidad, dv.precio_unitario, 
+                      p.nom_producto, p.id_tipo, 
+                      ip.imagen_prod, u.nombre AS comprador_nombre
+               FROM venta v
+               INNER JOIN detalle_venta dv ON v.id_venta = dv.id_venta
+               INNER JOIN producto p ON dv.id_producto = p.id_producto
+               LEFT JOIN img_producto ip ON p.id_producto = ip.id_producto
+               INNER JOIN usuario u ON v.rut = u.rut
+               WHERE p.rut_v = ?  -- Filtramos solo los productos del vendedor
+               ORDER BY v.id_venta ASC, dv.id_producto ASC
+               LIMIT ? OFFSET ?`;
+
+  try {
+    const result = await this.database.executeSql(sql, [rut, limite, offset]);
+    const historial: any[] = [];
+
+    for (let i = 0; i < result.rows.length; i++) {
+      const venta = result.rows.item(i);
+
+      // Busca si la venta ya existe en el historial
+      let ventaExistente = historial.find(v => v.id_venta === venta.id_venta);
+
+      // Si no existe, la crea
+      if (!ventaExistente) {
+        ventaExistente = {
+          id_venta: venta.id_venta,
+          fecha_venta: venta.fecha_venta,
+          total: venta.total,
+          comprador: venta.comprador_nombre, // Nombre del comprador
+          detalles: []
+        };
+        historial.push(ventaExistente);
+      }
+
+      // Añade el detalle del producto a la venta correspondiente
+      ventaExistente.detalles.push({
+        id_producto: venta.id_producto,
+        nom_producto: venta.nom_producto,
+        cantidad: venta.cantidad,
+        precio_unitario: venta.precio_unitario,
+        imagen_producto: venta.imagen_prod || 'url_default_image'
+      });
+    }
+    return historial;
+  } catch (error) {
+    console.error('Error: ', error);
+    throw error;
+  }
+}
+
+
 
 async obtenerTiposProducto(): Promise<{ id_tipo: string; nom_tipo: string }[]> {
   const sql = `SELECT id_tipo, nom_tipo FROM tipoproducto`; // Consulta para obtener tipos de productos
@@ -776,15 +881,18 @@ async obtenerProductoPorId(idProducto: number): Promise<Producto | null> {
     const newStock = stock - cnt;
     return this.database.executeSql('UPDATE producto SET stock = ? WHERE id_producto = ?',[newStock,id_producto])
   }
-  obtenerFecha(){
+  obtenerFecha() {
     const fecha = new Date();
     const anio = fecha.getFullYear();
-    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0'); // Los meses van de 0 a 11
+    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
     const dia = fecha.getDate().toString().padStart(2, '0');
-    const newfecha = `${anio}-${mes}-${dia}`;
-    return (newfecha);
+    const horas = fecha.getHours().toString().padStart(2, '0');
+    const minutos = fecha.getMinutes().toString().padStart(2, '0');
+    const segundos = fecha.getSeconds().toString().padStart(2, '0');
+    
+    const newfecha = `${dia}/${mes}/${anio} ${horas}:${minutos}:${segundos}`;
+    return newfecha;
   }
-
 
 
 

@@ -156,6 +156,13 @@ export class EditarPerfilvPage implements OnInit {
         await this.servicebd.actualizarUsuario(this.usuario);
         await this.userService.login(this.usuario);
         await this.alerta('Éxito', 'Datos actualizados correctamente');
+
+          // Redirige según el rol del usuario
+      if (this.usuario.id_rol === '1') { // Vendedor
+        this.router.navigate(['/perfilv']);
+      } else if (this.usuario.id_rol === '2') { // Comprador
+        this.router.navigate(['/perfilc']);
+      }
         return true; // Actualización exitosa
       } catch (error) {
         // Verifica si error es una instancia de Error y contiene un mensaje específico
