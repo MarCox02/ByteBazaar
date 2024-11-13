@@ -21,7 +21,7 @@
     <ion-item *ngFor="let venta of historialVentas">
       <ion-label>
         <h2>Fecha: {{ venta.fecha_venta }}</h2>
-        <p>Total: {{ venta.total | currency }}</p>
+        <p>Total: {{ venta.total | currency:'CLP':'symbol':'1.0-0' }}</p>
         <p><strong>Comprador:</strong> {{ venta.comprador }}</p>
         <!-- Lista de productos de la misma venta -->
         <ion-list>
