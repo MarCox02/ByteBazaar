@@ -116,10 +116,6 @@ export class ServicebdService {
       await this.database.executeSql(this.registroDirecciones,[]);
     } catch (e) {
     }
-     // Verificar usuarios insertados
-      this.verUsuario();
-
-
     // Cambiar el estado de la base de datos como lista
     this.isDBReady.next(true);
   }
