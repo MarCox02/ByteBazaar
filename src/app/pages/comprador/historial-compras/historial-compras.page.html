@@ -3,18 +3,47 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title class="titulo">Historial de Compras</ion-title>
+    <ion-title>Historial de Compras</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item *ngFor="let venta of ventas" (click)="verDetalleVenta(venta.id_venta)">
+  <!-- Spinner al cargar la página inicialmente -->
+  <ion-spinner *ngIf="cargando && historialCompras.length === 0" style="margin: auto;"></ion-spinner>
+
+  <!-- Mensaje cuando no hay historial de compras -->
+  <div *ngIf="!cargando && historialCompras.length === 0" style="text-align: center; padding: 20px;">
+    <p>No tienes historial de compras disponible.</p>
+  </div>
+
+  <!-- Lista de compras -->
+  <ion-list *ngIf="historialCompras.length > 0">
+    <ion-item *ngFor="let compra of historialCompras">
       <ion-label>
-        <h2>ID de Venta #{{ venta.id_venta }}</h2>
-        <p>Fecha: {{ venta.fecha_venta }}</p>
-        <p>Total: ${{ venta.total | currency:'CLP':'symbol':'1.0-0'  }}</p>
+        <h2>Fecha: {{ compra.fecha_venta }}</h2>
+        <p>Total: {{ compra.total | currency }}</p>
+        <!-- Lista de productos de la misma venta -->
+        <ion-list>
+          <ion-item *ngFor="let detalle of compra.detalles">
+            <ion-thumbnail slot="start">
+              <img [src]="detalle.imagen_producto" alt="Producto" loading="lazy">
+            </ion-thumbnail>
+            <ion-label>
+              <h3>{{ detalle.nom_producto }}</h3>
+              <p>Cantidad: {{ detalle.cantidad }}</p>
+              <p>Precio unitario: {{ detalle.precio_unitario | currency:'CLP':'symbol':'1.0-0' }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
       </ion-label>
     </ion-item>
   </ion-list>
+
+  <!-- Spinner durante la carga de más datos -->
+  <ion-spinner *ngIf="cargando && historialCompras.length > 0" style="margin: auto;"></ion-spinner>
+
+  <!-- Botón "Cargar más" -->
+  <ion-button *ngIf="!cargando && historialCompras.length > 0" (click)="cargarMas()">
+    Cargar más
+  </ion-button>
 </ion-content>

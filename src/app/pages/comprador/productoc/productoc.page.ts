@@ -51,40 +51,46 @@ export class ProductocPage implements OnInit {
 
   agregarAlCarrito() {
     if (this.producto) {
-      const totalCantidadEnCarrito = this.carritoService.obtenerCarrito()
-      .filter(p => p.id_producto === this.producto?.id_producto) // Uso de optional chaining
-      .reduce((total, item) => total + (item.cantidad ?? 0), 0);
+        // Verificar que la cantidad seleccionada sea mayor a 0
+        if (this.cantidad <= 0) {
+            this.presentToast('Debes seleccionar al menos una unidad para agregar al carrito.');
+            return; // Salir del método si la cantidad es 0 o menor
+        }
 
-      const nuevaCantidadTotal = totalCantidadEnCarrito + this.cantidad;
-  
-      const stockProducto = this.producto.stock ?? 0;
-  
-      if (nuevaCantidadTotal > stockProducto) {
-        this.presentToast(`Stock insuficiente. Tienes ${totalCantidadEnCarrito} unidades en tu carrito y el stock máximo disponible es ${stockProducto}.`);
-        return; // Evitar agregar al carrito si excede el stock
-      }
-  
-      const item: Producto = {
-        id_producto: this.producto.id_producto,
-        nom_producto: this.producto.nom_producto,
-        desc_producto: this.producto.desc_producto,
-        precio: this.producto.precio,
-        stock: stockProducto,
-        id_tipo: this.producto.id_tipo,
-        imagen: this.producto.imagen,
-        rut_v: this.producto.rut_v,
-        nom_tipo: this.producto.nom_tipo,
-        usuario_vendedor: this.producto.usuario_vendedor,
-        cantidad: this.cantidad
-      };
-  
-      this.carritoService.agregarProducto(item);
-      this.bdService.restarStock(item.id_producto, this.cantidad);
-      this.presentToast(`${item.nom_producto} ha sido agregado al carrito.`);
+        const totalCantidadEnCarrito = this.carritoService.obtenerCarrito()
+            .filter(p => p.id_producto === this.producto?.id_producto)
+            .reduce((total, item) => total + (item.cantidad ?? 0), 0);
+
+        const nuevaCantidadTotal = totalCantidadEnCarrito + this.cantidad;
+        const stockProducto = this.producto.stock ?? 0;
+
+        if (nuevaCantidadTotal > stockProducto) {
+            this.presentToast(`Stock insuficiente. Tienes ${totalCantidadEnCarrito} unidades en tu carrito y el stock máximo disponible es ${stockProducto}.`);
+            return; // Evitar agregar al carrito si excede el stock
+        }
+
+        const item: Producto = {
+            id_producto: this.producto.id_producto,
+            nom_producto: this.producto.nom_producto,
+            desc_producto: this.producto.desc_producto,
+            precio: this.producto.precio,
+            stock: stockProducto,
+            id_tipo: this.producto.id_tipo,
+            imagen: this.producto.imagen,
+            rut_v: this.producto.rut_v,
+            nom_tipo: this.producto.nom_tipo,
+            usuario_vendedor: this.producto.usuario_vendedor,
+            cantidad: this.cantidad
+        };
+
+        this.carritoService.agregarProducto(item);
+        this.bdService.restarStock(item.id_producto, this.cantidad);
+        this.presentToast(`${item.nom_producto} ha sido agregado al carrito.`);
     } else {
-      this.presentToast('El producto no está disponible.');
+        this.presentToast('El producto no está disponible.');
     }
-  }
+}
+
   
 
   // Métodos para incrementar y disminuir la cantidad

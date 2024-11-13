@@ -20,6 +20,10 @@ export class EditarPerfilcPage implements OnInit {
   nuevaFoto: File | null = null; // Archivo de la nueva foto de perfil
   usuario: Usuario | null = null;
   id_rol: string = ''; // Para manejar el cambio de rol
+  correoValido: boolean = true;
+  nombreUsuarioValido: boolean = true;
+
+  patronEmail: string = '^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$';
 
   constructor(private userService: UserService, private alertController: AlertController,
               private actionSheetController: ActionSheetController, private menuCtrl: MenuController,
@@ -38,6 +42,15 @@ export class EditarPerfilcPage implements OnInit {
       this.fotoPerfil = usuario.foto_perfil || 'ruta/default_avatar.jpg';
       this.id_rol = usuario.id_rol;
     }
+  }
+
+  validarCorreo() {
+    const patron = new RegExp(this.patronEmail);
+    this.correoValido = patron.test(this.correo);
+  }
+
+  validarNombreUsuario() {
+    this.nombreUsuarioValido = this.nombreUsuario.length >= 3;
   }
 
   async presentActionSheet() {
@@ -105,17 +118,35 @@ export class EditarPerfilcPage implements OnInit {
 
   async toggleEdit() {
     if (this.editMode) {
-      await this.actualizarUsuario();
+      this.nombreUsuario = this.nombreUsuario.trim();
+      this.correo = this.correo.trim();
+      // Ejecuta las validaciones antes de actualizar el usuario
+      if (!this.validarFormulario()) {
+        this.alerta('Error', 'Por favor, corrige los errores en el formulario antes de guardar.');
+        return; // Si alguna validación falla, se sale del método y no guarda
+      }
+      // Intenta actualizar el usuario solo si todas las validaciones son exitosas
+      const exito = await this.actualizarUsuario();
+      if (exito) {
+        this.editMode = !this.editMode; // Cambia el modo solo si la actualización fue exitosa
+      }
+    } else {
+      this.editMode = !this.editMode; // Cambia al modo de edición
     }
-    this.editMode = !this.editMode; // Alternar el modo de edición
   }
 
-  async actualizarUsuario() {
+  validarFormulario() {
+    this.validarCorreo();
+    this.validarNombreUsuario();
+    return this.correoValido && this.nombreUsuarioValido;
+  }
+
+  async actualizarUsuario(): Promise<boolean> {
     if (this.usuario) {
       this.usuario.correo = this.correo;
       this.usuario.user = this.nombreUsuario;
       this.usuario.id_rol = this.id_rol;
-
+  
       if (this.nuevaFoto) {
         const base64Foto = await this.convertirArchivoABase64(this.nuevaFoto);
         if (typeof base64Foto === 'string') {
@@ -124,20 +155,35 @@ export class EditarPerfilcPage implements OnInit {
           console.error('Error al convertir la imagen a base64');
         }
       }
-
+  
       try {
         await this.servicebd.actualizarUsuario(this.usuario);
         await this.userService.login(this.usuario);
         await this.alerta('Éxito', 'Datos actualizados correctamente');
 
-        // Redirigir según el rol después de guardar los cambios
-        this.router.navigate([this.usuario.id_rol === '1' ? '/perfilv' : '/perfilc']);
+        // Redirige según el rol del usuario
+      if (this.usuario.id_rol === '1') { // Vendedor
+        this.router.navigate(['/perfilv']);
+      } else if (this.usuario.id_rol === '2') { // Comprador
+        this.router.navigate(['/perfilc']);
+      }
+
+        return true; // Actualización exitosa
       } catch (error) {
-        console.error('Error al actualizar el usuario:', error);
-        await this.alerta('Error', 'No se pudo actualizar los datos. Intenta nuevamente.');
+        // Verifica si error es una instancia de Error y contiene un mensaje específico
+        if (error instanceof Error && error.message === 'El nombre de usuario ya existe') {
+          await this.alerta('Error', 'El nombre de usuario ya existe. Por favor, elige otro.');
+        } else {
+          await this.alerta('Error', 'No se pudo actualizar los datos. Intenta nuevamente.');
+        }
+        return false; // La actualización falló
       }
     }
+    return false; // Devuelve false si no se puede realizar la actualización
   }
+  
+  
+
 
   convertirArchivoABase64(file: File): Promise<string | ArrayBuffer | null> {
     return new Promise((resolve, reject) => {

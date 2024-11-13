@@ -29,7 +29,7 @@ export class ServicebdService {
   //variables de las tablas
   tablaRol: string = "CREATE TABLE IF NOT EXISTS rol(id_rol VARCHAR(5) PRIMARY KEY, nom_rol VARCHAR(20) NOT NULL);";
   tablaTipoProducto: string = "CREATE TABLE IF NOT EXISTS tipoproducto(id_tipo VARCHAR(5) PRIMARY KEY, nom_tipo VARCHAR(20) NOT NULL);";
-  tablaComuna: string = "CREATE TABLE IF NOT EXISTS comuna(id_comuna VARCHAR(5) PRIMARY KEY, nom_comuna VARCHAR(20) NOT NULL, costo_envio INTEGER NOT NULL);";
+    tablaComuna: string = "CREATE TABLE IF NOT EXISTS comuna(id_comuna VARCHAR(5) PRIMARY KEY, nom_comuna VARCHAR(20) NOT NULL, costo_envio INTEGER NOT NULL);";
 
   tablaUsuario: string = "CREATE TABLE IF NOT EXISTS usuario(user VARCHAR(20) UNIQUE NOT NULL, rut VARCHAR(20) PRIMARY KEY, nombre VARCHAR(40), apellido VARCHAR(40), correo VARCHAR(40) UNIQUE, telefono INTEGER, foto_perfil BLOB NOT NULL, contrasena TEXT NOT NULL, id_rol VARCHAR(5), FOREIGN KEY (id_rol) REFERENCES rol(id_rol));";
   tablaProducto: string = "CREATE TABLE IF NOT EXISTS producto(id_producto INTEGER PRIMARY KEY AUTOINCREMENT, nom_producto VARCHAR(20) NOT NULL, desc_producto TEXT, rut_v VARCHAR(20), precio NUMBER, stock INTEGER, id_tipo VARCHAR(5), FOREIGN KEY(rut_v) REFERENCES usuario(rut), FOREIGN KEY(id_tipo) REFERENCES tipoproducto(id_tipo));";
@@ -429,21 +429,38 @@ async registrarUsuario(usuario: Usuario): Promise<any> {
 
 
 
+async verificarNombreUsuario(nombreUsuario: string, rut: string): Promise<boolean> {
+  const query = `SELECT COUNT(*) AS count FROM usuario WHERE user = ? AND rut != ?`;
+  const valores = [nombreUsuario, rut];
+
+  const res = await this.database.executeSql(query, valores);
+  const count = res.rows.item(0).count;
+
+  return count > 0; // Retorna true si el nombre de usuario ya está en uso
+}
+
 async actualizarUsuario(usuario: Usuario): Promise<void> {
+  const nombreUsuarioExiste = await this.verificarNombreUsuario(usuario.user, usuario.rut);
+  
+  if (nombreUsuarioExiste) {
+    // Lanza un error específico si el nombre de usuario ya está en uso
+    throw new Error('El nombre de usuario ya existe');
+  }
+
   const query = `
     UPDATE usuario 
     SET correo = ?, 
         user = ?, 
         foto_perfil = ?, 
-        id_rol = ?  -- Actualizando también el rol
+        id_rol = ?
     WHERE rut = ?`;
 
   const valores = [
     usuario.correo,
     usuario.user,
-    usuario.foto_perfil, // La imagen en formato Base64
-    usuario.id_rol, // Asegúrate de incluir el rol aquí
-    usuario.rut // Clave para identificar al usuario
+    usuario.foto_perfil,
+    usuario.id_rol,
+    usuario.rut
   ];
 
   try {
@@ -662,15 +679,15 @@ async verProductosPorVendedor(rutVendedor: string | null): Promise<Producto[]> {
     throw error; // Lanza el error para manejarlo en el lugar donde se llama
   }
 }
-async crearVenta(rut: string,fecha: string,costo_envio:number, total: number) {
+async crearVenta(rut: string, fecha: string, costo_envio: number, total: number) {
   const sql = `
-    INSERT INTO venta (rut, fecha_venta,costo_envio,total) 
+    INSERT INTO venta (rut, fecha_venta, costo_envio, total) 
     VALUES (?, ?, ?, ?);
   `;
-  return this.database.executeSql(sql, [rut, fecha,costo_envio,total])
+  return this.database.executeSql(sql, [rut, fecha, costo_envio, total])
     .then((result: any) => {
       return result.insertId; // Devuelve el ID de la boleta recién creada
-    })
+    });
 }
 
 async agregarDetalleVenta(id_venta: number, productos: any[]) {
@@ -679,10 +696,115 @@ async agregarDetalleVenta(id_venta: number, productos: any[]) {
     VALUES (?, ?, ?, ?);
   `;
   
-  productos.forEach(producto => {
-    this.database.executeSql(sql, [id_venta, producto.id_producto, producto.cantidad, producto.precio_unitario])
-  });
+  for (const producto of productos) {
+    await this.database.executeSql(sql, [id_venta, producto.id_producto, producto.cantidad, producto.precio]);
+  }
 }
+
+
+async obtenerHistorialComprasPaginado(rut: string, limite: number, offset: number): Promise<any[]> {
+  const sql = `SELECT v.id_venta, v.fecha_venta, v.total, 
+                      dv.id_producto, dv.cantidad, dv.precio_unitario, 
+                      p.nom_producto, p.id_tipo, 
+                      ip.imagen_prod 
+             FROM venta v
+             INNER JOIN detalle_venta dv ON v.id_venta = dv.id_venta
+             INNER JOIN producto p ON dv.id_producto = p.id_producto
+             LEFT JOIN img_producto ip ON p.id_producto = ip.id_producto
+             WHERE v.rut = ?
+             ORDER BY v.id_venta ASC, dv.id_producto ASC
+             LIMIT ? OFFSET ?`;
+
+  try {
+    const result = await this.database.executeSql(sql, [rut, limite, offset]);
+    const historial: any[] = [];
+
+    for (let i = 0; i < result.rows.length; i++) {
+      const compra = result.rows.item(i);
+
+      // Busca si la venta ya existe en el historial
+      let venta = historial.find(v => v.id_venta === compra.id_venta);
+
+      // Si la venta no existe, la crea y la añade al historial
+      if (!venta) {
+        venta = {
+          id_venta: compra.id_venta,
+          fecha_venta: compra.fecha_venta,
+          total: compra.total,
+          detalles: []
+        };
+        historial.push(venta);
+      }
+
+      // Añade el detalle del producto a la venta correspondiente
+      venta.detalles.push({
+        id_producto: compra.id_producto,
+        nom_producto: compra.nom_producto,
+        cantidad: compra.cantidad,
+        precio_unitario: compra.precio_unitario,
+        imagen_producto: compra.imagen_prod || 'url_default_image'
+      });
+    }
+
+    return historial; // Retorna las ventas agrupadas con sus productos
+  } catch (error) {
+    console.error('Error: ', error);
+    throw error; // Lanza el error para manejarlo en el lugar donde se llama
+  }
+}
+async obtenerHistorialVentasPaginado(rut: string, limite: number, offset: number): Promise<any[]> {
+  const sql = `SELECT v.id_venta, v.fecha_venta, v.total, 
+                      dv.id_producto, dv.cantidad, dv.precio_unitario, 
+                      p.nom_producto, p.id_tipo, 
+                      ip.imagen_prod, u.nombre AS comprador_nombre
+               FROM venta v
+               INNER JOIN detalle_venta dv ON v.id_venta = dv.id_venta
+               INNER JOIN producto p ON dv.id_producto = p.id_producto
+               LEFT JOIN img_producto ip ON p.id_producto = ip.id_producto
+               INNER JOIN usuario u ON v.rut = u.rut
+               WHERE p.rut_v = ?  -- Filtramos solo los productos del vendedor
+               ORDER BY v.id_venta ASC, dv.id_producto ASC
+               LIMIT ? OFFSET ?`;
+
+  try {
+    const result = await this.database.executeSql(sql, [rut, limite, offset]);
+    const historial: any[] = [];
+
+    for (let i = 0; i < result.rows.length; i++) {
+      const venta = result.rows.item(i);
+
+      // Busca si la venta ya existe en el historial
+      let ventaExistente = historial.find(v => v.id_venta === venta.id_venta);
+
+      // Si no existe, la crea
+      if (!ventaExistente) {
+        ventaExistente = {
+          id_venta: venta.id_venta,
+          fecha_venta: venta.fecha_venta,
+          total: venta.total,
+          comprador: venta.comprador_nombre, // Nombre del comprador
+          detalles: []
+        };
+        historial.push(ventaExistente);
+      }
+
+      // Añade el detalle del producto a la venta correspondiente
+      ventaExistente.detalles.push({
+        id_producto: venta.id_producto,
+        nom_producto: venta.nom_producto,
+        cantidad: venta.cantidad,
+        precio_unitario: venta.precio_unitario,
+        imagen_producto: venta.imagen_prod || 'url_default_image'
+      });
+    }
+    return historial;
+  } catch (error) {
+    console.error('Error: ', error);
+    throw error;
+  }
+}
+
+
 
 async obtenerTiposProducto(): Promise<{ id_tipo: string; nom_tipo: string }[]> {
   const sql = `SELECT id_tipo, nom_tipo FROM tipoproducto`; // Consulta para obtener tipos de productos
@@ -759,15 +881,18 @@ async obtenerProductoPorId(idProducto: number): Promise<Producto | null> {
     const newStock = stock - cnt;
     return this.database.executeSql('UPDATE producto SET stock = ? WHERE id_producto = ?',[newStock,id_producto])
   }
-  obtenerFecha(){
+  obtenerFecha() {
     const fecha = new Date();
     const anio = fecha.getFullYear();
-    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0'); // Los meses van de 0 a 11
+    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
     const dia = fecha.getDate().toString().padStart(2, '0');
-    const newfecha = `${anio}-${mes}-${dia}`;
-    return (newfecha);
+    const horas = fecha.getHours().toString().padStart(2, '0');
+    const minutos = fecha.getMinutes().toString().padStart(2, '0');
+    const segundos = fecha.getSeconds().toString().padStart(2, '0');
+    
+    const newfecha = `${dia}/${mes}/${anio} ${horas}:${minutos}:${segundos}`;
+    return newfecha;
   }
-
 
 
 
