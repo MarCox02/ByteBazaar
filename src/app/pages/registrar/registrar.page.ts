@@ -60,98 +60,79 @@ export class RegistrarPage implements OnInit {
 
 
   async formulario() {
-
-    this.user = this.user.trim();
-    this.nombre = this.nombre.trim();
-    this.apellido = this.apellido.trim();
-    this.telefono = this.telefono.trim();
-    this.correo = this.correo.trim();
-    // Resetear mensajes de error
+    // Resetear mensajes de error antes de validar
     this.resetearErrores();
-
-     // Validaciones de campos
-     let hayErrores = false; // Bandera para verificar si hay errores
-
-  // Validaciones de campos
-  if (!this.rol) {
-    this.errorRol = "Rol es obligatorio";
-    hayErrores = true;
-  }
-  if (!this.rut) {
-    this.errorRut = "Rut es obligatorio";
-    hayErrores = true;
-  }
-  if (!this.nombre) {
-    this.errorNombre = "Nombre es obligatorio";
-    hayErrores = true;
-  }
-  if (!this.apellido) {
-    this.errorApellido = "Apellido es obligatorio";
-    hayErrores = true;
-  }
-  if (!this.user || this.user.length < 3) {
-    this.errorUsuario = "El nombre de usuario debe tener al menos 3 letras";
-    hayErrores = true;
-  }
-  if (!this.telefono) {
-    this.errorTelefono = "Teléfono es obligatorio";
-    hayErrores = true;
-  }
-  if (!this.correo) {
-    this.errorCorreo = "Correo es obligatorio";
-    hayErrores = true;
-  }
-  if (!this.contrasena) {
-    this.errorContrasena = "Contraseña es obligatoria";
-    hayErrores = true;
-  }
-  if (!this.confirmarContrasena) {
-    this.errorConfirmarContrasena = "Confirmar contraseña es obligatorio";
-    hayErrores = true;
-  }
-
-  // Validar si hay errores antes de continuar
-  if (hayErrores) {
-    return; // Si hay errores, no continuar
-  }
-
-
-    if (!this.validarRUT(this.rut)) {
+  
+    let hayErrores = false; // Bandera para verificar si hay errores
+  
+    // Validaciones de campos
+    if (!this.rol) {
+      this.errorRol = "Rol es obligatorio";
+      hayErrores = true;
+    }
+    if (!this.rut) {
+      this.errorRut = "Rut es obligatorio";
+      hayErrores = true;
+    } else if (!this.validarRUT(this.rut)) {
       this.errorRut = "El RUT ingresado no es válido";
       hayErrores = true;
     }
-
-    const patronEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    if (!patronEmail.test(this.correo)) {
-      this.errorCorreo = "Por favor, ingrese un correo electrónico válido.";
+    if (!this.nombre) {
+      this.errorNombre = "Nombre es obligatorio";
       hayErrores = true;
     }
-
-    const patronTelefono = /^9\d{8}$/; // Expresión regular para validar número de teléfono chileno
-    if (!patronTelefono.test(this.telefono)) {
-      this.errorTelefono = `Teléfono inválido. 
-      Debe comenzar con 9 y tener 9 dígitos.`;
+    if (!this.apellido) {
+      this.errorApellido = "Apellido es obligatorio";
       hayErrores = true;
     }
-
-
-    const patronContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d.,@$!%*?&]{6,20}$/;
-    if (!patronContrasena.test(this.contrasena)) {
-      this.errorContrasena = "El formato de la contraseña no es correcta  ";
+    if (!this.user || this.user.length < 3) {
+      this.errorUsuario = "El nombre de usuario debe tener al menos 3 letras";
       hayErrores = true;
     }
-
-    if (this.contrasena !== this.confirmarContrasena) {
+    if (!this.telefono) {
+      this.errorTelefono = "Teléfono es obligatorio";
+      hayErrores = true;
+    } else {
+      const patronTelefono = /^9\d{8}$/; // Expresión regular para validar número de teléfono chileno
+      if (!patronTelefono.test(this.telefono)) {
+        this.errorTelefono = "Teléfono inválido. Debe comenzar con 9 y tener 9 dígitos.";
+        hayErrores = true;
+      }
+    }
+    if (!this.correo) {
+      this.errorCorreo = "Correo es obligatorio";
+      hayErrores = true;
+    } else {
+      const patronEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+      if (!patronEmail.test(this.correo)) {
+        this.errorCorreo = "Por favor, ingrese un correo electrónico válido.";
+        hayErrores = true;
+      }
+    }
+    if (!this.contrasena) {
+      this.errorContrasena = "Contraseña es obligatoria";
+      hayErrores = true;
+    } else {
+      const patronContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d.,@$!%*?&]{6,20}$/;
+      if (!patronContrasena.test(this.contrasena)) {
+        this.errorContrasena = "El formato de la contraseña no es correcto.";
+        hayErrores = true;
+      }
+    }
+    if (!this.confirmarContrasena) {
+      this.errorConfirmarContrasena = "Confirmar contraseña es obligatorio";
+      hayErrores = true;
+    } else if (this.contrasena !== this.confirmarContrasena) {
       this.errorConfirmarContrasena = "Las contraseñas no coinciden";
       hayErrores = true;
     }
   
-
+    // Si hay errores, no continuar con el registro
     if (hayErrores) {
       return;
     }
-
-    // Crear el nuevo usuario
+  
+    // Crear el nuevo usuario si no hay errores
     const nuevoUsuario: Usuario = {
       user: this.user,
       rut: this.rut,
@@ -163,36 +144,34 @@ export class RegistrarPage implements OnInit {
       contrasena: this.contrasena,
       id_rol: this.rol // Manteniendo 'rol' como un string
     };
-
-    // Agregar el nuevo usuario a la lista
-    //this.listaUsuarios.push(nuevoUsuario);
-
-   // Llamar al servicio para registrar el usuario en la base de datos
-   try {
-    await this.servicesbd.registrarUsuario(nuevoUsuario);
-    this.alerta_t("Registro exitoso", "Te has registrado correctamente, ahora puedes iniciar sesión");
-    this.router.navigate(['/home']);
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : JSON.stringify(error);
-    
-    // Mostrar alertas para cada error específico
-    if (errorMessage.includes('El RUT ya está registrado.')) {
-      this.alerta("Registro Fallido", "El RUT ingresado ya está registrado en el sistema.");
-    }
-    if (errorMessage.includes('El correo ya está registrado.')) {
-      this.alerta("Registro Fallido", "El correo ingresado ya está registrado en el sistema.");
-    }
-    if (errorMessage.includes('El nombre de usuario ya está registrado.')) {
-      this.alerta("Registro Fallido", "El nombre de usuario ingresado ya está registrado en el sistema.");
-    }
-    
-    // Manejar cualquier otro error
-    else {
-      console.error('Error al registrar usuario: ', errorMessage);
-      this.alerta("Error", "No se pudo registrar el usuario. Intenta nuevamente.");
+  
+    // Llamar al servicio para registrar el usuario en la base de datos
+    try {
+      await this.servicesbd.registrarUsuario(nuevoUsuario);
+      this.alerta_t("Registro exitoso", "Te has registrado correctamente, ahora puedes iniciar sesión");
+      this.router.navigate(['/home']);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : JSON.stringify(error);
+  
+      // Mostrar alertas para cada error específico
+      if (errorMessage.includes('El RUT ya está registrado.')) {
+        this.alerta("Registro Fallido", "El RUT ingresado ya está registrado en el sistema.");
+      }
+      if (errorMessage.includes('El correo ya está registrado.')) {
+        this.alerta("Registro Fallido", "El correo ingresado ya está registrado en el sistema.");
+      }
+      if (errorMessage.includes('El nombre de usuario ya está registrado.')) {
+        this.alerta("Registro Fallido", "El nombre de usuario ingresado ya está registrado en el sistema.");
+      }
+  
+      // Manejar cualquier otro error
+      else {
+        console.error('Error al registrar usuario: ', errorMessage);
+        this.alerta("Error", "No se pudo registrar el usuario. Intenta nuevamente.");
+      }
     }
   }
-}
+  
 
   validarRUT(rut: string): boolean {
     // Eliminar los puntos y guiones del RUT
