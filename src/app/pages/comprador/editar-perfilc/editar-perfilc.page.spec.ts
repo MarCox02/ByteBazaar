@@ -15,3 +15,4 @@ describe('EditarPerfilcPage', () => {
     expect(component).toBeTruthy();
   });
 });
+
