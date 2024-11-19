@@ -53,6 +53,10 @@ export class PublicarvPage implements OnInit {
     this.cargarProductos();
 }
 
+public getBdService(): ServicebdService {
+  return this.bdService;
+}
+
 async cargarProductos() {
   try {
     this.productos = await this.bdService.verProductos(); 
