@@ -20,13 +20,13 @@ Primero, abre una terminal o cmd (windows).
 * Clone el repositorio del proyecto desde GitHub.
 
 ```bash
-git clone https://github.com/Volkergz/Farmapp/tree/master
+git clone https://github.com/MarCox02/ByteBazaar.git
 ```
 
 *  Accede al directorio del proyecto clonado
 
 ```bash
-cd Farmapp
+cd ByteBazaar
 ```
 
 * Instale las dependecias del proyecto
@@ -43,5 +43,5 @@ ionic serve
 
 ## 👀 Team Members
 
-* Haleym Hidalgo
-* Dondup Berrios
+* Angel Perugini
+* Martin Cox
